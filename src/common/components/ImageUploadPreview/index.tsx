@@ -1,8 +1,8 @@
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { Upload, UploadProps, message } from "antd";
+import { DeleteOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Upload, UploadProps, message } from "antd";
 import { RcFile, UploadChangeParam, UploadFile } from "antd/lib/upload";
 import React, { useEffect, useState } from "react"
-
+import './ImageUploadPreview.css';
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     const reader = new FileReader();
@@ -24,7 +24,7 @@ const beforeUpload = (file: RcFile) => {
 
 export type ImageUploadPreviewProps = {
     valueUrl?: string | undefined
-    onChange?: ((info: UploadChangeParam<UploadFile<any>>) => void);
+    onChange?: ((info: UploadChangeParam<UploadFile<any>> | null) => void);
 }
 
 const ImageUploadPreview: React.FC<ImageUploadPreviewProps> = (props) => {
@@ -42,29 +42,47 @@ const ImageUploadPreview: React.FC<ImageUploadPreviewProps> = (props) => {
                 setImageUrl(url);
             });
         }
-        if(props.onChange){
+        if (props.onChange) {
             props.onChange(info);
         }
     }
 
     const uploadButton = (
-        <div>
+        <div className="upload-button">
             {loading ? <LoadingOutlined /> : <PlusOutlined />}
             <div style={{ marginTop: 8 }}>Pilih Gambar</div>
         </div>
     );
 
+    const handleDeleteClick = () => {
+        setImageUrl(undefined);
+        if (props.onChange) {
+            props.onChange(null);
+        }
+    };
+
     return (
         <Upload
             listType="picture-card"
             maxCount={1}
-            className="avatar-uploader"
+            className="custom-upload"
             showUploadList={false}
             accept='image/*'
             beforeUpload={beforeUpload} // Prevent immediate upload
             onChange={handleChange}
         >
-            {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+            <div className="image-container">
+                {imageUrl ?
+                    <div className="image-preview">
+                        <img src={imageUrl}  alt="avatar" style={{ width: '100%' }} />
+                        <Button
+                            className="delete-button"
+                            icon={<DeleteOutlined />}
+                            onClick={handleDeleteClick}
+                        />
+                    </div>
+                    : uploadButton}
+            </div>
         </Upload>
     )
 

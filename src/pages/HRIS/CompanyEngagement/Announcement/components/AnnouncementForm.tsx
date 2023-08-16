@@ -1,6 +1,7 @@
 import {
   ModalForm,
   ProForm,
+  ProFormDatePicker,
   ProFormInstance,
   ProFormSelect,
   ProFormText,
@@ -70,6 +71,20 @@ const AnnouncementForm: React.FC<AnnouncementFormProps> = (props) => {
         props.setOpen!(false);
       }}
     >
+      <ProFormDatePicker
+        rules={[
+          {
+            required: true,
+            message: "Announcement Date Is Required",
+          },
+        ]}
+        width={'xl'}
+        dataFormat='DD/MM/YYYY'
+        placeholder="Masukkan Tanggal Pengumuman"
+        name="created_at"
+        label="Tanggal"
+      />
+
       <ProFormText
         rules={[
           {
@@ -111,7 +126,7 @@ const AnnouncementForm: React.FC<AnnouncementFormProps> = (props) => {
         label="Image"
       >
         <ImageUploadPreview
-          valueUrl={getImageUrl(props.values?.image?.thumbnail) || undefined}
+          valueUrl={getImageUrl(props.values?.image?.address) || undefined}
         />
 
       </ProForm.Item>

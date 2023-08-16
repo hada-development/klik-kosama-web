@@ -27,81 +27,108 @@ export default [
   },
   {
     path: '/welcome',
-    name: 'welcome',
-    icon: 'smile',
+    name: 'Dashboard',
+    icon: 'pieChart',
     component: './Welcome',
   },
   {
-    path: '/admin',
-    name: 'admin',
-    icon: 'crown',
-    access: 'canAdmin',
-    routes: [
-      {
-        path: '/admin',
-        redirect: '/admin/sub-page',
-      },
-      {
-        path: '/admin/sub-page',
-        name: 'sub-page',
-        component: './Admin',
-      },
-    ],
-  },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
+    name: "HRIS",
+    icon: 'team',
+    path: '/hris',
 
-  },
-  {
-    path: '/company-engagement',
-    name: 'Company Engagement',
-    icon: 'sound',
     routes: [
       {
-        name: 'Pemberitahuan',
+        path: '/hris',
+        name: 'Dashboard',
+        icon: 'pieChart',
+        component: './Welcome',
+      },
+      {
+        path: 'employee',
+        name: 'Pegawai',
+        icon: 'team',
+        hideChildrenInMenu: true,
+        routes: [
+          {
+            path: '/hris/employee',
+            name: 'Pegawai',
+            icon: 'pieChart',
+            component: './HRIS/Employee/EmployeeList',
+          },
+          {
+            path: '/hris/employee/:employeeId/',
+            routes: [
+              {
+                path: '/hris/employee/:employeeId/',
+                redirect: 'account',
+              },
+              {
+                path: 'account',
+                name: 'Detail Pegawai',
+                component: './HRIS/Employee/EmployeeDetail/SubPages/Account',
+                wrappers: ['./HRIS/Employee/EmployeeDetail/index'],
+              },
+              {
+                path: 'employee-data',
+                name: 'Detail Pegawai',
+                component: './HRIS/Employee/EmployeeDetail/SubPages/Account',
+                wrappers: ['./HRIS/Employee/EmployeeDetail/index'],
+              }
+            ]
+          },
+        ]
+      },
+      {
+        path: 'company-engagement',
+        name: 'Company Engagement',
         icon: 'sound',
-        path: '/company-engagement/announcement',
-        component: './CompanyEngagement/Announcement',
+        routes: [
+          {
+            name: 'Pemberitahuan',
+            icon: 'sound',
+            path: 'announcement',
+            component: './HRIS/CompanyEngagement/Announcement',
+          },
+        ]
       },
+      {
+        path: 'master-data',
+        name: 'Master Data',
+        icon: 'database',
+        routes: [
+          {
+            name: 'Jenis Pegawai',
+            icon: 'table',
+            path: 'employee-type',
+            component: './HRIS/MasterData/EmployeeType',
+          },
+
+          {
+            name: 'Posisi',
+            icon: 'table',
+            path: 'position',
+            component: './HRIS/MasterData/Position',
+          },
+
+          {
+            name: 'Tingkat Pendidikan',
+            icon: 'table',
+            path: 'education-level',
+            component: './HRIS/MasterData/EducationLevel',
+          },
+
+          {
+            name: 'Lokasi Kantor',
+            icon: 'table',
+            path: 'office',
+            component: './HRIS/MasterData/Office',
+          },
+        ]
+      },
+
     ]
   },
-  {
-    path: '/master-data',
-    name: 'Master Data',
-    icon: 'database',
-    routes: [
-      {
-        name: 'Jenis Pegawai',
-        icon: 'table',
-        path: '/master-data/employee-type',
-        component: './MasterData/EmployeeType',
-      },
 
-      {
-        name: 'Posisi',
-        icon: 'table',
-        path: '/master-data/position',
-        component: './MasterData/Position',
-      },
-
-      {
-        name: 'Tingkat Pendidikan',
-        icon: 'table',
-        path: '/master-data/education-level',
-        component: './MasterData/EducationLevel',
-      },
-
-      {
-        name: 'Lokasi Kantor',
-        icon: 'table',
-        path: '/master-data/office',
-        component: './MasterData/Office',
-      },
-    ]
-  },
 
 
 
@@ -112,7 +139,7 @@ export default [
   {
     path: '*',
     layout: false,
-    component: './404',
+    component: '404',
   },
 ];
 

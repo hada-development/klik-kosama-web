@@ -4,6 +4,7 @@ declare namespace AnnouncementFeature {
         title?: string;
         description?: string;
         status?: string;
+        created_at?: string;
         image?: {
             address: string;
             thumbnail: string;

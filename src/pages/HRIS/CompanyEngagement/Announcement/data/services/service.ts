@@ -60,6 +60,7 @@ function generateFormData(values: any): FormData {
     formData.append('title', values.title);
     formData.append('description', values.description);
     formData.append('status', values.status);
+    formData.append('created_at', values.created_at);
     if (values.image?.file) {
         formData.append('image', values.image.file.originFileObj);
     }

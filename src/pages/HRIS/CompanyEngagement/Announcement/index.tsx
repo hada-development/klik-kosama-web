@@ -5,6 +5,7 @@ import { Button, Image, Modal, Tag, message } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import AnnouncementForm from './components/AnnouncementForm';
 import { getImageUrl } from '@/common/utils/utils';
+import moment from 'moment';
 
 
 /**
@@ -42,6 +43,17 @@ const AnnouncementPage: React.FC = () => {
   const actionRef = useRef<ActionType>();
 
   const columns: ProColumns<AnnouncementFeature.AnnouncementListItem>[] = [
+    {
+      title: "Tanggal",
+      dataIndex: 'created_at',
+      render: (_, record) => {
+        if (record.created_at) {
+          const date = moment(new Date(record.created_at));
+          return date.format("DD/MM/YYYY");
+        }
+        return <></>;
+      }
+    },
     {
       title: "Judul Pengumuman",
       dataIndex: 'title',

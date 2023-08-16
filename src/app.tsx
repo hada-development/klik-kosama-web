@@ -10,6 +10,7 @@ import React from 'react';
 import { currentUser as queryCurrentUser } from './common/services/general/auth';
 import kosamaConfig  from '../config/kosamaConfig';
 import { getImageUrl } from './common/utils/utils';
+import KosamaLogo from './../assets/logo.png';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -55,7 +56,7 @@ export async function getInitialState(): Promise<{
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   
   return {
-    
+    logo: KosamaLogo,
     avatarProps: {
       src: getImageUrl(initialState?.currentUser?.profile_photo?.address),
       title: <AvatarName />,
