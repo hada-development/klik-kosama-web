@@ -1,29 +1,27 @@
-
 declare namespace Auth {
-
-    type CurrentUser = {
-        id?: integer;
-        name?: string;
-        email?: string;
-        roles?: string[];
-        email?: string;
-        profile_photo?: {
-            id? : integer;
-            address? : string;
-        }
+  type CurrentUser = {
+    id?: integer;
+    name?: string;
+    email?: string;
+    roles?: string[];
+    email?: string;
+    profile_photo?: {
+      id?: integer;
+      address?: string;
     };
+    permissions: any;
+  };
 
-    type LoginParams = {
-        
-        email?: string;
-        password?: string;
-        autoLogin?: boolean;
-    };
+  type LoginParams = {
+    email?: string;
+    password?: string;
+    autoLogin?: boolean;
+  };
 
-    type LoginResult = {
-        status? : string;
-        name?: string;
-        token?: string;
-        roles?: string[];
-    };
+  type LoginResult = {
+    status?: string;
+    name?: string;
+    token?: string;
+    roles?: string[];
+  };
 }

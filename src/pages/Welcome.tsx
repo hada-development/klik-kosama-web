@@ -1,5 +1,6 @@
+import { ApartmentOutlined, BarcodeOutlined, TeamOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
-import { useModel } from '@umijs/max';
+import { Access, useAccess, useModel } from '@umijs/max';
 import { Card, theme } from 'antd';
 import React from 'react';
 
@@ -10,10 +11,11 @@ import React from 'react';
  */
 const InfoCard: React.FC<{
   title: string;
+  icon?: React.ReactNode;
   index: number;
   desc: string;
   href: string;
-}> = ({ title, href, index, desc }) => {
+}> = ({ title, href, icon, index, desc }) => {
   const { useToken } = theme;
 
   const { token } = useToken();
@@ -37,28 +39,32 @@ const InfoCard: React.FC<{
           display: 'flex',
           gap: '4px',
           alignItems: 'center',
+          justifyContent: 'flex-start',
         }}
       >
         <div
           style={{
-            width: 48,
-            height: 48,
-            lineHeight: '22px',
+            width: 80,
+            height: 80,
+            lineHeight: '40px',
             backgroundSize: '100%',
             textAlign: 'center',
             padding: '8px 16px 16px 12px',
+            marginBottom: '-8px',
             color: '#FFF',
             fontWeight: 'bold',
+            fontSize: '24px',
             backgroundImage:
               "url('https://gw.alipayobjects.com/zos/bmw-prod/daaf8d50-8e6d-4251-905d-676a24ddfa12.svg')",
           }}
         >
-          {index}
+          {icon ?? index}
         </div>
         <div
           style={{
-            fontSize: '16px',
+            fontSize: '20px',
             color: token.colorText,
+            fontWeight: 'bold',
             paddingBottom: 8,
           }}
         >
@@ -76,9 +82,7 @@ const InfoCard: React.FC<{
       >
         {desc}
       </div>
-      <a href={href} target="_blank" rel="noreferrer">
-        了解更多 {'>'}
-      </a>
+      <a href={href}>Buka Modul {'>'}</a>
     </div>
   );
 };
@@ -86,6 +90,9 @@ const InfoCard: React.FC<{
 const Welcome: React.FC = () => {
   const { token } = theme.useToken();
   const { initialState } = useModel('@@initialState');
+  const { currentUser } = initialState || {};
+  const access = useAccess(); // members of access instance: canReadFoo, canUpdateFoo, canDeleteFoo
+
   return (
     <PageContainer>
       <Card
@@ -111,23 +118,23 @@ const Welcome: React.FC = () => {
           <div
             style={{
               fontSize: '20px',
+              fontWeight: 'bold',
               color: token.colorTextHeading,
             }}
           >
-            欢迎使用 Ant Design Pro
+            Selamat datang {currentUser?.name}
           </div>
           <p
             style={{
-              fontSize: '14px',
+              fontSize: '16px',
               color: token.colorTextSecondary,
               lineHeight: '22px',
-              marginTop: 16,
+              marginTop: 8,
               marginBottom: 32,
               width: '65%',
             }}
           >
-            Ant Design Pro 是一个整合了 umi，Ant Design 和 ProComponents
-            的脚手架方案。致力于在设计规范和基础组件的基础上，继续向上构建，提炼出典型模板/业务组件/配套设计资源，进一步提升企业级中后台产品设计研发过程中的『用户』和『设计者』的体验。
+            Di Sistem Informasi Digital Koperasi Sejahtera Bersama (KOSAMAIP)
           </p>
           <div
             style={{
@@ -136,24 +143,35 @@ const Welcome: React.FC = () => {
               gap: 16,
             }}
           >
-            <InfoCard
-              index={1}
-              href="https://umijs.org/docs/introduce/introduce"
-              title="了解 umi"
-              desc="umi 是一个可扩展的企业级前端应用框架,umi 以路由为基础的，同时支持配置式路由和约定式路由，保证路由的功能完备，并以此进行功能扩展。"
-            />
-            <InfoCard
-              index={2}
-              title="了解 ant design"
-              href="https://ant.design"
-              desc="antd 是基于 Ant Design 设计体系的 React UI 组件库，主要用于研发企业级中后台产品。"
-            />
-            <InfoCard
-              index={3}
-              title="了解 Pro Components"
-              href="https://procomponents.ant.design"
-              desc="ProComponents 是一个基于 Ant Design 做了更高抽象的模板组件，以 一个组件就是一个页面为开发理念，为中后台开发带来更好的体验。"
-            />
+            <Access accessible={access.canHris ?? false}>
+              <InfoCard
+                index={1}
+                icon={<TeamOutlined />}
+                href="/hris"
+                title="Modul HRIS"
+                desc="Mengotomatiskan penggajian, merekam absensi, dan mempermudah pengajuan cuti, meningkatkan efisiensi administrasi sumber daya manusia."
+              />
+            </Access>
+
+            <Access accessible={access.canCoop ?? false}>
+              <InfoCard
+                index={2}
+                icon={<ApartmentOutlined />}
+                title="Modul Anggota & Sim-Pin"
+                href="/coop"
+                desc="Mengelola informasi anggota, transaksi simpan pinjam, dan histori keuangan, mempermudah pengelolaan keuangan koperasi dan pelayanan kepada anggota."
+              />
+            </Access>
+
+            <Access accessible={access.canStore ?? false}>
+              <InfoCard
+                index={3}
+                icon={<BarcodeOutlined />}
+                title="Modul Operasi Toko"
+                href="#"
+                desc="Mengelola operasi toko secara efisien, termasuk stok produk, penjualan, dan pelaporan, untuk mendukung pertumbuhan usaha dan kepuasan pelanggan."
+              />
+            </Access>
           </div>
         </div>
       </Card>

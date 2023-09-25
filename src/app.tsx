@@ -1,16 +1,14 @@
-import { Footer, Question, SelectLang, AvatarDropdown, AvatarName } from '@/common/components';
-import { LinkOutlined } from '@ant-design/icons';
+import { AvatarDropdown, AvatarName, Footer } from '@/common/components';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
-import { SettingDrawer } from '@ant-design/pro-components';
+import { PageLoading, SettingDrawer } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
-import { history, Link } from '@umijs/max';
+import { history } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
-import { errorConfig } from './requestErrorConfig';
-import React from 'react';
-import { currentUser as queryCurrentUser } from './common/services/general/auth';
-import kosamaConfig  from '../config/kosamaConfig';
-import { getImageUrl } from './common/utils/utils';
 import KosamaLogo from './../assets/logo.png';
+import { currentUser as queryCurrentUser } from './common/services/general/auth';
+import { getImageUrl } from './common/utils/utils';
+import './global.less';
+import { errorConfig } from './requestErrorConfig';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -51,10 +49,8 @@ export async function getInitialState(): Promise<{
   };
 }
 
-
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
-  
   return {
     logo: KosamaLogo,
     avatarProps: {
@@ -64,7 +60,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
       },
     },
-   
+
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
@@ -99,7 +95,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
     childrenRender: (children) => {
-      // if (initialState?.loading) return <PageLoading />;
+      if (initialState?.loading) return <PageLoading />;
       return (
         <>
           {children}

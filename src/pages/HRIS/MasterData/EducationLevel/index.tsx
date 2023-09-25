@@ -1,9 +1,21 @@
-import { ActionType, FooterToolbar, ModalForm, PageContainer, ProColumns, ProFormText, ProTable } from '@ant-design/pro-components';
-import React, { useRef, useState } from 'react';
-import { addEducationLevel, deleteEducationLevel, getEducationLevel } from './data/services/service';
+import { doBatchDelete } from '@/common/services/general/batchDelete';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleFilled,
+  PlusOutlined,
+} from '@ant-design/icons';
+import {
+  ActionType,
+  FooterToolbar,
+  PageContainer,
+  ProColumns,
+  ProTable,
+} from '@ant-design/pro-components';
 import { Button, Modal, message } from 'antd';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import React, { useRef, useState } from 'react';
 import EducationLevelForm from './components/EducationLevelForm';
+import { deleteEducationLevel, getEducationLevel } from './data/services/service';
 
 /**
  *  Delete node
@@ -11,7 +23,9 @@ import EducationLevelForm from './components/EducationLevelForm';
  *
  * @param selectedRows
  */
-const handleRemove = async (selectedRow: EducationLevelFeature.EducationLevelListItem | undefined) => {
+const handleRemove = async (
+  selectedRow: EducationLevelFeature.EducationLevelListItem | undefined,
+) => {
   const hide = message.loading('Mohon Tunggu');
   if (!selectedRow) return true;
   try {
@@ -21,7 +35,32 @@ const handleRemove = async (selectedRow: EducationLevelFeature.EducationLevelLis
     return true;
   } catch (error: any) {
     hide();
-    var errorMessage: string | undefined = error.response?.data?.message;
+    let errorMessage: string | undefined = error.response?.data?.message;
+    if (errorMessage) {
+      message.error(errorMessage);
+      return false;
+    }
+    message.error('Delete failed, please try again');
+    return false;
+  }
+};
+
+const handleBatchDelete = async (
+  selectedRows: EducationLevelFeature.EducationLevelListItem[] | undefined,
+) => {
+  const hide = message.loading('Mohon Tunggu');
+  if (!selectedRows || selectedRows.length == 0) return true;
+  try {
+    await doBatchDelete(
+      'hr/education-level',
+      selectedRows.map((e) => e.id!),
+    );
+    hide();
+    message.success('Deleted successfully and will refresh soon');
+    return true;
+  } catch (error: any) {
+    hide();
+    let errorMessage: string | undefined = error.response?.data?.message;
     if (errorMessage) {
       message.error(errorMessage);
       return false;
@@ -32,16 +71,21 @@ const handleRemove = async (selectedRow: EducationLevelFeature.EducationLevelLis
 };
 
 const EducationLevelPage: React.FC = () => {
-  const [currentRow, setCurrentRow] = useState<EducationLevelFeature.EducationLevelListItem | undefined>();
+  const [currentRow, setCurrentRow] = useState<
+    EducationLevelFeature.EducationLevelListItem | undefined
+  >();
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [deleteModalOpen, handleDeleteModalOpen] = useState<boolean>(false);
-  const [selectedRowsState, setSelectedRows] = useState<EducationLevelFeature.EducationLevelListItem[]>([]);
+  const [selectedRowsState, setSelectedRows] = useState<
+    EducationLevelFeature.EducationLevelListItem[]
+  >([]);
+  const [{ confirm }, contextHolder] = Modal.useModal();
 
   const actionRef = useRef<ActionType>();
 
   const columns: ProColumns<EducationLevelFeature.EducationLevelListItem>[] = [
     {
-      title: "Nama Tingkat Pendidikan",
+      title: 'Nama Tingkat Pendidikan',
       dataIndex: 'name',
       tip: 'The rule name is the unique key',
     },
@@ -60,11 +104,13 @@ const EducationLevelPage: React.FC = () => {
         >
           <EditOutlined /> Edit
         </a>,
-        <a key="delete"
+        <a
+          key="delete"
           onClick={() => {
             handleDeleteModalOpen(true);
             setCurrentRow(record);
-          }}>
+          }}
+        >
           <DeleteOutlined /> Hapus
         </a>,
       ],
@@ -72,6 +118,7 @@ const EducationLevelPage: React.FC = () => {
   ];
   return (
     <PageContainer>
+      {contextHolder}
       <ProTable<EducationLevelFeature.EducationLevelListItem, API.PageParams>
         headerTitle="Daftar Tingkat Pendidikan"
         rowKey="id"
@@ -103,27 +150,38 @@ const EducationLevelPage: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              Dipilih{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              Item
+              Dipilih <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> Item
               &nbsp;&nbsp;
             </div>
           }
         >
           <Button
             onClick={async () => {
-              // await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
+              confirm({
+                title: 'Anda yakin ingin menghapus data ini?',
+                icon: <ExclamationCircleFilled />,
+                content: 'Data yang dihapus tidak dapat dikembalikan',
+                okText: 'Hapus',
+                okType: 'danger',
+                cancelText: 'Batalkan',
+                closable: true,
+                onOk: async () => {
+                  await handleBatchDelete(selectedRowsState);
+                  setSelectedRows([]);
+                  actionRef.current?.reloadAndRest?.();
+                },
+                onCancel: () => {
+                  console.log('NO');
+                },
+              });
             }}
           >
             Batch Deletion
           </Button>
-
         </FooterToolbar>
       )}
       <EducationLevelForm
-        onCancel={() => { }}
+        onCancel={() => {}}
         onSubmit={async (value) => {
           if (actionRef.current) {
             actionRef.current.reload();
@@ -133,7 +191,6 @@ const EducationLevelPage: React.FC = () => {
         values={currentRow}
         open={createModalOpen}
         setOpen={handleModalOpen}
-
       />
 
       <Modal
@@ -141,7 +198,7 @@ const EducationLevelPage: React.FC = () => {
         open={deleteModalOpen}
         onCancel={() => handleDeleteModalOpen(false)}
         onOk={async () => {
-          await handleRemove(currentRow)
+          await handleRemove(currentRow);
           if (actionRef.current) {
             actionRef.current.reload();
           }
@@ -151,8 +208,7 @@ const EducationLevelPage: React.FC = () => {
         Anda yakin ingin menghapus jabatan ini?
       </Modal>
     </PageContainer>
-
   );
-}
+};
 
 export default EducationLevelPage;

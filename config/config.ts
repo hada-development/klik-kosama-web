@@ -7,10 +7,7 @@ import routes from './routes';
 
 const { REACT_APP_ENV = 'dev' } = process.env;
 
-
-
 export default defineConfig({
-
   /**
    * @name 开启 hash 模式
    * @description 让 build 之后的产物包含 hash 后缀。通常用于增量发布和避免浏览器加载缓存。
@@ -43,6 +40,7 @@ export default defineConfig({
     // 如果不想要 configProvide 动态设置主题需要把这个设置为 default
     // 只有设置为 variable， 才能使用 configProvide 动态设置主色调
     'root-entry-name': 'variable',
+    '@primary-color': '#1DA57A',
   },
   /**
    * @name moment 的国际化配置

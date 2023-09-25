@@ -1,38 +1,19 @@
-import { ActionType, FooterToolbar, ModalForm, PageContainer, ProColumns, ProFormText, ProTable } from '@ant-design/pro-components';
-import React, { useEffect, useRef, useState } from 'react';
-import { addEmployee, deleteEmployee, getEmployee } from '../data/services/service';
-import { Button, Modal, message } from 'antd';
-import { DeleteOutlined, EditOutlined, EyeFilled, EyeOutlined, PlusOutlined } from '@ant-design/icons';
-import { getPosition } from '@/pages/HRIS/MasterData/Position/data/services/service';
 import { getEmployeeType } from '@/pages/HRIS/MasterData/EmployeeType/data/services/service';
+import { getPosition } from '@/pages/HRIS/MasterData/Position/data/services/service';
+import { EyeOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  ActionType,
+  FooterToolbar,
+  PageContainer,
+  ProColumns,
+  ProTable,
+} from '@ant-design/pro-components';
 import { history } from '@umijs/max';
-// import EmployeeForm from './components/EmployeeForm';
-
-/**
- *  Delete node
- * @zh-CN 删除节点
- *
- * @param selectedRows
- */
-const handleRemove = async (selectedRow: EmployeeFeature.EmployeeListItem | undefined) => {
-  const hide = message.loading('Mohon Tunggu');
-  if (!selectedRow) return true;
-  try {
-    await deleteEmployee(selectedRow.id);
-    hide();
-    message.success('Deleted successfully and will refresh soon');
-    return true;
-  } catch (error: any) {
-    hide();
-    var errorMessage: string | undefined = error.response?.data?.message;
-    if (errorMessage) {
-      message.error(errorMessage);
-      return false;
-    }
-    message.error('Delete failed, please try again');
-    return false;
-  }
-};
+import { Button } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
+import { getCompany } from '../../MasterData/Company/data/services/service';
+import { getEmployee } from '../data/services/service';
+import EmployeeForm from './components/EmployeeForm';
 
 const EmployeePage: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<EmployeeFeature.EmployeeListItem | undefined>();
@@ -41,15 +22,20 @@ const EmployeePage: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<EmployeeFeature.EmployeeListItem[]>([]);
 
   // FILTER
+  const [companyFilter, setCompanyFilter] = useState<CompanyFeature.CompanyListItem[]>();
   const [positionFilter, setPositionFilter] = useState<PositionFeature.PositionListItem[]>();
-  const [employeeTypeFilter, setEmployeeTypeFilter] = useState<EmployeeTypeFeature.EmployeeTypeListItem[]>();
+  const [employeeTypeFilter, setEmployeeTypeFilter] =
+    useState<EmployeeTypeFeature.EmployeeTypeListItem[]>();
 
-  useEffect(() =>{
+  useEffect(() => {
     getPosition({}).then((e) => {
       setPositionFilter(e.data);
     });
     getEmployeeType({}).then((e) => {
       setEmployeeTypeFilter(e.data);
+    });
+    getCompany({}).then((e) => {
+      setCompanyFilter(e.data);
     });
   }, []);
 
@@ -57,32 +43,54 @@ const EmployeePage: React.FC = () => {
 
   const columns: ProColumns<EmployeeFeature.EmployeeListItem>[] = [
     {
-      title: "Nama Pegawai",
-      dataIndex: ["user", "name"],
+      title: 'Nama Pegawai',
+      dataIndex: 'users.name',
+      render: (_, record) => record.user?.name,
     },
     {
-      title: "NIP",
-      dataIndex: "nip",
+      title: 'NIP',
+      dataIndex: 'nip',
     },
     {
-      title: "Posisi",
+      title: 'Instansi',
+      dataIndex: 'hr_company_id',
+      render: (_, record) => record.company?.alias,
+      valueEnum:
+        companyFilter?.reduce((previousObject, currentObject) => {
+          return Object.assign(previousObject, {
+            [currentObject.id!]: currentObject.alias,
+          });
+        }, {}) || {},
+    },
+    {
+      title: 'Posisi',
       dataIndex: 'hr_position_id',
-      render: (_, record) => record.position.name,
-      valueEnum: positionFilter?.reduce((previousObject, currentObject) => {
-        return Object.assign(previousObject, {
-          [currentObject.id!]: currentObject.name
-        })
-      }, {}) || {}
+      render: (_, record) => record.position?.name,
+      search: {
+        transform: (value) => ({
+          hr_position_id: {
+            value: value,
+            operator: '=',
+          },
+        }),
+      },
+      valueEnum:
+        positionFilter?.reduce((previousObject, currentObject) => {
+          return Object.assign(previousObject, {
+            [currentObject.id!]: currentObject.name,
+          });
+        }, {}) || {},
     },
     {
-      title: "Jenis Pegawai",
+      title: 'Jenis Pegawai',
       dataIndex: 'hr_employee_type_id',
-      render: (_, record) => record.employee_type.name,
-      valueEnum: employeeTypeFilter?.reduce((previousObject, currentObject) => {
-        return Object.assign(previousObject, {
-          [currentObject.id!]: currentObject.name
-        })
-      }, {}) || {}
+      render: (_, record) => record.employee_type?.name,
+      valueEnum:
+        employeeTypeFilter?.reduce((previousObject, currentObject) => {
+          return Object.assign(previousObject, {
+            [currentObject.id!]: currentObject.name,
+          });
+        }, {}) || {},
     },
     {
       title: 'Aksi',
@@ -97,11 +105,10 @@ const EmployeePage: React.FC = () => {
           }}
         >
           <EyeOutlined /> Detail
-        </a>
+        </a>,
       ],
     },
   ];
-
 
   return (
     <PageContainer>
@@ -136,9 +143,7 @@ const EmployeePage: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              Dipilih{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              Item
+              Dipilih <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> Item
               &nbsp;&nbsp;
             </div>
           }
@@ -152,39 +157,20 @@ const EmployeePage: React.FC = () => {
           >
             Batch Deletion
           </Button>
-
         </FooterToolbar>
       )}
-      {/* <EmployeeForm
-        onCancel={() => { }}
-        onSubmit={async (value) => {
+      <EmployeeForm
+        onSubmit={async () => {
           if (actionRef.current) {
             actionRef.current.reload();
           }
           return true;
         }}
-        values={currentRow}
         open={createModalOpen}
         setOpen={handleModalOpen}
-      /> */}
-
-      <Modal
-        title="Confirm Delete"
-        open={deleteModalOpen}
-        onCancel={() => handleDeleteModalOpen(false)}
-        onOk={async () => {
-          await handleRemove(currentRow)
-          if (actionRef.current) {
-            actionRef.current.reload();
-          }
-          handleDeleteModalOpen(false);
-        }}
-      >
-        Anda yakin ingin menghapus jabatan ini?
-      </Modal>
+      />
     </PageContainer>
-
   );
-}
+};
 
 export default EmployeePage;

@@ -1,9 +1,15 @@
-import { ActionType, FooterToolbar, ModalForm, PageContainer, ProColumns, ProFormText, ProTable } from '@ant-design/pro-components';
-import React, { useRef, useState } from 'react';
-import { addEmployeeType, deleteEmployeeType, getEmployeeType } from './data/services/service';
-import { Button, Modal, message } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  ActionType,
+  FooterToolbar,
+  PageContainer,
+  ProColumns,
+  ProTable,
+} from '@ant-design/pro-components';
+import { Button, Modal, message } from 'antd';
+import React, { useRef, useState } from 'react';
 import EmployeeTypeForm from './components/EmployeeTypeForm';
+import { deleteEmployeeType, getEmployeeType } from './data/services/service';
 
 /**
  *  Delete node
@@ -21,7 +27,7 @@ const handleRemove = async (selectedRow: EmployeeTypeFeature.EmployeeTypeListIte
     return true;
   } catch (error: any) {
     hide();
-    var errorMessage: string | undefined = error.response?.data?.message;
+    let errorMessage: string | undefined = error.response?.data?.message;
     if (errorMessage) {
       message.error(errorMessage);
       return false;
@@ -32,16 +38,20 @@ const handleRemove = async (selectedRow: EmployeeTypeFeature.EmployeeTypeListIte
 };
 
 const EmployeeTypePage: React.FC = () => {
-  const [currentRow, setCurrentRow] = useState<EmployeeTypeFeature.EmployeeTypeListItem | undefined>();
+  const [currentRow, setCurrentRow] = useState<
+    EmployeeTypeFeature.EmployeeTypeListItem | undefined
+  >();
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [deleteModalOpen, handleDeleteModalOpen] = useState<boolean>(false);
-  const [selectedRowsState, setSelectedRows] = useState<EmployeeTypeFeature.EmployeeTypeListItem[]>([]);
+  const [selectedRowsState, setSelectedRows] = useState<EmployeeTypeFeature.EmployeeTypeListItem[]>(
+    [],
+  );
 
   const actionRef = useRef<ActionType>();
 
   const columns: ProColumns<EmployeeTypeFeature.EmployeeTypeListItem>[] = [
     {
-      title: "Nama Jenis Pegawai",
+      title: 'Nama Jenis Pegawai',
       dataIndex: 'name',
       tip: 'The rule name is the unique key',
     },
@@ -60,11 +70,13 @@ const EmployeeTypePage: React.FC = () => {
         >
           <EditOutlined /> Edit
         </a>,
-        <a key="delete"
+        <a
+          key="delete"
           onClick={() => {
             handleDeleteModalOpen(true);
             setCurrentRow(record);
-          }}>
+          }}
+        >
           <DeleteOutlined /> Hapus
         </a>,
       ],
@@ -103,9 +115,7 @@ const EmployeeTypePage: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              Dipilih{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              Item
+              Dipilih <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> Item
               &nbsp;&nbsp;
             </div>
           }
@@ -119,11 +129,10 @@ const EmployeeTypePage: React.FC = () => {
           >
             Batch Deletion
           </Button>
-
         </FooterToolbar>
       )}
       <EmployeeTypeForm
-        onCancel={() => { }}
+        onCancel={() => {}}
         onSubmit={async (value) => {
           if (actionRef.current) {
             actionRef.current.reload();
@@ -133,7 +142,6 @@ const EmployeeTypePage: React.FC = () => {
         values={currentRow}
         open={createModalOpen}
         setOpen={handleModalOpen}
-
       />
 
       <Modal
@@ -141,7 +149,7 @@ const EmployeeTypePage: React.FC = () => {
         open={deleteModalOpen}
         onCancel={() => handleDeleteModalOpen(false)}
         onOk={async () => {
-          await handleRemove(currentRow)
+          await handleRemove(currentRow);
           if (actionRef.current) {
             actionRef.current.reload();
           }
@@ -151,8 +159,7 @@ const EmployeeTypePage: React.FC = () => {
         Anda yakin ingin menghapus jabatan ini?
       </Modal>
     </PageContainer>
-
   );
-}
+};
 
 export default EmployeeTypePage;

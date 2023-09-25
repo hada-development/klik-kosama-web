@@ -1,6 +1,4 @@
-﻿
-
-/**
+﻿/**
  * @name umi 的路由配置
  * @description 只支持 path,component,routes,redirect,wrappers,name,icon 的配置
  * @param path  path 只支持两种占位符配置，第一种是动态参数 :id 的形式，第二种是 * 通配符，通配符只能出现路由字符串的最后。
@@ -13,7 +11,6 @@
  * @doc https://umijs.org/docs/guides/routes
  */
 export default [
-
   {
     path: '/user',
     layout: false,
@@ -27,18 +24,22 @@ export default [
   },
   {
     path: '/welcome',
-    name: 'Dashboard',
-    icon: 'pieChart',
+    name: 'Home',
+    icon: 'home',
     component: './Welcome',
   },
   {
-    name: "HRIS",
+    name: 'HRIS',
     icon: 'team',
     path: '/hris',
-
+    access: 'canHris',
     routes: [
       {
         path: '/hris',
+        redirect: 'dashboard',
+      },
+      {
+        path: 'dashboard',
         name: 'Dashboard',
         icon: 'pieChart',
         component: './Welcome',
@@ -64,19 +65,124 @@ export default [
               },
               {
                 path: 'account',
-                name: 'Detail Pegawai',
+                name: 'Detail Pegawai - Akun',
                 component: './HRIS/Employee/EmployeeDetail/SubPages/Account',
                 wrappers: ['./HRIS/Employee/EmployeeDetail/index'],
               },
               {
                 path: 'employee-data',
-                name: 'Detail Pegawai',
-                component: './HRIS/Employee/EmployeeDetail/SubPages/Account',
+                name: 'Detail Pegawai - Kepegawaian',
+                component: './HRIS/Employee/EmployeeDetail/SubPages/EmployeeData',
                 wrappers: ['./HRIS/Employee/EmployeeDetail/index'],
-              }
-            ]
+              },
+              {
+                path: 'personal-data',
+                name: 'Detail Pegawai - Data Personal',
+                component: './HRIS/Employee/EmployeeDetail/SubPages/PersonalData',
+                wrappers: ['./HRIS/Employee/EmployeeDetail/index'],
+              },
+              {
+                path: 'bank-account',
+                name: 'Detail Pegawai - Akun Bank',
+                component: './HRIS/Employee/EmployeeDetail/SubPages/BankAccount',
+                wrappers: ['./HRIS/Employee/EmployeeDetail/index'],
+              },
+            ],
           },
-        ]
+        ],
+      },
+      {
+        path: 'attendance',
+        name: 'Kehadiran',
+        icon: 'login',
+        routes: [
+          {
+            name: 'Rekap Kehadiran',
+            icon: 'sound',
+            path: 'report',
+            component: './HRIS/Attendance/Report',
+          },
+          {
+            name: 'Laporan Bulanan Karyawan',
+            icon: 'sound',
+            path: 'monthly-report',
+            component: './HRIS/Attendance/MonthlyReport',
+          },
+        ],
+      },
+      {
+        path: 'leave',
+        name: 'Cuti',
+        icon: 'logout',
+        routes: [
+          {
+            name: 'Kuota Cuti',
+            icon: 'sound',
+            path: 'quota',
+            component: './HRIS/Leave/LeaveQuota',
+          },
+          {
+            name: 'Pengajuan Cuti',
+            icon: 'sound',
+            path: 'submission',
+            component: './HRIS/Leave/LeaveSubmission',
+          },
+        ],
+      },
+      {
+        path: 'payroll',
+        name: 'Payroll',
+        icon: 'container',
+        routes: [
+          {
+            name: 'Payroll Component',
+            icon: 'sound',
+            path: 'payroll-component',
+            component: './HRIS/Payroll/Settings/PayrollComponent',
+          },
+          {
+            name: 'Payroll Component Detail',
+            icon: 'sound',
+            path: 'payroll-component/:adjustmentId',
+            component: './HRIS/Payroll/Settings/Adjustment',
+            hideInMenu: true,
+          },
+          {
+            name: 'Payroll Component Detail',
+            icon: 'sound',
+            path: 'adjustment/:adjustmentId',
+            component: './HRIS/Payroll/Settings/AdjustmentForm/detail',
+            hideInMenu: true,
+          },
+          {
+            name: 'CreateBasicSalary',
+            icon: 'sound',
+            path: 'adjustment/create/basic-salary',
+            component: './HRIS/Payroll/Settings/AdjustmentForm/BasicSalaryTable',
+            hideInMenu: true,
+          },
+          {
+            name: 'Create Allowance',
+            icon: 'sound',
+            path: 'adjustment/create/allowance',
+            component: './HRIS/Payroll/Settings/AdjustmentForm/AllowanceTable',
+            hideInMenu: true,
+          },
+
+          {
+            name: 'Payroll Template',
+            icon: 'sound',
+            path: 'payroll-template',
+            component: './HRIS/Payroll/Settings/Template',
+          },
+
+          {
+            name: 'Komponen Gaji Pegawai',
+            icon: 'sound',
+            path: 'employee-payroll-component',
+            component: './HRIS/Payroll/EmployeeComponent',
+          },
+        ],
       },
       {
         path: 'company-engagement',
@@ -84,12 +190,12 @@ export default [
         icon: 'sound',
         routes: [
           {
-            name: 'Pemberitahuan',
+            name: 'Pengumuman',
             icon: 'sound',
             path: 'announcement',
             component: './HRIS/CompanyEngagement/Announcement',
           },
-        ]
+        ],
       },
       {
         path: 'master-data',
@@ -101,6 +207,20 @@ export default [
             icon: 'table',
             path: 'employee-type',
             component: './HRIS/MasterData/EmployeeType',
+          },
+
+          {
+            name: 'Instansi',
+            icon: 'table',
+            path: 'company',
+            component: './HRIS/MasterData/Company',
+          },
+
+          {
+            name: 'Level Posisi',
+            icon: 'table',
+            path: 'position-level',
+            component: './HRIS/MasterData/PositionLevel',
           },
 
           {
@@ -123,14 +243,126 @@ export default [
             path: 'office',
             component: './HRIS/MasterData/Office',
           },
-        ]
+          {
+            name: 'Shift',
+            icon: 'table',
+            path: 'shift',
+            component: './HRIS/MasterData/Shift',
+          },
+        ],
       },
-
-    ]
+    ],
   },
 
+  {
+    name: 'Admin',
+    icon: 'tool',
+    path: '/admin',
+    access: 'canAdmin',
+    routes: [
+      {
+        path: '/admin',
+        redirect: 'dashboard',
+      },
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        icon: 'pieChart',
+        component: './Welcome',
+      },
+      {
+        path: 'user',
+        name: 'User',
+        icon: 'team',
+        component: './Admin/User',
+      },
+    ],
+  },
 
-
+  {
+    name: 'Anggota & Sim-Pin',
+    icon: 'apartment',
+    path: '/coop',
+    access: 'canCoop',
+    routes: [
+      {
+        path: '/coop',
+        redirect: 'dashboard',
+      },
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        icon: 'pieChart',
+        component: './Welcome',
+      },
+      {
+        path: 'member',
+        name: 'Anggota',
+        icon: 'team',
+        hideChildrenInMenu: true,
+        routes: [
+          {
+            path: '/coop/member',
+            name: 'Anggota',
+            icon: 'pieChart',
+            component: './Coop/Member/MemberList',
+          },
+          {
+            path: '/coop/member/:memberId/',
+            routes: [
+              {
+                path: '/coop/member/:memberId/',
+                redirect: 'account',
+              },
+              {
+                path: 'account',
+                name: 'Detail Anggota - Akun',
+                component: './Coop/Member/MemberDetail/SubPages/Account',
+                wrappers: ['./Coop/Member/MemberDetail/index'],
+              },
+              {
+                path: 'member-data',
+                name: 'Detail Pegawai - Kepegawaian',
+                component: './Coop/Member/MemberDetail/SubPages/MemberData',
+                wrappers: ['./Coop/Member/MemberDetail/index'],
+              },
+              {
+                path: 'personal-data',
+                name: 'Detail Anggota - Data Personal',
+                component: './Coop/Member/MemberDetail/SubPages/PersonalData',
+                wrappers: ['./Coop/Member/MemberDetail/index'],
+              },
+              {
+                path: 'bank-account',
+                name: 'Detail Anggota - Akun Bank',
+                component: './Coop/Member/MemberDetail/SubPages/BankAccount',
+                wrappers: ['./Coop/Member/MemberDetail/index'],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        path: 'saving',
+        name: 'Simpanan',
+        icon: 'dollar',
+        routes: [
+          {
+            name: 'Rekap Simpanan',
+            icon: 'dollar',
+            path: 'summary',
+            component: './Coop/Saving/SavingSummary',
+          },
+          {
+            name: 'Transaksi Simpanan',
+            icon: 'dollar',
+            path: 'transaction',
+            component: './Coop/Saving/SavingTransaction',
+          },
+        ],
+      },
+    ],
+  },
 
   {
     path: '/',
@@ -142,5 +374,3 @@ export default [
     component: '404',
   },
 ];
-
-

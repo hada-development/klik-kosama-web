@@ -8,11 +8,11 @@ import {
   ProFormTextArea,
 } from '@ant-design/pro-components';
 
-import React, { Dispatch, SetStateAction, useRef, useEffect, useState } from 'react';
-import { addAnnouncement, editAnnouncement } from '../data/services/service';
+import { ImageUploadPreview } from '@/common/components';
 import { getImageUrl } from '@/common/utils/utils';
 import { message } from 'antd';
-import { ImageUploadPreview } from '@/common/components';
+import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react';
+import { addAnnouncement, editAnnouncement } from '../data/services/service';
 
 export type AnnouncementFormProps = {
   onCancel: (flag?: boolean, formVals?: AnnouncementFeature.AnnouncementListItem) => void;
@@ -32,12 +32,11 @@ const AnnouncementForm: React.FC<AnnouncementFormProps> = (props) => {
     } else {
       formRef.current?.resetFields();
     }
-
   }, [props.open, props.values, formRef]);
 
   const handleSubmit = async (values: AnnouncementFeature.AnnouncementListItem) => {
     try {
-      var response: any;
+      let response: any;
       if (props.values) {
         response = await editAnnouncement(props.values.id, values);
       } else {
@@ -59,13 +58,11 @@ const AnnouncementForm: React.FC<AnnouncementFormProps> = (props) => {
 
   return (
     <ModalForm
-      title={props.values != undefined ? "Edit Pengumuman" : "Tambah Pengumuman"}
+      title={props.values != undefined ? 'Edit Pengumuman' : 'Tambah Pengumuman'}
       width="600px"
       formRef={formRef}
       open={props.open}
       onOpenChange={props.setOpen}
-      initialValues={{ title: props.values?.title }}
-
       onFinish={async (value) => {
         await handleSubmit(value);
         props.setOpen!(false);
@@ -75,11 +72,11 @@ const AnnouncementForm: React.FC<AnnouncementFormProps> = (props) => {
         rules={[
           {
             required: true,
-            message: "Announcement Date Is Required",
+            message: 'Announcement Date Is Required',
           },
         ]}
         width={'xl'}
-        dataFormat='DD/MM/YYYY'
+        dataFormat="DD/MM/YYYY"
         placeholder="Masukkan Tanggal Pengumuman"
         name="created_at"
         label="Tanggal"
@@ -89,7 +86,7 @@ const AnnouncementForm: React.FC<AnnouncementFormProps> = (props) => {
         rules={[
           {
             required: true,
-            message: "Announcement Title Is Required",
+            message: 'Announcement Title Is Required',
           },
         ]}
         placeholder="Masukkan Judul Pengumuman"
@@ -101,7 +98,7 @@ const AnnouncementForm: React.FC<AnnouncementFormProps> = (props) => {
         rules={[
           {
             required: true,
-            message: "Announcement Description Is Required",
+            message: 'Announcement Description Is Required',
           },
         ]}
         placeholder="Masukkan Isi Pengumuman"
@@ -121,14 +118,8 @@ const AnnouncementForm: React.FC<AnnouncementFormProps> = (props) => {
         rules={[{ required: true, message: 'Please select status!' }]}
       />
 
-      <ProForm.Item
-        name="image"
-        label="Image"
-      >
-        <ImageUploadPreview
-          valueUrl={getImageUrl(props.values?.image?.address) || undefined}
-        />
-
+      <ProForm.Item name="image" label="Image">
+        <ImageUploadPreview valueUrl={getImageUrl(props.values?.image?.address) || undefined} />
       </ProForm.Item>
     </ModalForm>
   );

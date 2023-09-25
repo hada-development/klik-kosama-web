@@ -12,6 +12,6 @@ export default {
   'component.globalHeader.event.empty': 'Anda telah melihat semua acara.',
   'component.noticeIcon.clear': 'Kosongkan',
   'component.noticeIcon.cleared': 'Berhasil dikosongkan',
-  'component.noticeIcon.empty': 'Tidak ada pemberitahuan',
+  'component.noticeIcon.empty': 'Tidak ada Pengumuman',
   'component.noticeIcon.view-more': 'Melihat lebih',
 };

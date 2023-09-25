@@ -1,12 +1,7 @@
-import {
-  ModalForm,
-  ProFormInstance,
-  ProFormText,
-} from '@ant-design/pro-components';
+import { ModalForm, ProFormInstance, ProFormText } from '@ant-design/pro-components';
 
-import React, { Dispatch, SetStateAction, useRef, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 import { addEducationLevel, editEducationLevel } from '../data/services/service';
-
 
 export type EducationLevelFormProps = {
   onCancel: (flag?: boolean, formVals?: EducationLevelFeature.EducationLevelListItem) => void;
@@ -23,10 +18,9 @@ const EducationLevelForm: React.FC<EducationLevelFormProps> = (props) => {
     // Set initial values when the modal is opened
     if (props.open && props.values) {
       formRef.current?.setFieldsValue(props.values);
-    }else{
+    } else {
       formRef.current?.resetFields();
     }
-
   }, [props.open, props.values, formRef]);
 
   const handleSubmit = async (values: EducationLevelFeature.EducationLevelListItem) => {
@@ -46,13 +40,11 @@ const EducationLevelForm: React.FC<EducationLevelFormProps> = (props) => {
 
   return (
     <ModalForm
-      title={props.values != undefined ? "Edit Tingkat Pendidikan" : "Tambah Tingkat Pendidikan"}
+      title={props.values != undefined ? 'Edit Tingkat Pendidikan' : 'Tambah Tingkat Pendidikan'}
       width="400px"
       formRef={formRef}
       open={props.open}
       onOpenChange={props.setOpen}
-      initialValues={{ name: props.values?.name }}
-
       onFinish={async (value) => {
         await handleSubmit(value);
         props.setOpen!(false);
@@ -62,7 +54,7 @@ const EducationLevelForm: React.FC<EducationLevelFormProps> = (props) => {
         rules={[
           {
             required: true,
-            message: "EducationLevel Name Is Required",
+            message: 'EducationLevel Name Is Required',
           },
         ]}
         placeholder="Masukkan Nama Tingkat Pendidikan"
@@ -70,7 +62,6 @@ const EducationLevelForm: React.FC<EducationLevelFormProps> = (props) => {
         name="name"
         label="Nama Tingkat Pendidikan"
       />
-
     </ModalForm>
   );
 };

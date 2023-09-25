@@ -1,12 +1,12 @@
 declare namespace EmployeeTypeFeature {
-    type EmployeeTypeListItem = {
-        id?: number;
-        name?: boolean;
-    };
+  type EmployeeTypeListItem = {
+    id?: number;
+    name?: string;
+  };
 
-    type EmployeeTypeList = {
-        current_page?: number;
-        total?:number;
-        data?: EmployeeTypeListItem[];
-    };
+  type EmployeeTypeList = {
+    current_page?: number;
+    total?: number;
+    data?: EmployeeTypeListItem[];
+  };
 }

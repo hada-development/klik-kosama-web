@@ -1,27 +1,14 @@
 import { Footer } from '@/common/components';
 import { login, setAuthToken } from '@/common/services/general/auth';
-import { getFakeCaptcha } from '@/common/services/ant-design-pro/login';
-import {
-  AlipayCircleOutlined,
-  LockOutlined,
-  MobileOutlined,
-  TaobaoCircleOutlined,
-  UserOutlined,
-  WeiboCircleOutlined,
-} from '@ant-design/icons';
-import {
-  LoginForm,
-  ProFormCaptcha,
-  ProFormCheckbox,
-  ProFormText,
-} from '@ant-design/pro-components';
+
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { FormattedMessage, history, SelectLang, useIntl, useModel, Helmet } from '@umijs/max';
-import { Alert, message, Tabs } from 'antd';
-import Settings from '../../../../config/defaultSettings';
+import { Helmet, history, useIntl, useModel } from '@umijs/max';
+import { Alert, message } from 'antd';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
-
+import Settings from '../../../../config/defaultSettings';
 
 const LoginMessage: React.FC<{
   content: string;
@@ -40,7 +27,7 @@ const LoginMessage: React.FC<{
 
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<Auth.LoginResult>({});
-  const [type, setType] = useState<string>('account');
+
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const containerClassName = useEmotionCss(() => {
@@ -100,10 +87,7 @@ const Login: React.FC = () => {
   return (
     <div className={containerClassName}>
       <Helmet>
-        <title>
-          Login
-          - {Settings.title}
-        </title>
+        <title>Login - {Settings.title}</title>
       </Helmet>
       <div
         style={{
@@ -116,7 +100,7 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src="/logo.svg" />}
+          logo={<img alt="logo" src="/logo.png" />}
           title="KOSAMA APP"
           subTitle="Masuk Ke Aplikasi Admin"
           initialValues={{
@@ -126,21 +110,11 @@ const Login: React.FC = () => {
             await handleSubmit(values as API.LoginParams);
           }}
         >
-
-
-          {status === 'error' && (
-            <LoginMessage
-              content="Salah memasukkan Email atau Kata Sandi!"
-            />
-          )}
-           {status === 'not-admin' && (
-            <LoginMessage
-              content="Anda Bukan Admin"
-            />
-          )}
+          {status === 'error' && <LoginMessage content="Salah memasukkan Email atau Kata Sandi!" />}
+          {status === 'not-admin' && <LoginMessage content="Anda Bukan Admin" />}
           <ProFormText
             name="email"
-            dataFormat='email'
+            dataFormat="email"
             fieldProps={{
               size: 'large',
               prefix: <UserOutlined />,
@@ -149,7 +123,7 @@ const Login: React.FC = () => {
             rules={[
               {
                 required: true,
-                message: "Pastikan Anda mengisi alamat email."
+                message: 'Pastikan Anda mengisi alamat email.',
               },
             ]}
           />
@@ -159,15 +133,14 @@ const Login: React.FC = () => {
               size: 'large',
               prefix: <LockOutlined />,
             }}
-            placeholder='Masukkan Password'
+            placeholder="Masukkan Password"
             rules={[
               {
                 required: true,
-                message: "Pastikan Anda mengisi alamat email."
+                message: 'Pastikan Anda mengisi alamat email.',
               },
             ]}
           />
-
 
           <div
             style={{

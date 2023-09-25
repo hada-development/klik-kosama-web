@@ -1,9 +1,15 @@
-import { ActionType, FooterToolbar, ModalForm, PageContainer, ProColumns, ProFormText, ProTable } from '@ant-design/pro-components';
-import React, { useRef, useState } from 'react';
-import { addOffice, deleteOffice, getOffice } from './data/services/service';
-import { Button, Modal, message } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  ActionType,
+  FooterToolbar,
+  PageContainer,
+  ProColumns,
+  ProTable,
+} from '@ant-design/pro-components';
+import { Button, Modal, message } from 'antd';
+import React, { useRef, useState } from 'react';
 import OfficeForm from './components/OfficeForm';
+import { deleteOffice, getOffice } from './data/services/service';
 
 /**
  *  Delete node
@@ -21,7 +27,7 @@ const handleRemove = async (selectedRow: OfficeFeature.OfficeListItem | undefine
     return true;
   } catch (error: any) {
     hide();
-    var errorMessage: string | undefined = error.response?.data?.message;
+    let errorMessage: string | undefined = error.response?.data?.message;
     if (errorMessage) {
       message.error(errorMessage);
       return false;
@@ -41,35 +47,35 @@ const OfficePage: React.FC = () => {
 
   const columns: ProColumns<OfficeFeature.OfficeListItem>[] = [
     {
-      title: "Nama Lokasi kantor",
+      title: 'Nama Lokasi kantor',
       dataIndex: 'name',
       tip: 'The rule name is the unique key',
     },
     {
-      title: "Alamat",
+      title: 'Alamat',
       dataIndex: 'address',
       render: (_, record) => {
         if (record.address && record.address?.length > 30) {
-          return record.address.substring(0, 30) + "...";
+          return record.address.substring(0, 30) + '...';
         }
         return record.address;
-      }
+      },
     },
     {
-      title: "Koordinat",
+      title: 'Koordinat',
       dataIndex: 'location',
       valueType: 'option',
       render: (_, record) => {
         return `${record.latitude}, ${record.longitude}`;
-      }
+      },
     },
     {
-      title: "Radius Max.",
+      title: 'Radius Max.',
       dataIndex: 'radius',
       valueType: 'option',
       render: (_, record) => {
-        return record.radius && parseFloat(record.radius).toFixed(0) + "M";
-      }
+        return record.radius && parseFloat(record.radius).toFixed(0) + 'M';
+      },
     },
     {
       title: 'Aksi',
@@ -86,11 +92,13 @@ const OfficePage: React.FC = () => {
         >
           <EditOutlined /> Edit
         </a>,
-        <a key="delete"
+        <a
+          key="delete"
           onClick={() => {
             handleDeleteModalOpen(true);
             setCurrentRow(record);
-          }}>
+          }}
+        >
           <DeleteOutlined /> Hapus
         </a>,
       ],
@@ -129,9 +137,7 @@ const OfficePage: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              Dipilih{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              Item
+              Dipilih <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> Item
               &nbsp;&nbsp;
             </div>
           }
@@ -145,11 +151,10 @@ const OfficePage: React.FC = () => {
           >
             Batch Deletion
           </Button>
-
         </FooterToolbar>
       )}
       <OfficeForm
-        onCancel={() => { }}
+        onCancel={() => {}}
         onSubmit={async (value) => {
           if (actionRef.current) {
             actionRef.current.reload();
@@ -159,7 +164,6 @@ const OfficePage: React.FC = () => {
         values={currentRow}
         open={createModalOpen}
         setOpen={handleModalOpen}
-
       />
 
       <Modal
@@ -167,7 +171,7 @@ const OfficePage: React.FC = () => {
         open={deleteModalOpen}
         onCancel={() => handleDeleteModalOpen(false)}
         onOk={async () => {
-          await handleRemove(currentRow)
+          await handleRemove(currentRow);
           if (actionRef.current) {
             actionRef.current.reload();
           }
@@ -177,8 +181,7 @@ const OfficePage: React.FC = () => {
         Anda yakin ingin menghapus jabatan ini?
       </Modal>
     </PageContainer>
-
   );
-}
+};
 
 export default OfficePage;

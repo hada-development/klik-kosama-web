@@ -1,12 +1,8 @@
-import {
-  ModalForm,
-  ProFormInstance,
-  ProFormText,
-} from '@ant-design/pro-components';
+import { ModalForm, ProFormInstance, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 
-import React, { Dispatch, SetStateAction, useRef, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react';
+import { getPositionLevel } from '../../PositionLevel/data/services/service';
 import { addPosition, editPosition } from '../data/services/service';
-
 
 export type PositionFormProps = {
   onCancel: (flag?: boolean, formVals?: PositionFeature.PositionListItem) => void;
@@ -23,10 +19,9 @@ const PositionForm: React.FC<PositionFormProps> = (props) => {
     // Set initial values when the modal is opened
     if (props.open && props.values) {
       formRef.current?.setFieldsValue(props.values);
-    }else{
+    } else {
       formRef.current?.resetFields();
     }
-    
   }, [props.open, props.values, formRef]);
 
   const handleSubmit = async (values: PositionFeature.PositionListItem) => {
@@ -46,23 +41,34 @@ const PositionForm: React.FC<PositionFormProps> = (props) => {
 
   return (
     <ModalForm
-      title={props.values != undefined ? "Edit Posisi" : "Tambah Posisi"}
+      title={props.values != undefined ? 'Edit Posisi' : 'Tambah Posisi'}
       width="400px"
       formRef={formRef}
       open={props.open}
       onOpenChange={props.setOpen}
-      initialValues={{ name: props.values?.name }}
-
       onFinish={async (value) => {
         await handleSubmit(value);
         props.setOpen!(false);
       }}
     >
+      <ProFormSelect
+        width="md"
+        name="hr_position_level_id"
+        label="Jenis Pegawai"
+        placeholder="Pilih Jenis Pegawai"
+        request={async () =>
+          (await getPositionLevel({})).data.map((e: any) => {
+            return { value: e.id, label: e.name };
+          })
+        }
+        rules={[{ required: true, message: 'Level Jabatan' }]}
+      />
+
       <ProFormText
         rules={[
           {
             required: true,
-            message: "Position Name Is Required",
+            message: 'Position Name Is Required',
           },
         ]}
         placeholder="Masukkan Nama Posisi"
@@ -70,7 +76,6 @@ const PositionForm: React.FC<PositionFormProps> = (props) => {
         name="name"
         label="Nama Posisi"
       />
-
     </ModalForm>
   );
 };

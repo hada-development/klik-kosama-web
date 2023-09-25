@@ -1,9 +1,20 @@
-import { ActionType, FooterToolbar, ModalForm, PageContainer, ProColumns, ProFormText, ProTable } from '@ant-design/pro-components';
-import React, { useRef, useState } from 'react';
-import { addPosition, deletePosition, getPosition } from './data/services/service';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleFilled,
+  PlusOutlined,
+} from '@ant-design/icons';
+import {
+  ActionType,
+  FooterToolbar,
+  PageContainer,
+  ProColumns,
+  ProTable,
+} from '@ant-design/pro-components';
 import { Button, Modal, message } from 'antd';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import React, { useRef, useState } from 'react';
 import PositionForm from './components/PositionForm';
+import { deletePosition, getPosition } from './data/services/service';
 
 /**
  *  Delete node
@@ -21,7 +32,7 @@ const handleRemove = async (selectedRow: PositionFeature.PositionListItem | unde
     return true;
   } catch (error: any) {
     hide();
-    var errorMessage: string | undefined = error.response?.data?.message;
+    let errorMessage: string | undefined = error.response?.data?.message;
     if (errorMessage) {
       message.error(errorMessage);
       return false;
@@ -36,14 +47,37 @@ const PositionPage: React.FC = () => {
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [deleteModalOpen, handleDeleteModalOpen] = useState<boolean>(false);
   const [selectedRowsState, setSelectedRows] = useState<PositionFeature.PositionListItem[]>([]);
+  const [{ confirm }, contextHolder] = Modal.useModal();
 
   const actionRef = useRef<ActionType>();
 
+  const onDelete = (record: PositionFeature.PositionListItem) => {
+    confirm({
+      title: 'Anda yakin ingin menghapus data ini?',
+      icon: <ExclamationCircleFilled />,
+      content: 'Data yang dihapus tidak dapat dikembalikan',
+      okText: 'Hapus',
+      okType: 'danger',
+      cancelText: 'Batalkan',
+      closable: true,
+      onOk: async () => {
+        await handleRemove(record);
+        actionRef.current?.reloadAndRest?.();
+      },
+      onCancel: () => {
+        console.log('NO');
+      },
+    });
+  };
+
   const columns: ProColumns<PositionFeature.PositionListItem>[] = [
     {
-      title: "Nama Posisi",
+      title: 'Level Posisi',
+      dataIndex: ['position_level', 'name'],
+    },
+    {
+      title: 'Nama Posisi',
       dataIndex: 'name',
-      tip: 'The rule name is the unique key',
     },
     {
       title: 'Aksi',
@@ -60,18 +94,21 @@ const PositionPage: React.FC = () => {
         >
           <EditOutlined /> Edit
         </a>,
-        <a key="delete"
+        <a
+          key="delete"
           onClick={() => {
-            handleDeleteModalOpen(true);
-            setCurrentRow(record);
-          }}>
+            onDelete(record);
+          }}
+        >
           <DeleteOutlined /> Hapus
         </a>,
       ],
     },
   ];
+
   return (
     <PageContainer>
+      {contextHolder}
       <ProTable<PositionFeature.PositionListItem, API.PageParams>
         headerTitle="Daftar Posisi"
         rowKey="id"
@@ -103,9 +140,7 @@ const PositionPage: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              Dipilih{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              Item
+              Dipilih <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> Item
               &nbsp;&nbsp;
             </div>
           }
@@ -119,11 +154,10 @@ const PositionPage: React.FC = () => {
           >
             Batch Deletion
           </Button>
-
         </FooterToolbar>
       )}
       <PositionForm
-        onCancel={() => { }}
+        onCancel={() => {}}
         onSubmit={async (value) => {
           if (actionRef.current) {
             actionRef.current.reload();
@@ -133,26 +167,9 @@ const PositionPage: React.FC = () => {
         values={currentRow}
         open={createModalOpen}
         setOpen={handleModalOpen}
-
       />
-
-      <Modal
-        title="Confirm Delete"
-        open={deleteModalOpen}
-        onCancel={() => handleDeleteModalOpen(false)}
-        onOk={async () => {
-          await handleRemove(currentRow)
-          if (actionRef.current) {
-            actionRef.current.reload();
-          }
-          handleDeleteModalOpen(false);
-        }}
-      >
-        Anda yakin ingin menghapus jabatan ini?
-      </Modal>
     </PageContainer>
-
   );
-}
+};
 
 export default PositionPage;
