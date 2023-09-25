@@ -44,6 +44,7 @@ export const formatPhoneNumber = (value: string) => {
 export function formatDateTime(
   dateTime: Date | string | undefined,
   format: string = 'YYYY-MM-DD HH:mm:ss',
+  baseFormat: string = 'YYYY-MM-DD',
 ): string {
   if (dateTime == undefined) {
     return '';
@@ -52,7 +53,7 @@ export function formatDateTime(
     return moment(dateTime).format(format);
   }
 
-  return moment(dateTime, 'YYYY-MM-DD').format(format);
+  return moment(dateTime, baseFormat).format(format);
 }
 
 export function convertValueEntryToOptions(valueEntry: any) {
@@ -70,4 +71,17 @@ export function formatRupiah(value: any): string {
     currency: 'IDR',
     maximumFractionDigits: 0,
   }).format(value);
+}
+
+export const isoDateFormat = 'YYYY-MM-DDTHH:mm:ss.SSSSSSZ';
+
+export function isImageFile(fileName: string) {
+  // Define a list of common image file extensions
+  const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.webp'];
+
+  // Get the file extension from the fileName
+  const fileExtension = fileName.slice(((fileName.lastIndexOf('.') - 1) >>> 0) + 2);
+
+  // Check if the file extension is in the list of image extensions
+  return imageExtensions.includes(`.${fileExtension.toLowerCase()}`);
 }

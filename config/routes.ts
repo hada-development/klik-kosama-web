@@ -361,6 +361,50 @@ export default [
           },
         ],
       },
+      {
+        path: 'submission',
+        name: 'Pengajuan',
+        icon: 'book',
+        routes: [
+          {
+            name: 'P. Simpanan Sukarela',
+            icon: 'dollar',
+            path: 'voluntary-withdraw',
+            hideChildrenInMenu: true,
+            routes: [
+              {
+                name: 'Penarikan Simpanan Sukarela',
+                path: '/coop/submission/voluntary-withdraw',
+                component: './Coop/Submission/VoluntaryWithdraw',
+              },
+              {
+                name: 'Detail Penarikan Simpana Sukarela',
+                path: '/coop/submission/voluntary-withdraw/:parameter',
+                component: './Coop/Submission/VoluntaryWithdraw/Detail',
+              },
+            ],
+          },
+
+          {
+            name: 'Kredit Barang',
+            icon: 'dollar',
+            path: 'credit',
+            hideChildrenInMenu: true,
+            routes: [
+              {
+                name: 'Kredit Barang',
+                path: '/coop/submission/credit',
+                component: './Coop/Submission/CreditSubmission',
+              },
+              {
+                name: 'Kredit Barang',
+                path: '/coop/submission/credit/:parameter',
+                component: './Coop/Submission/CreditSubmission/Detail',
+              },
+            ],
+          },
+        ],
+      },
     ],
   },
 

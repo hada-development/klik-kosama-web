@@ -20,5 +20,10 @@
       "@@test/*": ["./src/.umi-test/*"]
     }
   },
-  "include": ["./**/*.d.ts", "./**/*.ts", "./**/*.tsx"]
+  "include": [
+    "./**/*.d.ts",
+    "./**/*.ts",
+    "./**/*.tsx",
+    "src/pages/Coop/Submission/component/SubmissionValidationHistory/index.2tsx"
+  ]
 }

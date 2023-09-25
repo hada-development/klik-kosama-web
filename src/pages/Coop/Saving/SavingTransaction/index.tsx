@@ -8,6 +8,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { Button, Modal, message } from 'antd';
+import Paragraph from 'antd/es/typography/Paragraph';
 import React, { useRef, useState } from 'react';
 import { savingTypes, transactionTypes } from '../data/data';
 import SavingTransactionForm from './components/SavingTransactionForm';
@@ -64,6 +65,7 @@ const SavingTransactionPage: React.FC = () => {
     {
       title: 'Nama Anggota',
       dataIndex: 'member_name',
+      width: '200px',
     },
     {
       title: 'No. Anggota',
@@ -78,6 +80,7 @@ const SavingTransactionPage: React.FC = () => {
       title: 'Jenis Transaksi',
       dataIndex: 'transaction_type',
       valueEnum: transactionTypes,
+      width: '150px',
     },
     {
       title: 'Nominal',
@@ -88,9 +91,18 @@ const SavingTransactionPage: React.FC = () => {
       },
     },
     {
+      title: 'Note',
+      dataIndex: 'note',
+      render: (data, _) => {
+        return (
+          <Paragraph ellipsis={{ rows: 1, expandable: true, symbol: 'more' }}>{data}</Paragraph>
+        );
+      },
+    },
+    {
       title: 'Aksi',
       dataIndex: 'option',
-      width: '15%',
+      width: '155px',
       valueType: 'option',
       render: (_, record) => [
         <a
@@ -129,6 +141,9 @@ const SavingTransactionPage: React.FC = () => {
           onChange: (_, selectedRows) => {
             setSelectedRows(selectedRows);
           },
+        }}
+        scroll={{
+          x: 'max-content',
         }}
         toolBarRender={() => [
           <Button
@@ -188,7 +203,7 @@ const SavingTransactionPage: React.FC = () => {
           handleDeleteModalOpen(false);
         }}
       >
-        Anda yakin ingin menghapus jabatan ini?
+        Anda yakin ingin menghapus transaksi ini?
       </Modal>
     </PageContainer>
   );

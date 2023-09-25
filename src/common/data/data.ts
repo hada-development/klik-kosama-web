@@ -11,3 +11,14 @@ export const submissionStatuses = {
 };
 
 export const webRoles = ['admin', 'management', 'staff'];
+
+export interface File {
+  id: number;
+  name: string;
+  type: string;
+  is_temporary: boolean;
+  address: string;
+  thumbnail: string;
+  created_at: string;
+  updated_at: string;
+}

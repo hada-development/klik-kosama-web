@@ -101,6 +101,7 @@ export default defineConfig({
     antd: true,
     // default true, when it is true, will use `navigator.language` overwrite default
     baseNavigator: false,
+    // missingField: 'ignore',
   },
   /**
    * @name antd 插件
