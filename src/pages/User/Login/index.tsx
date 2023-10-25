@@ -65,7 +65,7 @@ const Login: React.FC = () => {
           id: 'pages.login.success',
           defaultMessage: 'Login Berhasil !',
         });
-        message.success(defaultLoginSuccessMessage);
+        message.success(defaultLoginSuccessMessage, 1);
         setAuthToken(msg.token);
         await fetchUserInfo();
         const urlParams = new URL(window.location.href).searchParams;

@@ -1,5 +1,18 @@
-import { File } from '@/common/data/data';
+import { File, User } from '@/common/data/data';
 
+export interface ParentSubmission {
+  id: number;
+  number: string;
+  user_id: number;
+  type: string;
+  status: string;
+  note: string;
+  current_step_id: number;
+  created_at: string;
+  updated_at: string;
+  is_approvable: boolean;
+  current_step?: Step;
+}
 export interface Submission {
   id: number;
   number: string;
@@ -50,17 +63,6 @@ export interface AdditionalField {
   id: string;
   name: string;
   type: 'image' | 'date';
-}
-
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  email_verified_at: any;
-  profile_photo_file_id: any;
-  verification_status: string;
-  created_at: string;
-  updated_at: string;
 }
 
 export interface UserCredit {

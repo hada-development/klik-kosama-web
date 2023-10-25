@@ -40,7 +40,6 @@ const savingTransactionBaseUrl = '/api/web/coop/saving/transaction';
 export async function getSavingTransactionTable(params: any, options?: { [key: string]: any }) {
   try {
     const formattedParams = formatTableParams(params);
-    console.log(formattedParams);
     let response = await request(savingTransactionBaseUrl, {
       method: 'GET',
       params: {

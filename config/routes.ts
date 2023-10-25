@@ -28,6 +28,7 @@ export default [
     icon: 'home',
     component: './Welcome',
   },
+
   {
     name: 'HRIS',
     icon: 'team',
@@ -255,31 +256,6 @@ export default [
   },
 
   {
-    name: 'Admin',
-    icon: 'tool',
-    path: '/admin',
-    access: 'canAdmin',
-    routes: [
-      {
-        path: '/admin',
-        redirect: 'dashboard',
-      },
-      {
-        path: 'dashboard',
-        name: 'Dashboard',
-        icon: 'pieChart',
-        component: './Welcome',
-      },
-      {
-        path: 'user',
-        name: 'User',
-        icon: 'team',
-        component: './Admin/User',
-      },
-    ],
-  },
-
-  {
     name: 'Anggota & Sim-Pin',
     icon: 'apartment',
     path: '/coop',
@@ -405,7 +381,154 @@ export default [
           },
         ],
       },
+      {
+        path: 'credit',
+        name: 'Kredit',
+        icon: 'wallet',
+        routes: [
+          {
+            name: 'Kredit Barang',
+            icon: 'wallet',
+            path: 'goods',
+            hideChildrenInMenu: true,
+            routes: [
+              {
+                name: 'Kredit Barang',
+                path: '/coop/credit/goods',
+                component: './Coop/Credit/GoodsCredit',
+              },
+              {
+                name: 'Kredit Barang',
+                path: '/coop/credit/goods/:parameter',
+                component: './Coop/Credit/GoodsCredit/Detail',
+              },
+            ],
+          },
+        ],
+      },
     ],
+  },
+
+  {
+    name: 'Admin',
+    icon: 'tool',
+    path: '/admin',
+    access: 'canAdmin',
+    routes: [
+      {
+        path: '/admin',
+        redirect: 'dashboard',
+      },
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        icon: 'pieChart',
+        component: './Welcome',
+      },
+      {
+        path: 'user',
+        name: 'User',
+        icon: 'team',
+        component: './Admin/User',
+      },
+      {
+        path: 'information',
+        name: 'Informasi',
+        icon: 'sound',
+        component: './Admin/Information',
+      },
+      {
+        path: 'app-info',
+        name: 'Setting Info Aplikasi',
+        icon: 'setting',
+        routes: [
+          {
+            path: 'contact',
+            name: 'Kontak',
+            icon: 'setting',
+            component: './Admin/AppInfo/Contact',
+          },
+          {
+            path: 'about-us',
+            name: 'Tentang Kosama',
+            icon: 'setting',
+            component: './Admin/AppInfo/AboutUs',
+          },
+          {
+            path: 'organization-structure',
+            name: 'Struktur Organisasi',
+            icon: 'setting',
+            component: './Admin/AppInfo/OrganizationStructure',
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    path: '/store',
+    name: 'Toko',
+    icon: 'container',
+    access: 'canStore',
+    routes: [
+      {
+        path: '/store',
+        redirect: 'dashboard',
+      },
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        icon: 'pieChart',
+        component: './Welcome',
+      },
+      {
+        path: 'stock',
+        name: 'Stok',
+        icon: 'barcode',
+        component: './Store/Stock',
+      },
+      {
+        path: 'purchase',
+        name: 'Pembelian',
+        icon: 'book',
+        component: './Store/Purchase',
+      },
+      {
+        path: 'master-data',
+        name: 'Master Data',
+        icon: 'database',
+        routes: [
+          {
+            path: 'product-category',
+            name: 'Kategori Produk',
+            icon: 'database',
+            component: './Store/MasterData/ProductCategory',
+          },
+
+          {
+            path: 'product',
+            name: 'Produk',
+            icon: 'database',
+            component: './Store/MasterData/Product',
+          },
+
+          {
+            path: 'supplier',
+            name: 'Supplier',
+            icon: 'database',
+            component: './Store/MasterData/Supplier',
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    path: '/pos',
+    name: 'Kasir',
+    icon: 'barcode',
+    access: 'canStore',
+    component: './Welcome',
   },
 
   {

@@ -1,3 +1,4 @@
+import { getCompany } from '@/pages/HRIS/MasterData/Company/data/services/service';
 import { getEducationLevel } from '@/pages/HRIS/MasterData/EducationLevel/data/services/service';
 import { getEmployeeType } from '@/pages/HRIS/MasterData/EmployeeType/data/services/service';
 import { getOffice } from '@/pages/HRIS/MasterData/Office/data/services/service';
@@ -102,6 +103,19 @@ const EmployeeDataSubPage: React.FC = () => {
             ]}
           />
         </ProForm.Group>
+
+        <ProFormSelect
+          width="md"
+          name="hr_company_id"
+          label="Instansi"
+          placeholder="Pilih Instansi Pegawai"
+          request={async () =>
+            (await getCompany({})).data.map((e: any) => {
+              return { value: e.id, label: e.name };
+            })
+          }
+          rules={[{ required: true, message: 'Instansi Pegawai wajib diisi' }]}
+        />
 
         <ProForm.Group>
           <ProFormSelect

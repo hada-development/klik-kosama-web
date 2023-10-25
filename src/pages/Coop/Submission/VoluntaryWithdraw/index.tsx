@@ -1,5 +1,5 @@
 import { formatDateTime, formatRupiah } from '@/common/utils/utils';
-import { EyeOutlined, PlusOutlined } from '@ant-design/icons';
+import { EyeOutlined } from '@ant-design/icons';
 import {
   ActionType,
   FooterToolbar,
@@ -99,18 +99,6 @@ const VoluntaryWithdrawSubmissionPage: React.FC = () => {
             setSelectedRows(selectedRows);
           },
         }}
-        toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              setCurrentRow(undefined);
-              handleModalOpen(true);
-            }}
-          >
-            <PlusOutlined /> Tambah
-          </Button>,
-        ]}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar

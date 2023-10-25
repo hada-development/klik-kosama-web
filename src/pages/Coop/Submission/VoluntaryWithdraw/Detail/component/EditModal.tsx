@@ -20,6 +20,7 @@ const VoluntaryWithdrawEditModal: React.FC<VoluntaryWithdrawEditProp> = (prop) =
       confirm({
         title: 'Anda yakin?',
         content: 'Anda yakin ingin mengubah pengajuan?',
+        okCancel: true,
         onOk: async () => {
           editVoluntaryWithdraw(prop.submission.id, value)
             .then(() => {

@@ -1,5 +1,5 @@
 import { formatDateTime, formatRupiah } from '@/common/utils/utils';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import {
   ActionType,
   FooterToolbar,
@@ -10,6 +10,7 @@ import {
 import { Button, Modal, message } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
 import React, { useRef, useState } from 'react';
+import ExcelImportModal from '../../Shared/Components/ExcelImportModal';
 import { savingTypes, transactionTypes } from '../data/data';
 import SavingTransactionForm from './components/SavingTransactionForm';
 import { deleteSavingTransaction, getSavingTransaction } from './data/services/service';
@@ -48,6 +49,7 @@ const SavingTransactionPage: React.FC = () => {
   >();
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [deleteModalOpen, handleDeleteModalOpen] = useState<boolean>(false);
+  const [importModalOpen, handleImportModalOpen] = useState<boolean>(false);
   const [selectedRowsState, setSelectedRows] = useState<
     SavingTransactionFeature.SavingTransactionListItem[]
   >([]);
@@ -150,6 +152,16 @@ const SavingTransactionPage: React.FC = () => {
             type="primary"
             key="primary"
             onClick={() => {
+              handleImportModalOpen(true);
+            }}
+          >
+            <UploadOutlined /> Import
+          </Button>,
+
+          <Button
+            type="primary"
+            key="primary"
+            onClick={() => {
               setCurrentRow(undefined);
               handleModalOpen(true);
             }}
@@ -178,6 +190,19 @@ const SavingTransactionPage: React.FC = () => {
           </Button>
         </FooterToolbar>
       )}
+
+      <ExcelImportModal
+        isModalOpen={importModalOpen}
+        setIsModalOpen={handleImportModalOpen}
+        url="/api/web/coop/saving/transaction/import"
+        onUploaded={() => {
+          message.success('Berhasil mengimport transaksi simpanan');
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        }}
+      />
+
       <SavingTransactionForm
         onCancel={() => {}}
         onSubmit={async (value) => {

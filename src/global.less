@@ -17,6 +17,7 @@ body,
 .ant-layout {
   min-height: 100vh;
 }
+
 .ant-pro-sider.ant-layout-sider.ant-pro-sider-fixed {
   left: unset;
 }
@@ -40,11 +41,13 @@ ol {
   .ant-table {
     width: 100%;
     overflow-x: auto;
+
     &-thead > tr,
     &-tbody > tr {
       > th,
       > td {
         white-space: pre;
+
         > span {
           display: block;
         }
@@ -56,6 +59,7 @@ ol {
 .ant-table-cell .ant-form-item {
   margin-bottom: 0 !important;
 }
+
 .no-margin-input {
   margin-bottom: 0;
 }
@@ -75,4 +79,67 @@ ol {
 
 .simple-table th {
   background-color: #fafafa;
+}
+
+.show-on-print {
+  display: none;
+}
+
+@media print {
+  .hide-on-print {
+    display: none;
+  }
+
+  .show-on-print {
+    display: flex;
+  }
+
+  .printable-area {
+    padding-right: 5mm;
+    padding-left: 5mm;
+  }
+
+  .page-break {
+    display: block;
+    margin-top: 1rem;
+    page-break-before: always;
+  }
+
+  .ant-table {
+    overflow-x: visible;
+  }
+
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > th,
+  .ant-table-thead > tr > td,
+  .ant-table-tbody > tr > td {
+    white-space: normal !important;
+  }
+
+  .print-header .kop {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+
+  .print-header .kop img {
+    position: absolute;
+    top: 50%;
+    left: 0px;
+    width: 42px;
+    height: 42px;
+    transform: translateY(-70%);
+  }
+
+  .print-header .kop {
+    padding-bottom: 12px;
+    border-bottom: 1px solid black;
+  }
+
+  .print-header h1 {
+    padding: 0;
+    font-weight: bold;
+    font-size: 10pt;
+    line-height: 10pt;
+  }
 }

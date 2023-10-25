@@ -1,6 +1,12 @@
+import { ResponseData } from '@/common/data/data';
 import { formatTableParams } from '@/common/utils/utils';
 import { request } from 'umi';
-import { CreditSubmissionSubmissionDetail, CreditSubmissionSubmissionList } from './data';
+import {
+  Calculation,
+  CreditSubmissionSubmissionDetail,
+  CreditSubmissionSubmissionList,
+  InstallmentTerm,
+} from './data';
 
 const baseUrl = '/api/web/coop/submission/credit';
 
@@ -44,8 +50,28 @@ export async function editCreditSubmission(id?: number, data?: { [key: string]: 
   });
 }
 
-export async function deleteSavingTransaction(id?: number) {
-  return request(`/api/web/coop/saving/transaction/${id}`, {
-    method: 'DELETE',
+export async function getAvailableInstalmentTerms(
+  id: number,
+  amount: number,
+): Promise<ResponseData<InstallmentTerm[]>> {
+  return request(`${baseUrl}/${id}/terms`, {
+    method: 'GET',
+    params: {
+      amount: amount,
+    },
+  });
+}
+
+export async function getCalculation(
+  id: number,
+  buy_price: number,
+  installment_term: number,
+): Promise<ResponseData<Calculation>> {
+  return request(`${baseUrl}/${id}/calculation`, {
+    method: 'GET',
+    params: {
+      buy_price: buy_price,
+      installment_term: installment_term,
+    },
   });
 }

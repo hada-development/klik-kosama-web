@@ -1,5 +1,5 @@
 import { formatDateTime, formatRupiah } from '@/common/utils/utils';
-import { EyeOutlined, PlusOutlined } from '@ant-design/icons';
+import { EyeOutlined } from '@ant-design/icons';
 import {
   ActionType,
   FooterToolbar,
@@ -14,9 +14,6 @@ import { CreditSubmissionSubmissionItem } from './data/data';
 import { getCreditSubmissionSubmission } from './data/service';
 
 const CreditSubmissionSubmissionPage: React.FC = () => {
-  const [currentRow, setCurrentRow] = useState<CreditSubmissionSubmissionItem | undefined>();
-  const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-  const [deleteModalOpen, handleDeleteModalOpen] = useState<boolean>(false);
   const [selectedRowsState, setSelectedRows] = useState<CreditSubmissionSubmissionItem[]>([]);
 
   const actionRef = useRef<ActionType>();
@@ -121,18 +118,6 @@ const CreditSubmissionSubmissionPage: React.FC = () => {
         scroll={{
           x: 'max-content',
         }}
-        toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              setCurrentRow(undefined);
-              handleModalOpen(true);
-            }}
-          >
-            <PlusOutlined /> Tambah
-          </Button>,
-        ]}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar

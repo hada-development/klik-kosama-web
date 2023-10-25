@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    RewriteCond %{HTTP_HOST} ^(dev\.)?kosamaipku\.com$ [NC]
+    RewriteRule ^(api/web/.*)$ http://dev.kosamaip.com/$1 [L,NC,P]
+    RewriteRule ^(storage/.*)$ http://dev.kosamaip.com/$1 [L,NC,P]
+    
+    Header set Content-Security-Policy "img-src * 'unsafe-inline' blob: data: 'unsafe-eval';"
+    
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-l
+    RewriteRule ^ index.html [QSA,L]
+</IfModule>

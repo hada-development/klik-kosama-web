@@ -1,5 +1,7 @@
 import { isObject } from 'lodash';
 import moment from 'moment';
+import { request } from 'umi';
+import { PaginationList } from '../data/data';
 
 export const getImageUrl = (path: string | undefined) => {
   if (path == undefined) {
@@ -14,6 +16,7 @@ export const getImageUrl = (path: string | undefined) => {
 export const formatTableParams = (params: { [key: string]: any }) => {
   let newParams: { [key: string]: any } = {
     page: params.current,
+    page_size: params.pageSize,
   };
 
   let search: { [key: string]: string } = (({ current, pageSize, ...o }) => o)(params);
@@ -84,4 +87,73 @@ export function isImageFile(fileName: string) {
 
   // Check if the file extension is in the list of image extensions
   return imageExtensions.includes(`.${fileExtension.toLowerCase()}`);
+}
+
+function getFilenameFromUrl(url: string) {
+  // Use a regular expression to capture the filename from the URL.
+  const match = url.match(/\/([^/]+)$/);
+
+  // Check if a match was found and return the captured filename.
+  if (match && match.length > 1) {
+    return match[1];
+  } else {
+    // If no match was found, return null or an appropriate default value.
+    return '';
+  }
+}
+
+export async function downloadUrl(url: string, filename?: string | null, params?: null) {
+  console.log('APP PARAMS');
+  console.log(params);
+  // Make a request to fetch the file.
+  const response = await request(url, {
+    responseType: 'blob', // Set the responseType to 'blob' to handle binary data.
+    method: 'GET', // Use the appropriate HTTP method (e.g., GET) for your API.
+    params: params,
+  });
+
+  // Create a URL for the blob data.
+  const blobUrl = window.URL.createObjectURL(response);
+
+  // Create a temporary anchor element to trigger the download.
+  const a = document.createElement('a');
+  a.href = blobUrl;
+  a.download = filename ?? getFilenameFromUrl(url); // Specify the filename for the downloaded file.
+  a.style.display = 'none';
+
+  // Append the anchor element to the document and trigger the click event.
+  document.body.appendChild(a);
+  a.click();
+
+  // Clean up by removing the temporary anchor element and revoking the blob URL.
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(blobUrl);
+}
+
+export async function requestTableData<TData>(
+  url: string,
+  params: any,
+  options?: { [key: string]: any },
+  rawQuery?: { [key: string]: any },
+): Promise<PaginationList<TData>> {
+  try {
+    const formattedParams = formatTableParams(params);
+    let response = await request(url, {
+      method: 'GET',
+      params: {
+        ...rawQuery,
+        ...formattedParams,
+      },
+      ...(options || {}),
+    });
+
+    return {
+      current_page: response.current_page,
+      data: response.data,
+      total: response.total,
+    };
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
 }

@@ -1,5 +1,5 @@
-import { formatRupiah } from '@/common/utils/utils';
-import { PlusOutlined } from '@ant-design/icons';
+import { downloadUrl, formatRupiah, formatTableParams } from '@/common/utils/utils';
+import { FileExcelOutlined } from '@ant-design/icons';
 import {
   ActionType,
   FooterToolbar,
@@ -30,8 +30,7 @@ const statisticCardValueStyle = {
 };
 
 const SavingSummaryPage: React.FC = () => {
-  const [currentRow, setCurrentRow] = useState<SavingFeature.SavingSummaryMember | undefined>();
-  const [createModalOpen, handleModalOpen] = useState<boolean>(false);
+  const [currentParam, setCurrentParam] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<SavingFeature.SavingSummaryMember[]>([]);
 
   const [savingSummary, setSavingSummary] = useState<SavingFeature.SavingSummaryCompany>();
@@ -39,7 +38,6 @@ const SavingSummaryPage: React.FC = () => {
   useEffect(function () {
     getCompanySavingSummary().then((data) => {
       const summary = data.data[0];
-      console.log(summary);
       setSavingSummary(summary);
     });
   }, []);
@@ -87,6 +85,14 @@ const SavingSummaryPage: React.FC = () => {
     {
       title: 'Total Simpanan',
       dataIndex: 'total_saving',
+      search: false,
+      render: (data: any, record: any) => {
+        return formatRupiah(data);
+      },
+    },
+    {
+      title: 'Total Hutang Barang',
+      dataIndex: 'remaining_loan',
       search: false,
       render: (data: any, record: any) => {
         return formatRupiah(data);
@@ -148,7 +154,13 @@ const SavingSummaryPage: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        request={getSavingSummaryTable}
+        request={(params) => {
+          setCurrentParam(formatTableParams(params));
+          return getSavingSummaryTable(params);
+        }}
+        scroll={{
+          x: 'max-content',
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -158,13 +170,12 @@ const SavingSummaryPage: React.FC = () => {
         toolBarRender={() => [
           <Button
             type="primary"
-            key="primary"
+            key="1"
             onClick={() => {
-              setCurrentRow(undefined);
-              handleModalOpen(true);
+              downloadUrl('/api/web/coop/saving/summary/export', null, currentParam);
             }}
           >
-            <PlusOutlined /> Tambah
+            <FileExcelOutlined /> Export Excel
           </Button>,
         ]}
       />

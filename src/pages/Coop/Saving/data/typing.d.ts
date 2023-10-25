@@ -9,6 +9,9 @@ declare namespace SavingFeature {
     principal_saving: number;
     mandatory_saving: number;
     voluntary_saving: number;
+    total_loan: number;
+    total_paid: number;
+    remaining_loan: number;
   };
 
   type SavingSummaryMemberList = {

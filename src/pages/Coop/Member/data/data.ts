@@ -25,7 +25,7 @@ export const memberStatus = {
 };
 
 export const memberType = {
-  ANG: { text: 'ANG', status: 'Success' },
+  AB: { text: 'AB', status: 'Success' },
   ALB: { text: 'ALB', status: 'Warning' },
   'NON AKTIF': { text: 'NON AKTIF', status: 'Error' },
 };
