@@ -4,6 +4,13 @@ export const publishStatuses = {
   archive: { text: 'Archive', status: 'Default' },
 };
 
+export const voucherStatuses = {
+  draft: { text: 'Draft', status: 'Processing' },
+  published: { text: 'Published', status: 'Success' },
+  expired: { text: 'Expired', status: 'Error' },
+  used: { text: 'Digunakan', status: 'Default' },
+};
+
 export const submissionStatuses = {
   review: { text: 'Review', status: 'Processing' },
   accepted: { text: 'Diterima', status: 'Success' },
@@ -21,6 +28,7 @@ export interface PaginationList<TData> {
 export interface ResponseData<TData> {
   status: string;
   message: string;
+  success?: boolean;
   data: TData;
 }
 

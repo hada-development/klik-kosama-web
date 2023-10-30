@@ -26,11 +26,11 @@ export default {
   dev: {
     // localhost:8000/api/** -> https://preview.pro.ant.design/api/**
     '/api/': {
-      target: 'http://192.168.88.92',
+      target: 'http://localhost',
       changeOrigin: true,
     },
     '/storage/': {
-      target: 'http://192.168.88.92',
+      target: 'http://localhost',
       changeOrigin: true,
     },
   },

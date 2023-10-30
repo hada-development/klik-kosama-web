@@ -69,11 +69,26 @@ export function convertValueEntryToOptions(valueEntry: any) {
 }
 
 export function formatRupiah(value: any): string {
+  if (value == undefined || value.length == 0) {
+    return '-';
+  }
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR',
     maximumFractionDigits: 0,
   }).format(value);
+}
+
+export const formatPrice = (price: number, pad: number = 10, locale = true) => {
+  // Right-align the price within a 10-character width
+  if (!locale) {
+    return price.toFixed(0).padStart(pad, '\u00A0');
+  }
+  return price.toLocaleString(undefined, { minimumFractionDigits: 0 }).padStart(pad, '\u00A0');
+};
+
+export function isNumber(value: any): boolean {
+  return typeof value === 'number' && !Number.isNaN(value);
 }
 
 export const isoDateFormat = 'YYYY-MM-DDTHH:mm:ss.SSSSSSZ';

@@ -60,7 +60,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
       },
     },
-
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;

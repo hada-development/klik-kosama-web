@@ -248,21 +248,8 @@ const ProductForm: React.FC<{
             ]}
             min={0}
             initialValue={0}
-            placeholder="Stok Awal"
-            width="lg"
-            name={['stocks', 0, 'quantity']}
-            label="Stok Awal"
-          />
-
-          <ProFormDigit
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-            min={0}
-            initialValue={0}
             placeholder="Restock Level (Minimum Restock)"
+            help="Restock Level (Minimum Restock)"
             width="lg"
             name={['stocks', 0, 'restock_level']}
             label="Restok Level"

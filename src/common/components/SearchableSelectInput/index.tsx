@@ -9,10 +9,15 @@ interface OptionType {
 }
 
 interface SearchableSelectInputProps {
-  name: string;
+  name: any;
   label: string;
   placeholder?: string;
+  style?: React.CSSProperties;
   rules?: any[];
+  width?: number | 'sm' | 'md' | 'xl' | 'xs' | 'lg';
+  initialValue?: any;
+  readonly?: boolean;
+  onChange?: (value: unknown, option: OptionType | OptionType[]) => void;
   fetchOptions: (query: string) => Promise<OptionType[]>; // Define the fetchOptions prop
 }
 
@@ -20,7 +25,12 @@ const SearchableSelectInput: React.FC<SearchableSelectInputProps> = ({
   name,
   label,
   placeholder,
+  style,
   rules,
+  width,
+  initialValue,
+  readonly,
+  onChange,
   fetchOptions,
 }) => {
   const [options, setOptions] = useState<OptionType[]>([]);
@@ -37,10 +47,14 @@ const SearchableSelectInput: React.FC<SearchableSelectInputProps> = ({
   return (
     <ProFormSelect
       name={name}
+      onChange={onChange}
       label={label}
       placeholder={placeholder}
       rules={rules}
-      width={'md'}
+      readonly={readonly}
+      width={width}
+      initialValue={initialValue}
+      style={style}
       fieldProps={{
         showSearch: true,
         filterOption: false,

@@ -491,7 +491,26 @@ export default [
         path: 'purchase',
         name: 'Pembelian',
         icon: 'book',
-        component: './Store/Purchase',
+
+        hideChildrenInMenu: true,
+        routes: [
+          {
+            path: '',
+            name: 'Pembelian',
+            icon: 'book',
+            component: './Store/Purchase',
+          },
+          {
+            path: 'create',
+            name: 'Buat Pembelian',
+            icon: 'book',
+            component: './Store/Purchase/components/PurchaseFormPage',
+          },
+          {
+            path: 'edit/:purchaseId',
+            component: './Store/Purchase/components/PurchaseFormPage',
+          },
+        ],
       },
       {
         path: 'master-data',
@@ -513,6 +532,13 @@ export default [
           },
 
           {
+            path: 'voucher',
+            name: 'Voucher',
+            icon: 'database',
+            component: './Store/MasterData/Voucher',
+          },
+
+          {
             path: 'supplier',
             name: 'Supplier',
             icon: 'database',
@@ -528,7 +554,7 @@ export default [
     name: 'Kasir',
     icon: 'barcode',
     access: 'canStore',
-    component: './Welcome',
+    component: './POS',
   },
 
   {
