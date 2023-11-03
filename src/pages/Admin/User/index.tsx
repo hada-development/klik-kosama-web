@@ -45,7 +45,6 @@ const UserPage: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<UserFeature.UserListItem[]>([]);
 
   const actionRef = useRef<ActionType>();
-
   const columns: ProColumns<UserFeature.UserListItem>[] = [
     {
       title: 'Nama',
