@@ -45,12 +45,15 @@
     "not ie <= 10"
   ],
   "dependencies": {
+    "@ant-design/graphs": "^1.4.0",
     "@ant-design/icons": "^4.8.1",
+    "@ant-design/plots": "^1.2.5",
     "@ant-design/pro-components": "^2.6.28",
     "@ant-design/use-emotion-css": "1.0.4",
     "@types/mapbox-gl": "^2.7.15",
     "@umijs/route-utils": "^2.2.2",
     "antd": "^5.10.2",
+    "antd-button-color": "^1.0.4",
     "antd-img-crop": "^4.13.0",
     "classnames": "^2.3.2",
     "lodash": "^4.17.21",

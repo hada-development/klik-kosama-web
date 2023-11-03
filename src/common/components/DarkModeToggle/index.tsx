@@ -1,3 +1,4 @@
+import { BulbOutlined, StarOutlined } from '@ant-design/icons';
 import { Switch } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useModel } from 'umi';
@@ -26,7 +27,14 @@ const DarkModeToggle: React.FC = () => {
     setDarkMode(initialState?.settings?.navTheme === 'realDark');
   }, [initialState]);
 
-  return <Switch checked={darkMode} onChange={toggleDarkMode} />;
+  return (
+    <Switch
+      checked={darkMode}
+      onChange={toggleDarkMode}
+      unCheckedChildren={<StarOutlined />}
+      checkedChildren={<BulbOutlined />}
+    />
+  );
 };
 
 export default DarkModeToggle;

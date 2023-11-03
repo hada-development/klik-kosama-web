@@ -1,26 +1,34 @@
 import { shortcutService } from '@/common/services/custom/shortcutService';
 import { CloseOutlined, OrderedListOutlined } from '@ant-design/icons';
 import { useModel } from '@umijs/max';
-import { Card, Divider } from 'antd';
-import { useEffect } from 'react';
+import { Button, Card, Divider, Flex, Typography } from 'antd';
+import { useEffect, useRef } from 'react';
+import AppOrderButton from './AppOrder/Widget/AppOrderButton';
 import MemberPicker from './MemberPicker';
 import POSButton from './POSButton';
 import PaymentMethod from './PaymentMethod';
 import VoucherPicker from './VoucherPicker';
 
+const { Text } = Typography;
+
 type Props = {};
 
 export default function POSActions({}: Props) {
-  const { clearPos, handlePreCheckout } = useModel('POS.usePos');
+  const { clearPos, handlePreCheckout, setOpenTrxDrawer, appOrder } = useModel('POS.usePos');
+
+  const checkoutButtonRef = useRef<HTMLElement>(null);
 
   const onCheckout = () => {
+    console.log('CLICKED');
     handlePreCheckout();
   };
 
   useEffect(() => {
     // Register shortcut
     shortcutService.registerShortcut('F4', false, () => {
-      onCheckout();
+      if (checkoutButtonRef.current) {
+        checkoutButtonRef.current.click();
+      }
     });
     return () => {
       // Clean up shortcuts when the component unmounts
@@ -48,6 +56,22 @@ export default function POSActions({}: Props) {
           gap: '8px',
         }}
       >
+        {appOrder && (
+          <Flex
+            style={{
+              background: '#ffd666',
+              padding: '10px 20px',
+              borderRadius: '4px',
+            }}
+            justify="space-between"
+            align="center"
+          >
+            <Text strong>Order Via Aplikasi: {appOrder?.order_no}</Text>
+            <Button onClick={clearPos} danger type="primary" size="small">
+              <CloseOutlined />
+            </Button>
+          </Flex>
+        )}
         <MemberPicker />
         <VoucherPicker />
       </div>
@@ -61,7 +85,13 @@ export default function POSActions({}: Props) {
           danger
         />
 
-        <POSButton icon={<OrderedListOutlined style={{ fontSize: '24px' }} />} title="History" />
+        <POSButton
+          icon={<OrderedListOutlined style={{ fontSize: '24px' }} />}
+          title="History"
+          onClick={() => setOpenTrxDrawer(true)}
+        />
+
+        <AppOrderButton />
       </div>
 
       <Divider dashed style={{ margin: '8px 0px' }} />
@@ -69,6 +99,7 @@ export default function POSActions({}: Props) {
 
       <div style={{ display: 'flex', gap: '8px', flex: '0 0 auto' }}>
         <POSButton
+          ref={checkoutButtonRef}
           icon={<span style={{ fontSize: '24px', lineHeight: '24px' }}>F4</span>}
           type="primary"
           title="Payment"

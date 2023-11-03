@@ -124,7 +124,7 @@ const LeaveSubmissionPage: React.FC = () => {
     <PageContainer>
       {contextHolder}
       <ProTable<LeaveSubmissionFeature.LeaveSubmissionListItem, API.PageParams>
-        headerTitle="Daftar Posisi"
+        headerTitle="Pengajuan Cuti"
         rowKey="id"
         actionRef={actionRef}
         search={{

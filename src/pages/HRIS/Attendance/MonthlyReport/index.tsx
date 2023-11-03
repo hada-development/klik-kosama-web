@@ -10,10 +10,10 @@ const { Text, Link } = Typography;
 
 import SearchableSelectInputStandard from '@/common/components/SearchableSelectInput/index-standard';
 import { formatDateTime } from '@/common/utils/utils';
-import { getProduct } from '@/pages/Store/Purchase/data/services';
 import { ProColumns, ProTable } from '@ant-design/pro-components';
 import { isNull } from 'lodash';
 import { request } from 'umi';
+import { getEmployee } from '../../Employee/data/services/service';
 import { getFilteredAndPaginatedData } from './data/services/service';
 import { MonthlyAttendanceReportData, MonthlyAttendanceReportMetaData } from './data/typing';
 
@@ -224,7 +224,7 @@ const MonthlyAttendanceReport: React.FC = () => {
           onChange={setEmployeeId}
           style={{ width: '300px', marginRight: '20px' }}
           fetchOptions={async (query) =>
-            (await getProduct(query)).data!.map((e: any) => {
+            (await getEmployee({ name: query })).data!.map((e: any) => {
               return { value: e.id, label: e.user.name };
             })
           }

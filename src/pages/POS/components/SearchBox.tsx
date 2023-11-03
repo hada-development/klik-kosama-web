@@ -1,8 +1,10 @@
+import DarkModeToggle from '@/common/components/DarkModeToggle';
+import FullscreenToggle from '@/common/components/FullscreenToggle';
 import { shortcutService } from '@/common/services/custom/shortcutService';
 import { formatRupiah } from '@/common/utils/utils';
 import { BarcodeOutlined, SearchOutlined, TagOutlined } from '@ant-design/icons';
 import { useModel } from '@umijs/max';
-import { AutoComplete, Input, InputRef, Radio } from 'antd';
+import { AutoComplete, Flex, Input, InputRef, Radio } from 'antd';
 import { RadioChangeEvent } from 'antd/lib';
 import { debounce } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
@@ -102,7 +104,7 @@ export default function SearchBox({}: Props) {
   const searchCaption = searchType == 'barcode' ? 'barcode [F1]' : 'nama [F2]';
 
   return (
-    <>
+    <Flex style={{ width: '100%' }} justify="space-between">
       <Input.Group>
         <Radio.Group
           options={options}
@@ -131,6 +133,11 @@ export default function SearchBox({}: Props) {
           />
         </AutoComplete>
       </Input.Group>
-    </>
+
+      <Flex align="center" gap={'8px'}>
+        <DarkModeToggle />
+        <FullscreenToggle />
+      </Flex>
+    </Flex>
   );
 }

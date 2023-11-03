@@ -1,88 +1,96 @@
 // Receipt.tsx
-import { formatDateTime, formatPrice } from '@/common/utils/utils';
-import { Card, Typography } from 'antd';
+import { formatDateTime, formatPrice, isoDateFormat } from '@/common/utils/utils';
 import React from 'react';
-import { POSTransaction } from '../data/data';
-
-const { Text } = Typography;
+import { POSTransaction, mapPaymentMethodName } from '../data/data';
 
 interface ReceiptProps {
-  transaction: POSTransaction;
-  paid: number;
-  change: number;
+  transaction?: POSTransaction;
 }
 
-const Receipt: React.FC<ReceiptProps> = ({ transaction, paid, change }) => {
-  const padLeft = (text: string, total: number = 10) => {
-    // Right-align the price within a 10-character width
-    return text.padStart(total, '\u00A0');
+const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(({ transaction }, ref) => {
+  const padLeft = (span: string, total: number = 10) => {
+    return span.padStart(total, '\u00A0');
   };
 
-  const padRight = (text: string, total: number = 10) => {
-    // Right-align the price within a 10-character width
-    return text.padEnd(total, '\u00A0');
+  const padRight = (span: string, total: number = 10) => {
+    return span.padEnd(total, '\u00A0');
   };
 
-  const createDashes = (count: number) => {
+  const createDashes = (count: number = 38) => {
     return '-'.repeat(count);
   };
 
+  const getPageSize = () => {
+    const heightBasis = 90 + 5 * (transaction?.details.length ?? 0);
+    return `@media print { @page { size: 80mm ${heightBasis}mm }}`;
+  };
+
   return (
-    <Card style={{ width: 300 }}>
-      <div style={{ textAlign: 'center' }}>
-        "KOSAMART"
-        <Text style={{ display: 'block' }}>KOPERASI SEJAHTERA BERSAMA (KOSAMA)</Text>
-        <Text style={{ display: 'block' }}>PT. PLN INDONESIA POWER HEAD OFFICE</Text>
-        <Text style={{ display: 'block' }}>Jl. JEND. GATOT SUBROTO KAV.18 KUNINGAN</Text>
-        <Text style={{ display: 'block' }}>JAKARTA SELATAN, 12950</Text>
-        <Text style={{ display: 'block' }}>{createDashes(38)}</Text>
-        <Text style={{ display: 'block' }}>{createDashes(38)}</Text>
-      </div>
-
-      <div style={{ marginTop: '10px' }}>
-        <Text style={{ display: 'block' }}>
-          {padRight('ORDER NO', 14)}: {transaction.order_no}
-        </Text>
-        <Text style={{ display: 'block' }}>
-          {padRight('KASIR', 14)}: {transaction.cashier.name.toUpperCase()}
-        </Text>
-        <Text style={{ display: 'block' }}>
-          {padRight('TANGGAL', 14)}: {formatDateTime(transaction.created_at, 'DD/MM/YY HH:mm:ss')}
-        </Text>
-        <Text style={{ display: 'block' }}>{createDashes(38)}</Text>
-      </div>
-
-      <div style={{ fontFamily: 'monospace' }}>
-        {transaction.details.map((item, index) => (
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Text>{padRight(item.product_name, 20)}</Text>
-            <Text>{padLeft(item.quantity.toString(), 3)}</Text>
-            <Text>{formatPrice(item.unit_price, 6, false)}</Text>
-            <Text>{formatPrice(item.total_price, 8)}</Text>
+    <>
+      {transaction && (
+        <div ref={ref} style={{ width: 300, fontFamily: 'monospace', margin: '20px 1px' }}>
+          <style>{getPageSize()}</style>
+          <div style={{ textAlign: 'center' }}>
+            "KOSAMART"
+            <span style={{ display: 'block' }}>KOPERASI SEJAHTERA BERSAMA (KOSAMA)</span>
+            <span style={{ display: 'block' }}>PT. PLN INDONESIA POWER HEAD OFFICE</span>
+            <span style={{ display: 'block' }}>Jl. JEND. GATOT SUBROTO KAV.18 KUNINGAN</span>
+            <span style={{ display: 'block' }}>JAKARTA SELATAN, 12950</span>
+            <span style={{ display: 'block' }}>{createDashes()}</span>
+            <span style={{ display: 'block' }}>{createDashes()}</span>
           </div>
-        ))}
 
-        <Text style={{ display: 'block' }}>{createDashes(38)}</Text>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Text>HARGA JUAL :</Text>
-          <Text>{formatPrice(transaction.total_amount, 10)}</Text>
+          <div style={{ marginTop: '10px' }}>
+            <span style={{ display: 'block' }}>
+              {padRight('ORDER NO', 14)}: {transaction.order_no}
+            </span>
+            <span style={{ display: 'block' }}>
+              {padRight('KASIR', 14)}: {transaction.cashier.name.toUpperCase()}
+            </span>
+            <span style={{ display: 'block' }}>
+              {padRight('TANGGAL', 14)}:{' '}
+              {formatDateTime(transaction.created_at, 'DD/MM/YY HH:mm:ss', isoDateFormat)}
+            </span>
+            <span style={{ display: 'block' }}>{createDashes()}</span>
+          </div>
+
+          <div style={{ fontFamily: 'monospace' }}>
+            {transaction.details.map((item, index) => (
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>{padRight(item.product_name, 20)}</span>
+                <span>{padLeft(item.quantity.toString(), 3)}</span>
+                <span>{formatPrice(item.unit_price, 6, false)}</span>
+                <span>{formatPrice(item.total_price, 8)}</span>
+              </div>
+            ))}
+
+            <span style={{ display: 'block' }}>{createDashes()}</span>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <span>HARGA JUAL :</span>
+              <span>{formatPrice(transaction.total_amount, 10)}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <span>DISKON :</span>
+              <span>{formatPrice(transaction.discount ?? 0, 10)}</span>
+            </div>
+            <span style={{ display: 'block' }}>{createDashes()}</span>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <span>TOTAL :</span>
+              <span>{formatPrice(transaction.total_amount, 10)}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <span>{mapPaymentMethodName(transaction.payment_method.code).toUpperCase()} :</span>
+              <span>{formatPrice(transaction.cash_received, 10)}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <span>KEMBALI :</span>
+              <span>{formatPrice(transaction.cash_received - transaction.total_amount, 10)}</span>
+            </div>
+          </div>
         </div>
-        <Text style={{ display: 'block' }}>{createDashes(38)}</Text>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Text>TOTAL :</Text>
-          <Text>{formatPrice(transaction.total_amount, 10)}</Text>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Text>TUNAI :</Text>
-          <Text>{formatPrice(paid, 10)}</Text>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Text>KEMBALI :</Text>
-          <Text>{formatPrice(change, 10)}</Text>
-        </div>
-      </div>
-    </Card>
+      )}
+    </>
   );
-};
+});
 
 export default Receipt;

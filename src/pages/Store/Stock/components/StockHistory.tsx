@@ -50,21 +50,26 @@ const tableColumn: ProColumns<StockHistoryItem>[] = [
   },
   {
     title: 'Jenis',
+    width: '80px',
     dataIndex: 'type',
   },
   {
     title: 'Jumlah',
     dataIndex: 'quantity',
+    width: '100px',
+    align: 'center',
   },
   {
     title: 'Saldo Stok',
+    width: '100px',
     dataIndex: 'balance',
+    align: 'center',
   },
 
   {
     title: 'Keterangan',
     dataIndex: 'notes',
-    width: '120px',
+    width: '220px',
     ellipsis: true,
   },
 
@@ -122,7 +127,7 @@ export function StockHistory(props: IStockHistoryProps) {
             padding: '12px',
           }}
           actionRef={actionRef}
-          headerTitle="Daftar Stok"
+          headerTitle="Mutasi Stok"
           search={false}
           toolBarRender={() => [
             <Button

@@ -98,6 +98,12 @@ export default [
         icon: 'login',
         routes: [
           {
+            name: 'Hari Libur',
+            icon: 'sound',
+            path: 'event',
+            component: './HRIS/Event',
+          },
+          {
             name: 'Rekap Kehadiran',
             icon: 'sound',
             path: 'report',
@@ -108,6 +114,12 @@ export default [
             icon: 'sound',
             path: 'monthly-report',
             component: './HRIS/Attendance/MonthlyReport',
+          },
+          {
+            name: 'Pengajuan Lembur',
+            icon: 'sound',
+            path: 'overtime-submission',
+            component: './HRIS/Attendance/OvertimeSubmission',
           },
         ],
       },
@@ -404,6 +416,24 @@ export default [
               },
             ],
           },
+          {
+            name: 'Kredit Toko',
+            icon: 'wallet',
+            path: 'store',
+            hideChildrenInMenu: true,
+            routes: [
+              {
+                name: 'Kredit Toko',
+                path: '/coop/credit/store',
+                component: './Coop/Credit/StoreCredit',
+              },
+              {
+                name: 'Kredit Toko',
+                path: '/coop/credit/store/:parameter',
+                component: './Coop/Credit/StoreCredit/Detail',
+              },
+            ],
+          },
         ],
       },
     ],
@@ -473,14 +503,50 @@ export default [
     routes: [
       {
         path: '/store',
-        redirect: 'dashboard',
+        redirect: 'report',
       },
       {
-        path: 'dashboard',
-        name: 'Dashboard',
+        path: 'report',
+        name: 'Laporan',
         icon: 'pieChart',
-        component: './Welcome',
+        routes: [
+          {
+            path: '/store/report',
+            redirect: 'selling',
+          },
+          {
+            path: 'selling',
+            name: 'Penjualan',
+            icon: 'pieChart',
+            component: './Store/Report/pages/SellingReportPage',
+          },
+          {
+            path: 'transaction',
+            name: 'Transaksi',
+            icon: 'pieChart',
+            component: './Store/Report/pages/TransactionReportPage',
+          },
+          {
+            path: 'payment-method',
+            name: 'Metode Pembayaran',
+            icon: 'pieChart',
+            component: './Store/Report/pages/PaymentMethodReportPage',
+          },
+          {
+            path: 'member',
+            name: 'Belanja Anggota',
+            icon: 'pieChart',
+            component: './Store/Report/pages/MemberReportPage',
+          },
+          {
+            path: 'product',
+            name: 'Penjualan Produk',
+            icon: 'pieChart',
+            component: './Store/Report/pages/ProductReportPage',
+          },
+        ],
       },
+
       {
         path: 'stock',
         name: 'Stok',

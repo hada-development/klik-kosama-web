@@ -1,3 +1,8 @@
+export const eventTypes = {
+  'company-event': { text: 'Acara Perusahaan', status: 'Processing' },
+  holiday: { text: 'Libur Nasional', status: 'Success' },
+};
+
 export const publishStatuses = {
   draft: { text: 'Draft', status: 'Processing' },
   published: { text: 'Published', status: 'Success' },

@@ -2,7 +2,7 @@ import { formatRupiah } from '@/common/utils/utils';
 import { ModalForm, ProFormDigit, ProFormInstance } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
 import { Table } from 'antd';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { POSItem } from '../data/data';
 
 type Props = {};
@@ -11,7 +11,18 @@ const ItemTable = ({}: Props) => {
   const { items, totalAmount, totalItems, changeQuantity } = useModel('POS.usePos');
   const qtyFormRef = useRef<ProFormInstance>();
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [selectedIndex, setSelectedIndex] = useState<number | undefined>();
+
+  const [selectedItem, setSelectedItem] = useState<[number, POSItem] | undefined>();
+
+  useEffect(() => {
+    if (qtyFormRef.current) {
+      if (selectedItem) {
+        qtyFormRef.current.setFieldsValue({
+          quantity: selectedItem[1].quantity,
+        });
+      }
+    }
+  }, [selectedItem]);
 
   const columns = [
     {
@@ -54,11 +65,8 @@ const ItemTable = ({}: Props) => {
         }}
         onRow={(record, index) => ({
           onClick: () => {
-            setSelectedIndex(index);
+            setSelectedItem([index!, record]);
             setModalOpen(true);
-            qtyFormRef.current?.setFieldsValue({
-              quantity: record.quantity,
-            });
           },
         })}
       />
@@ -66,13 +74,15 @@ const ItemTable = ({}: Props) => {
       <ModalForm
         formRef={qtyFormRef}
         open={modalOpen}
-        width={300}
+        width={600}
         title={'Ubah Quantity'}
         onOpenChange={setModalOpen}
         onFinish={async (value: { quantity: number }) => {
           const quantity = value.quantity;
-          changeQuantity(selectedIndex!, quantity);
-          setSelectedIndex(undefined);
+          if (selectedItem) {
+            changeQuantity(selectedItem[0], quantity);
+            setSelectedItem(undefined);
+          }
           return true;
         }}
         submitter={{
@@ -82,19 +92,34 @@ const ItemTable = ({}: Props) => {
           resetButtonProps: {
             danger: true,
             onClick: () => {
-              console.log('Reset');
-              changeQuantity(selectedIndex!, 0);
-              setSelectedIndex(undefined);
+              if (selectedItem) {
+                changeQuantity(selectedItem[0], 0);
+                setSelectedItem(undefined);
+              }
               setModalOpen(false);
             },
           },
         }}
       >
+        <div style={{ margin: '12px 0px' }}>
+          <span style={{ display: 'block' }}>Produk</span>
+          <strong>{selectedItem?.[1].product.name}</strong>
+        </div>
+
+        <div style={{ margin: '12px 0px' }}>
+          <span style={{ display: 'block' }}>Stok</span>
+          <strong>{selectedItem?.[1].product.stock} Item</strong>
+        </div>
+
         <ProFormDigit
           label="Jumlah"
           name={'quantity'}
           min={0}
+          max={selectedItem?.[1].product.stock}
           required={true}
+          style={{
+            fontSize: '24px',
+          }}
           rules={[
             {
               required: true,
