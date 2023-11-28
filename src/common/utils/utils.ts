@@ -91,6 +91,19 @@ export function isNumber(value: any): boolean {
   return typeof value === 'number' && !Number.isNaN(value);
 }
 
+export function convertToHourMinute(minutes: number): string {
+  const jam = Math.floor(minutes / 60);
+  const menit = minutes % 60;
+
+  const jamString = jam > 0 ? `${jam} Jam` : '';
+  const menitString = menit > 0 ? `${menit} Menit` : '';
+
+  // Join the strings with a space in between
+  const result = [jamString, menitString].filter(Boolean).join(' ');
+
+  return result || '0 Menit'; // Return '0 Menit' if the result is empty
+}
+
 export const isoDateFormat = 'YYYY-MM-DDTHH:mm:ss.SSSSSSZ';
 
 export function isImageFile(fileName: string) {

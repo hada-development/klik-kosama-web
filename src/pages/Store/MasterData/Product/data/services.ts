@@ -6,18 +6,18 @@ import { ProductTableItem } from './data';
 const baseUrl = '/api/web/store/product';
 
 export async function getProductDataTable(
+  storeID: number,
   params: any,
   options?: { [key: string]: any },
 ): Promise<PaginationList<ProductTableItem>> {
   return requestTableData<ProductTableItem>(baseUrl, params, options, {
-    store_id: 1,
+    store_id: storeID,
   });
 }
 
-export async function storeProduct(data: { [key: string]: any }) {
-  // TODO: CHANGE STORE ID TO SELECTED
-  data.stocks[0].store_id = 1;
-  data.prices[0].store_id = 1;
+export async function storeProduct(store_id: number, data: { [key: string]: any }) {
+  data.stocks[0].store_id = store_id;
+  data.prices[0].store_id = store_id;
   return request(baseUrl, {
     method: 'POST',
     data: data,
@@ -25,7 +25,6 @@ export async function storeProduct(data: { [key: string]: any }) {
 }
 
 export async function updateProduct(productId: number, data: { [key: string]: any }) {
-  // TODO: CHANGE STORE ID TO SELECTED
   data.stocks[0].store_id = 1;
   data.prices[0].store_id = 1;
   return request(`${baseUrl}/${productId}`, {
@@ -34,9 +33,8 @@ export async function updateProduct(productId: number, data: { [key: string]: an
   });
 }
 
-export async function getProductDetail(productId: number) {
-  // TODO: CHANGE STORE ID TO SELECTED
-  const store_id = 1;
+export async function getProductDetail(storeId: number, productId: number) {
+  const store_id = storeId;
   return request(`${baseUrl}/${productId}`, {
     params: {
       store_id: store_id,

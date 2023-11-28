@@ -1,6 +1,7 @@
 import {
   ModalForm,
   ProForm,
+  ProFormDigit,
   ProFormInstance,
   ProFormText,
   ProFormTextArea,
@@ -64,6 +65,22 @@ const OfficeForm: React.FC<OfficeFormProps> = (props) => {
     } finally {
       props.onCancel();
     }
+  };
+
+  const validateCoordinates = async (_: any, value: number | undefined) => {
+    // Custom validation logic for latitude and longitude
+    if (value === undefined) {
+      return Promise.reject(new Error('Please enter a value'));
+    }
+
+    if (value < -90 || value > 90) {
+      return Promise.reject(new Error('Latitude must be between -90 and 90'));
+    }
+
+    // Add similar validation for longitude if needed
+
+    // If validation passes, resolve the Promise
+    return Promise.resolve();
   };
 
   return (
@@ -156,30 +173,28 @@ const OfficeForm: React.FC<OfficeFormProps> = (props) => {
       </ReactMapGL>
       <div style={{ marginTop: '20px' }}>
         <ProForm.Group>
-          <ProFormText
+          <ProFormDigit
             width="sm"
-            rules={[
-              {
-                required: true,
-                message: 'Longitude Is Required',
-              },
-            ]}
+            fieldProps={{
+              precision: 6, // Number of decimal places for latitude
+            }}
+            rules={[{ required: true, message: 'Please enter latitude' }]}
+            min={-90}
+            max={90}
+            placeholder="Masukkan latitude (Diawali -6)"
+            name="latitude"
+            label="Latitude"
+          />
+
+          <ProFormDigit
+            width="sm"
+            fieldProps={{
+              precision: 6, // Number of decimal places for longitude
+            }}
+            rules={[{ required: true, message: 'Please enter longitude' }]}
             placeholder="Masukkan Longitude"
             name="longitude"
             label="Longitude"
-          />
-
-          <ProFormText
-            width="sm"
-            rules={[
-              {
-                required: true,
-                message: 'Latitude Is Required',
-              },
-            ]}
-            placeholder="Masukkan latitude"
-            name="latitude"
-            label="Latitude"
           />
         </ProForm.Group>
 

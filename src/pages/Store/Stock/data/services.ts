@@ -6,11 +6,12 @@ import { StockHistoryItem, StockTableItem } from './data';
 const baseUrl = '/api/web/store/stock';
 
 export async function getStockDataTable(
+  storeId: number,
   params: any,
   options?: { [key: string]: any },
 ): Promise<PaginationList<StockTableItem>> {
   return requestTableData<StockTableItem>(baseUrl, params, options, {
-    store_id: 1,
+    store_id: storeId,
   });
 }
 
@@ -24,10 +25,9 @@ export async function getStockHistoryDataTable(
   });
 }
 
-export async function storeStock(data: { [key: string]: any }) {
-  // TODO: CHANGE STORE ID TO SELECTED
-  data.stocks[0].store_id = 1;
-  data.prices[0].store_id = 1;
+export async function storeStock(storeId: number, data: { [key: string]: any }) {
+  data.stocks[0].store_id = storeId;
+  data.prices[0].store_id = storeId;
   return request(baseUrl, {
     method: 'POST',
     data: data,
@@ -41,9 +41,8 @@ export async function updateStock(StockId: number, data: { [key: string]: any })
   });
 }
 
-export async function getStockDetail(StockId: number) {
-  // TODO: CHANGE STORE ID TO SELECTED
-  const store_id = 1;
+export async function getStockDetail(storeId: number, StockId: number) {
+  const store_id = storeId;
   return request(`${baseUrl}/${StockId}`, {
     params: {
       store_id: store_id,

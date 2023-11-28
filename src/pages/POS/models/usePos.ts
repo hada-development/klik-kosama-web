@@ -20,6 +20,7 @@ const defaultPm: POSPaymentMethod = {
 
 export default () => {
   const [pageLoading, setPageLoading] = useState<boolean>(false);
+  const [storeId, setStoreId] = useState<number>(1);
 
   const [items, setItems] = useState<POSItem[]>([]);
   const [member, setMember] = useState<POSMember | undefined>();
@@ -156,8 +157,7 @@ export default () => {
 
   const handleCheckout = async (cash_received: number | null = null) => {
     const data = {
-      // TODO: Change Store
-      store_id: 1,
+      store_id: storeId,
       app_order_id: appOrder?.id ?? null,
       payment_method_id: paymentMethod.id,
       cash_received: cash_received,
@@ -213,6 +213,8 @@ export default () => {
   };
 
   return {
+    storeId,
+    setStoreId,
     pageLoading,
     items,
     totalAmount,

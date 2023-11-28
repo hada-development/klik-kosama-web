@@ -9,6 +9,7 @@ import {
   ProFormSwitch,
   ProFormText,
 } from '@ant-design/pro-components';
+import { useModel } from '@umijs/max';
 import { Menu, MenuProps, Spin } from 'antd';
 import { MenuInfo } from 'rc-menu/lib/interface';
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
@@ -41,6 +42,7 @@ const ProductForm: React.FC<{
   onSubmit: (isSuccess: boolean) => Promise<boolean>;
   productId?: number;
 }> = ({ visible, onClose, onSubmit, productId }) => {
+  const { storeID } = useModel('Store.useStore');
   const [activeTab, setActiveTab] = useState<string>('detail');
   const [barcodes, setBarcodes] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -50,7 +52,7 @@ const ProductForm: React.FC<{
   useEffect(() => {
     if (productId) {
       setIsLoading(true);
-      getProductDetail(productId).then((data: any) => {
+      getProductDetail(storeID, productId).then((data: any) => {
         var product = data.data;
         console.log(product);
         var barcodes = product.barcodes.map((br: Barcode) => br.value);
@@ -87,7 +89,7 @@ const ProductForm: React.FC<{
         if (productId) {
           await updateProduct(productId, data);
         } else {
-          await storeProduct(data);
+          await storeProduct(storeID, data);
         }
         await onSubmit(true);
         return true;

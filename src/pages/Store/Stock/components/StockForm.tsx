@@ -23,6 +23,7 @@ const StockForm: React.FC<{
       width={500}
       onOpenChange={onClose}
       open={visible}
+      style={{ padding: '20px' }}
       onFinish={async (data) => {
         console.log(data);
         if (StockId) {

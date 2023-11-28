@@ -28,7 +28,7 @@ const slashLineStyle: React.CSSProperties = {
 };
 
 const TransactionHistory: React.FC<Props> = () => {
-  const { openTrxDrawer, setOpenTrxDrawer, printTrx } = useModel('POS.usePos');
+  const { storeId, openTrxDrawer, setOpenTrxDrawer, printTrx } = useModel('POS.usePos');
 
   const [loading, setLoading] = useState<boolean>(false);
   const [trx, setTrx] = useState<POSTransaction[]>([]);
@@ -54,7 +54,7 @@ const TransactionHistory: React.FC<Props> = () => {
 
   const fetchTrx = async () => {
     setLoading(true);
-    const response = await getTodayTransaction();
+    const response = await getTodayTransaction(storeId);
     if (response.success) {
       setTrx(response.data);
     }

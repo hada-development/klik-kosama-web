@@ -281,7 +281,7 @@ export default [
         path: 'dashboard',
         name: 'Dashboard',
         icon: 'pieChart',
-        component: './Welcome',
+        component: './Coop/Dashboard',
       },
       {
         path: 'member',
@@ -431,6 +431,19 @@ export default [
                 name: 'Kredit Toko',
                 path: '/coop/credit/store/:parameter',
                 component: './Coop/Credit/StoreCredit/Detail',
+              },
+            ],
+          },
+          {
+            name: 'Kredit Apotek',
+            icon: 'wallet',
+            path: 'pharmacy',
+            hideChildrenInMenu: true,
+            routes: [
+              {
+                name: 'Kredit Apotek',
+                path: '/coop/credit/pharmacy',
+                component: './Coop/Credit/PharmacyCredit',
               },
             ],
           },

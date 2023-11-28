@@ -1,8 +1,10 @@
 import { formatRupiah } from '@/common/utils/utils';
 import { CheckCircleFilled, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
+import { useModel } from '@umijs/max';
 import { Button, Tag, message } from 'antd';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import StoreSelection from '../../components/StoreSelection';
 import ProductForm from './components/ProductForm';
 import { ProductTableItem } from './data/data';
 import { getProductDataTable } from './data/services';
@@ -24,7 +26,13 @@ const InformationPage: React.FC = () => {
   const [deleteModalOpen, handleDeleteModalOpen] = useState<boolean>(false);
   const [selectedRowsState, setSelectedRows] = useState<ProductTableItem[]>([]);
 
+  const { storeID } = useModel('Store.useStore');
+
   const actionRef = useRef<ActionType>();
+
+  useEffect(() => {
+    actionRef.current?.reloadAndRest?.();
+  }, [storeID]);
 
   const columns: ProColumns<ProductTableItem>[] = [
     {
@@ -115,7 +123,7 @@ const InformationPage: React.FC = () => {
     },
   ];
   return (
-    <PageContainer>
+    <PageContainer extra={<StoreSelection />}>
       <ProTable<ProductTableItem, API.PageParams>
         headerTitle="Daftar Produk"
         rowKey="id"
@@ -123,7 +131,7 @@ const InformationPage: React.FC = () => {
         search={{
           labelWidth: 200,
         }}
-        request={getProductDataTable}
+        request={(params, options) => getProductDataTable(storeID, params, options)}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {

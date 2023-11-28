@@ -40,3 +40,12 @@ export async function deleteLeaveSubmission(id?: number) {
     method: 'DELETE',
   });
 }
+
+export async function approvalLeaveSubmission(id: number, status: string) {
+  return request(`/api/web/hr/leave-submission/${id}/approval`, {
+    method: 'PUT',
+    data: {
+      status: status,
+    },
+  });
+}

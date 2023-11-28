@@ -1,3 +1,4 @@
+import { employeeStatuses } from '@/common/data/data';
 import { getEmployeeType } from '@/pages/HRIS/MasterData/EmployeeType/data/services/service';
 import { getPosition } from '@/pages/HRIS/MasterData/Position/data/services/service';
 import { EyeOutlined, PlusOutlined } from '@ant-design/icons';
@@ -61,6 +62,11 @@ const EmployeePage: React.FC = () => {
             [currentObject.id!]: currentObject.alias,
           });
         }, {}) || {},
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      valueEnum: employeeStatuses,
     },
     {
       title: 'Posisi',

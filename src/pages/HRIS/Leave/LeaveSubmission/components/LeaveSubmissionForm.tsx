@@ -1,14 +1,20 @@
-import { ModalForm, ProFormInstance, ProFormSelect } from '@ant-design/pro-components';
+import { ModalForm, ProFormInstance } from '@ant-design/pro-components';
 
-import { submissionStatuses } from '@/common/data/data';
 import { formatDateTime } from '@/common/utils/utils';
-import { Descriptions } from 'antd';
-import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react';
-import { addLeaveSubmission, editLeaveSubmission } from '../data/services/service';
+import { green, red } from '@ant-design/colors';
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { useModel } from '@umijs/max';
+import { Button, Descriptions, Flex, Spin } from 'antd';
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import {
+  addLeaveSubmission,
+  approvalLeaveSubmission,
+  editLeaveSubmission,
+} from '../data/services/service';
 
 export type LeaveSubmissionFormProps = {
   onCancel: (flag?: boolean, formVals?: LeaveSubmissionFeature.LeaveSubmissionListItem) => void;
-  onSubmit: (values: LeaveSubmissionFeature.LeaveSubmissionListItem) => Promise<boolean>;
+  onSubmit: (values?: LeaveSubmissionFeature.LeaveSubmissionListItem) => Promise<boolean>;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   values?: Partial<LeaveSubmissionFeature.LeaveSubmissionListItem>;
@@ -16,6 +22,8 @@ export type LeaveSubmissionFormProps = {
 
 const LeaveSubmissionForm: React.FC<LeaveSubmissionFormProps> = (props) => {
   const formRef = useRef<ProFormInstance>();
+  const { initialState } = useModel('@@initialState');
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     // Set initial values when the modal is opened
@@ -44,60 +52,95 @@ const LeaveSubmissionForm: React.FC<LeaveSubmissionFormProps> = (props) => {
     }
   };
 
+  const handleReview = async (type: string) => {
+    setLoading(true);
+    await approvalLeaveSubmission(props.values!.id!, type);
+    setLoading(false);
+    props.setOpen!(false);
+    props.onSubmit();
+  };
+
   return (
-    <ModalForm
-      title={props.values != undefined ? 'Edit Pengajuan Cuti' : 'Tambah Pengajuan Cuti'}
-      width="400px"
-      formRef={formRef}
-      open={props.open}
-      onOpenChange={props.setOpen}
-      onFinish={async (value) => {
-        await handleSubmit(value);
-        props.setOpen!(false);
-      }}
-    >
-      <Descriptions
-        layout="vertical"
-        items={[
-          {
-            key: 'name',
-            label: 'Nama Pegawai',
-            span: 10,
-            children: props.values?.parent_submission?.employee?.user.name,
-          },
-          {
-            key: 'reason',
-            label: 'Alasan',
-            span: 10,
-            children: props.values?.note,
-          },
-          {
-            key: 'start_period',
-            label: 'Dari',
-            children: formatDateTime(props.values?.start_date, 'DD/MM/YYYY'),
-          },
-          {
-            key: 'end_period',
-            label: 'Sampai',
-            children: formatDateTime(props.values?.start_date, 'DD/MM/YYYY'),
-          },
+    <Spin spinning={loading}>
+      <ModalForm
+        title={props.values != undefined ? 'Edit Pengajuan Cuti' : 'Tambah Pengajuan Cuti'}
+        width="400px"
+        formRef={formRef}
+        open={props.open}
+        onOpenChange={props.setOpen}
+        onFinish={async (value) => {
+          await handleSubmit(value);
+          props.setOpen!(false);
+        }}
+        submitter={{
+          render: () =>
+            props.values?.parent_submission?.current_step?.user_ids.includes(
+              initialState?.currentUser?.id,
+            ) ? (
+              <Flex>
+                <Button
+                  onClick={() => handleReview('rejected')}
+                  type="primary"
+                  style={{ backgroundColor: red.primary }}
+                  icon={<CloseCircleOutlined />}
+                >
+                  Tolak
+                </Button>
+                <Button
+                  onClick={() => handleReview('accepted')}
+                  type="primary"
+                  style={{ backgroundColor: green.primary }}
+                  icon={<CheckCircleOutlined />}
+                >
+                  Setujui
+                </Button>
+              </Flex>
+            ) : (
+              <></>
+            ),
+        }}
+      >
+        <Descriptions
+          layout="vertical"
+          items={[
+            {
+              key: 'name',
+              label: 'Nama Pegawai',
+              span: 10,
+              children: props.values?.parent_submission?.employee?.user.name,
+            },
+            {
+              key: 'reason',
+              label: 'Alasan',
+              span: 10,
+              children: props.values?.note,
+            },
+            {
+              key: 'start_period',
+              label: 'Dari',
+              children: formatDateTime(props.values?.start_date, 'DD/MM/YYYY'),
+            },
+            {
+              key: 'end_period',
+              label: 'Sampai',
+              children: formatDateTime(props.values?.start_date, 'DD/MM/YYYY'),
+            },
 
-          {
-            key: 'total_day',
-            label: 'Jumlah ',
-            children: `${props.values?.total_days} Hari`,
-          },
-        ]}
-      />
+            {
+              key: 'total_day',
+              label: 'Jumlah ',
+              children: `${props.values?.total_days} Hari`,
+            },
 
-      <ProFormSelect
-        name="status"
-        label="Status"
-        valueEnum={submissionStatuses}
-        placeholder="Pilih Status"
-        rules={[{ required: true, message: 'Please select status!' }]}
-      />
-    </ModalForm>
+            {
+              key: 'status',
+              label: 'Status',
+              children: `${props.values?.parent_submission?.current_step.title}`,
+            },
+          ]}
+        />
+      </ModalForm>
+    </Spin>
   );
 };
 

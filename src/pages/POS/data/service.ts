@@ -12,11 +12,10 @@ import {
 } from './data';
 
 export async function getProduct(
+  store_id: number,
   query: string,
   param: string,
 ): Promise<ResponseData<POSProduct[]>> {
-  // TODO: Change store_id
-  const store_id = 1;
   const url = '/api/web/pos/products';
   var searchParam: { [key: string]: string } = {};
   searchParam[param] = query;
@@ -106,10 +105,9 @@ export async function voidTransaction(trxId: number): Promise<ResponseData<any>>
   });
 }
 
-export async function getTodayTransaction(): Promise<ResponseData<POSTransaction[]>> {
-  // Todo Store Id
-  const store_id = 1;
-
+export async function getTodayTransaction(
+  store_id: number,
+): Promise<ResponseData<POSTransaction[]>> {
   const url = '/api/web/pos/transaction';
   const params = {
     'order[created_at]': 'desc',

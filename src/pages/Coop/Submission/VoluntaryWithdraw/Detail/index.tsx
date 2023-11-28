@@ -1,11 +1,10 @@
 import PrintHeader from '@/common/components/PrintHeader';
 import { submissionStatuses } from '@/common/data/data';
-import { formatDateTime, formatRupiah, isoDateFormat } from '@/common/utils/utils';
+import { downloadUrl, formatDateTime, formatRupiah, isoDateFormat } from '@/common/utils/utils';
 import { EditOutlined, PrinterOutlined } from '@ant-design/icons';
 import { PageContainer, ProDescriptions } from '@ant-design/pro-components';
 import { Button, Card, Divider, Typography, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import { useReactToPrint } from 'react-to-print';
 import { history, useParams } from 'umi';
 import SubmissionValidationHistory from '../../component/SubmissionValidationHistory';
 import { VoluntaryWithdrawSubmissionDetail } from '../data/data';
@@ -19,9 +18,9 @@ const VoluntaryWithdrawSubmissionDetailPage: React.FC = (prop) => {
   const [detail, setDetail] = useState<VoluntaryWithdrawSubmissionDetail | undefined>();
 
   const printableRef = useRef(null);
-  const handlePrint = useReactToPrint({
-    content: () => printableRef.current!,
-  });
+  const handlePrint = (id: number) => {
+    downloadUrl(`/api/web/coop/submission/voluntary-withdraw/pdf/${id}`);
+  };
 
   const [isModalEditOpen, setModalEdit] = useState(false);
 
@@ -51,7 +50,13 @@ const VoluntaryWithdrawSubmissionDetailPage: React.FC = (prop) => {
       header={{
         title: `Pengajuan Simpanan Sukarela - ${detail?.parent_submission.number ?? ''} `,
         extra: (
-          <Button onClick={handlePrint}>
+          <Button
+            onClick={() => {
+              if (detail) {
+                handlePrint(detail!.id);
+              }
+            }}
+          >
             <PrinterOutlined /> Cetak Halaman
           </Button>
         ),

@@ -40,3 +40,12 @@ export async function deleteOvertimeSubmission(id?: number) {
     method: 'DELETE',
   });
 }
+
+export async function approvalOvertimeSubmission(id: number, status: string) {
+  return request(`/api/web/hr/overtime-submission/${id}/approval`, {
+    method: 'PUT',
+    data: {
+      status: status,
+    },
+  });
+}

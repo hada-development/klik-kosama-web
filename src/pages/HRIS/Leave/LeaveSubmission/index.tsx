@@ -1,6 +1,6 @@
 import { submissionStatuses } from '@/common/data/data';
 import { formatDateTime } from '@/common/utils/utils';
-import { EditOutlined, ExclamationCircleFilled, PlusOutlined } from '@ant-design/icons';
+import { ExclamationCircleFilled, OrderedListOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   ActionType,
   FooterToolbar,
@@ -77,34 +77,47 @@ const LeaveSubmissionPage: React.FC = () => {
     {
       title: 'Pegawai',
       dataIndex: ['parent_submission', 'employee', 'user', 'name'],
+      width: 150,
+      ellipsis: true,
     },
     {
       title: 'Dari Tanggal',
       dataIndex: 'start_date',
+      width: 80,
+
       render: (_, record) => formatDateTime(record.start_date, 'DD/MM/YYYY'),
     },
     {
       title: 'Sampai Tanggal',
       dataIndex: 'end_date',
+      width: 80,
       render: (_, record) => formatDateTime(record.end_date, 'DD/MM/YYYY'),
     },
     {
       title: 'Jumlah Hari',
+      width: 80,
       dataIndex: 'total_days',
     },
     {
       title: 'Alasan',
+      width: 150,
       dataIndex: 'note',
     },
     {
+      title: 'Approval',
+      width: 150,
+      dataIndex: ['parent_submission', 'current_step', 'title'],
+    },
+    {
       title: 'Status',
+      width: 120,
       dataIndex: ['parent_submission', 'status'],
       valueEnum: submissionStatuses,
     },
     {
       title: 'Aksi',
       dataIndex: 'option',
-      width: '15%',
+      width: '8%',
       valueType: 'option',
       render: (_, record) => [
         <a
@@ -114,7 +127,7 @@ const LeaveSubmissionPage: React.FC = () => {
             setCurrentRow(record);
           }}
         >
-          <EditOutlined /> Update
+          <OrderedListOutlined /> Detail
         </a>,
       ],
     },
@@ -129,6 +142,9 @@ const LeaveSubmissionPage: React.FC = () => {
         actionRef={actionRef}
         search={{
           labelWidth: 120,
+        }}
+        scroll={{
+          x: 'max-content',
         }}
         request={getLeaveSubmission}
         columns={columns}

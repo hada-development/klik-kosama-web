@@ -22,6 +22,12 @@ export const submissionStatuses = {
   rejected: { text: 'Ditolak', status: 'Error' },
 };
 
+export const employeeStatuses = {
+  active: { text: 'Aktif', status: 'Success' },
+  resign: { text: 'Resign', status: 'Default' },
+  retire: { text: 'Pensium', status: 'Default' },
+};
+
 export const webRoles = ['admin', 'management', 'staff'];
 
 export interface PaginationList<TData> {

@@ -6,41 +6,15 @@ import {
   PageContainer,
   ProColumns,
   ProTable,
-  StatisticCard,
 } from '@ant-design/pro-components';
 import { Button } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { memberType } from '../../Member/data/data';
-import { getCompanySavingSummary, getSavingSummaryTable } from '../data/service';
-
-import savingBlue from '../../../../../assets/saving_blue.png';
-import savingBrown from '../../../../../assets/saving_brown.png';
-import savingGreen from '../../../../../assets/saving_green.png';
-import savingViolet from '../../../../../assets/saving_violet.png';
-
-const imgStyle = {
-  display: 'block',
-  width: 42,
-  height: 42,
-};
-
-const statisticCardValueStyle = {
-  fontSize: '12pt',
-  fontWeight: 'bold',
-};
-
+import SavingSummaryCard from '../components/Summary';
+import { getSavingSummaryTable } from '../data/service';
 const SavingSummaryPage: React.FC = () => {
   const [currentParam, setCurrentParam] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<SavingFeature.SavingSummaryMember[]>([]);
-
-  const [savingSummary, setSavingSummary] = useState<SavingFeature.SavingSummaryCompany>();
-
-  useEffect(function () {
-    getCompanySavingSummary().then((data) => {
-      const summary = data.data[0];
-      setSavingSummary(summary);
-    });
-  }, []);
 
   const actionRef = useRef<ActionType>();
 
@@ -107,44 +81,7 @@ const SavingSummaryPage: React.FC = () => {
           marginBottom: '12px',
         }}
       >
-        <StatisticCard.Group direction={'row'}>
-          <StatisticCard
-            statistic={{
-              title: 'Total Simpanan',
-              value: savingSummary?.total_saving ?? 0,
-              formatter: formatRupiah,
-              valueStyle: statisticCardValueStyle,
-              icon: <img style={imgStyle} src={savingBrown} alt="icon" />,
-            }}
-          />
-          <StatisticCard
-            statistic={{
-              title: 'Simpanan Pokok',
-              value: savingSummary?.principal_saving ?? 0,
-              formatter: formatRupiah,
-              valueStyle: statisticCardValueStyle,
-              icon: <img style={imgStyle} src={savingBlue} alt="icon" />,
-            }}
-          />
-          <StatisticCard
-            statistic={{
-              title: 'Simpanan Wajib',
-              value: savingSummary?.mandatory_saving ?? 0,
-              formatter: formatRupiah,
-              valueStyle: statisticCardValueStyle,
-              icon: <img style={imgStyle} src={savingGreen} alt="icon" />,
-            }}
-          />
-          <StatisticCard
-            statistic={{
-              title: 'Simpanan Sukarela',
-              value: savingSummary?.voluntary_saving ?? 0,
-              formatter: formatRupiah,
-              valueStyle: statisticCardValueStyle,
-              icon: <img style={imgStyle} src={savingViolet} alt="icon" />,
-            }}
-          />
-        </StatisticCard.Group>
+        <SavingSummaryCard />
       </div>
 
       <ProTable<SavingFeature.SavingSummaryMember, API.PageParams>

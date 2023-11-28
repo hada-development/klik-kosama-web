@@ -1,5 +1,6 @@
 import { submissionStatuses } from '@/common/data/data';
-import { EditOutlined, ExclamationCircleFilled } from '@ant-design/icons';
+import { convertToHourMinute } from '@/common/utils/utils';
+import { ExclamationCircleFilled, OrderedListOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Modal, message } from 'antd';
 import React, { useRef, useState } from 'react';
@@ -84,22 +85,30 @@ const OvertimeSubmissionPage: React.FC = () => {
       dataIndex: 'end_time',
     },
     {
-      title: 'Menit',
+      title: 'Waktu',
       dataIndex: 'minutes',
+      render: (data, _) => {
+        return convertToHourMinute(data as number);
+      },
     },
     {
       title: 'Catatan',
       dataIndex: 'note',
     },
     {
+      title: 'Approval',
+      dataIndex: ['parent_submission', 'current_step', 'title'],
+    },
+    {
       title: 'Status',
       dataIndex: ['parent_submission', 'status'],
       valueEnum: submissionStatuses,
     },
+
     {
       title: 'Aksi',
       dataIndex: 'option',
-      width: '15%',
+      width: '8%',
       valueType: 'option',
       render: (_, record) => [
         <a
@@ -109,7 +118,7 @@ const OvertimeSubmissionPage: React.FC = () => {
             setCurrentRow(record);
           }}
         >
-          <EditOutlined /> Update
+          <OrderedListOutlined /> Detail
         </a>,
       ],
     },

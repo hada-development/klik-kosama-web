@@ -10,6 +10,7 @@ import { debounce } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import { POSProduct } from '../data/data';
 import { getProduct } from '../data/service';
+import StoreSelection from './StoreSelection';
 
 type Props = {};
 
@@ -19,7 +20,7 @@ const options = [
 ];
 
 export default function SearchBox({}: Props) {
-  const { addItem } = useModel('POS.usePos');
+  const { addItem, storeId } = useModel('POS.usePos');
   const [searchType, setSearchType] = useState<'name' | 'barcode'>('barcode');
   const [searchText, setSearchText] = useState('');
   const [results, setResults] = useState<POSProduct[]>([]);
@@ -71,7 +72,7 @@ export default function SearchBox({}: Props) {
   };
 
   const fetchProductsFromDatabase = async (query: string) => {
-    const data = (await getProduct(query, searchType)).data;
+    const data = (await getProduct(storeId, query, searchType)).data;
     return data;
   };
 
@@ -135,6 +136,7 @@ export default function SearchBox({}: Props) {
       </Input.Group>
 
       <Flex align="center" gap={'8px'}>
+        <StoreSelection />
         <DarkModeToggle />
         <FullscreenToggle />
       </Flex>

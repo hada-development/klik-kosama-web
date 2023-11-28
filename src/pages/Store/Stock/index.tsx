@@ -2,8 +2,10 @@ import { formatRupiah } from '@/common/utils/utils';
 import ExcelImportModal from '@/pages/Coop/Shared/Components/ExcelImportModal';
 import { EyeOutlined, UploadOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
+import { useModel } from '@umijs/max';
 import { Button, Tag, message } from 'antd';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import StoreSelection from '../components/StoreSelection';
 import { StockHistory } from './components/StockHistory';
 import { StockTableItem, stockStatuses } from './data/data';
 import { getStockDataTable } from './data/services';
@@ -20,12 +22,17 @@ import { getStockDataTable } from './data/services';
 const handleRemove = async (selectedRow: StockTableItem | undefined) => {};
 
 const InformationPage: React.FC = () => {
+  const { storeID } = useModel('Store.useStore');
   const [currentRow, setCurrentRow] = useState<StockTableItem | undefined>();
   const [importModalOpen, handleImportModalOpen] = useState<boolean>(false);
   const [detailModalOpen, handleDetailModalOpen] = useState<boolean>(false);
   const [selectedRowsState, setSelectedRows] = useState<StockTableItem[]>([]);
 
   const actionRef = useRef<ActionType>();
+
+  useEffect(() => {
+    actionRef.current?.reloadAndRest?.();
+  }, [storeID]);
 
   const columns: ProColumns<StockTableItem>[] = [
     {
@@ -121,7 +128,7 @@ const InformationPage: React.FC = () => {
     },
   ];
   return (
-    <PageContainer>
+    <PageContainer extra={<StoreSelection />}>
       <ProTable<StockTableItem, API.PageParams>
         scroll={{
           x: 'max-content',
@@ -143,7 +150,7 @@ const InformationPage: React.FC = () => {
             <UploadOutlined /> Import
           </Button>,
         ]}
-        request={getStockDataTable}
+        request={(params, options) => getStockDataTable(storeID, params, options)}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -168,9 +175,9 @@ const InformationPage: React.FC = () => {
         setIsModalOpen={handleImportModalOpen}
         url="/api/web/store/stock/import"
         param={{
-          store_id: 1,
+          store_id: storeID,
         }}
-        templateUrl="/api/web/store/stock/import?store_id=1"
+        templateUrl={'/api/web/store/stock/import?store_id=' + storeID}
         onUploaded={() => {
           message.success('Berhasil mengimport transaksi simpanan');
           if (actionRef.current) {
