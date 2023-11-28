@@ -12,7 +12,8 @@ type Props = {};
 const TransactionReportPage = (props: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [transactionReport, setTransactionReport] = useState<TransactionReport | undefined>();
-  const { dateRange, storeID } = useModel('Store.Report.useStoreReport');
+  const { dateRange } = useModel('Store.Report.useStoreReport');
+  const { storeID } = useModel('Store.useStore');
 
   useEffect(() => {
     handleGenerateReport();

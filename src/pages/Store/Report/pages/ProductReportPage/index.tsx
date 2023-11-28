@@ -13,7 +13,9 @@ type Props = {};
 const ProductReportPage = (props: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [tableParam, setCurrentParam] = useState<any>();
-  const { dateRange, storeID } = useModel('Store.Report.useStoreReport');
+
+  const { dateRange } = useModel('Store.Report.useStoreReport');
+  const { storeID } = useModel('Store.useStore');
 
   const actionRef = useRef<ActionType>();
 

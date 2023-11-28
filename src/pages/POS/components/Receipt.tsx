@@ -1,13 +1,14 @@
 // Receipt.tsx
 import { formatDateTime, formatPrice, isoDateFormat } from '@/common/utils/utils';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { POSTransaction, mapPaymentMethodName } from '../data/data';
 
 interface ReceiptProps {
   transaction?: POSTransaction;
+  storeID: number;
 }
 
-const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(({ transaction }, ref) => {
+const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(({ transaction, storeID }, ref) => {
   const padLeft = (span: string, total: number = 10) => {
     return span.padStart(total, '\u00A0');
   };
@@ -25,13 +26,28 @@ const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(({ transaction },
     return `@media print { @page { size: 80mm ${heightBasis}mm }}`;
   };
 
+  const getHeaderTitle = () => {
+    console.log(storeID);
+    if (storeID == 1) {
+      return '"KOSAMART"';
+    }
+    if (storeID == 2) {
+      return '"APOTEK"';
+    }
+    return '';
+  };
+
+  useEffect(() => {
+    console.log(`RECEIPT STORE ID : ${storeID}`);
+  }, [storeID]);
+
   return (
     <>
       {transaction && (
         <div ref={ref} style={{ width: 300, fontFamily: 'monospace', margin: '20px 1px' }}>
           <style>{getPageSize()}</style>
           <div style={{ textAlign: 'center' }}>
-            "KOSAMART"
+            {getHeaderTitle()}
             <span style={{ display: 'block' }}>KOPERASI SEJAHTERA BERSAMA (KOSAMA)</span>
             <span style={{ display: 'block' }}>PT. PLN INDONESIA POWER HEAD OFFICE</span>
             <span style={{ display: 'block' }}>Jl. JEND. GATOT SUBROTO KAV.18 KUNINGAN</span>

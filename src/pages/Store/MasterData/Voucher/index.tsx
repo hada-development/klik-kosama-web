@@ -15,6 +15,7 @@ import {
 } from '@ant-design/pro-components';
 import { Button, Modal, message } from 'antd';
 import React, { useRef, useState } from 'react';
+import BarcodeModal from './components/BarcodeModal';
 import VoucherForm from './components/VoucherForm';
 import { VoucherFeature } from './data/data';
 import { deleteVoucher, getVoucher } from './data/services/service';
@@ -51,6 +52,8 @@ const VoucherPage: React.FC = () => {
   const [deleteModalOpen, handleDeleteModalOpen] = useState<boolean>(false);
   const [selectedRowsState, setSelectedRows] = useState<VoucherFeature.VoucherListItem[]>([]);
   const [{ confirm }, contextHolder] = Modal.useModal();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedBarcode, setSelectedBarcode] = useState('');
 
   const actionRef = useRef<ActionType>();
 
@@ -72,15 +75,24 @@ const VoucherPage: React.FC = () => {
       },
     });
   };
+  const showBarcodeModal = (barcode: string) => {
+    setModalVisible(true);
+    setSelectedBarcode(barcode);
+  };
+
+  const handleModalClose = () => {
+    setModalVisible(false);
+  };
 
   const columns: ProColumns<VoucherFeature.VoucherListItem>[] = [
     {
-      title: 'No Anggota',
-      dataIndex: ['user', 'member', 'member_no'],
-    },
-    {
-      title: 'Nama Anggota',
-      dataIndex: ['user', 'name'],
+      title: 'Barcode',
+      dataIndex: ['barcode'],
+      render: (text: any) => (
+        <Button type="link" onClick={() => showBarcodeModal(text)}>
+          {text}
+        </Button>
+      ),
     },
     {
       title: 'Nama Voucher',
@@ -194,6 +206,11 @@ const VoucherPage: React.FC = () => {
         values={currentRow}
         open={createModalOpen}
         setOpen={handleModalOpen}
+      />
+      <BarcodeModal
+        visible={modalVisible}
+        onClose={handleModalClose}
+        barcodeValue={selectedBarcode}
       />
     </PageContainer>
   );

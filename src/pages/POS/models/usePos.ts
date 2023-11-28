@@ -53,7 +53,7 @@ export default () => {
       setItems((prevItems) => {
         const updatedItems = [...prevItems, newItem];
         // Call updateTotals after adding an item
-        updateTotals(updatedItems);
+        updateTotals(updatedItems, voucher);
         return updatedItems;
       });
     } else {
@@ -71,7 +71,7 @@ export default () => {
           return item;
         });
         // Call updateTotals after updating the item
-        updateTotals(updatedItems);
+        updateTotals(updatedItems, voucher);
         return updatedItems;
       });
     }
@@ -100,7 +100,7 @@ export default () => {
       }
 
       // Call updateTotals after changing the quantity
-      updateTotals(updatedItems);
+      updateTotals(updatedItems, voucher);
       return updatedItems;
     });
   };

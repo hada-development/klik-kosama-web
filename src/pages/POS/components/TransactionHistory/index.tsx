@@ -71,6 +71,7 @@ const TransactionHistory: React.FC<Props> = () => {
         <List
           dataSource={trx}
           itemLayout="vertical"
+          style={{ padding: '0px 0px' }}
           renderItem={(item, index) => {
             const isVoid = item.deleted_at != undefined;
             return (

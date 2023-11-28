@@ -9,7 +9,5 @@ export default () => {
   return {
     dateRange,
     setDateRange,
-    storeID,
-    setStoreID,
   };
 };

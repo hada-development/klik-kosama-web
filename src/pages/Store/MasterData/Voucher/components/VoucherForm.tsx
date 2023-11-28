@@ -3,14 +3,9 @@ import {
   ProFormDatePicker,
   ProFormInstance,
   ProFormMoney,
-  ProFormSelect,
   ProFormText,
 } from '@ant-design/pro-components';
 
-import SearchableSelectInput from '@/common/components/SearchableSelectInput';
-import { voucherStatuses } from '@/common/data/data';
-import { convertValueEntryToOptions } from '@/common/utils/utils';
-import { getMember } from '@/pages/Coop/Member/data/services/service';
 import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 import { VoucherFeature } from '../data/data';
 import { addVoucher, editVoucher } from '../data/services/service';
@@ -62,24 +57,6 @@ const VoucherForm: React.FC<VoucherFormProps> = (props) => {
         props.setOpen!(false);
       }}
     >
-      <SearchableSelectInput
-        rules={[
-          {
-            required: true,
-            message: 'Anggota',
-          },
-        ]}
-        fetchOptions={async (query) =>
-          (await getMember({ name: query })).data!.map((e: any) => {
-            return { value: e.user_id, label: `${e.member_no} - ${e.name}` };
-          })
-        }
-        placeholder="Pilih Anggota"
-        width="md"
-        name="user_id"
-        label="Anggota"
-      />
-
       <ProFormText
         rules={[
           {
@@ -118,12 +95,6 @@ const VoucherForm: React.FC<VoucherFormProps> = (props) => {
         ]}
         name="expired_at"
         label="Tanggal Expired"
-      />
-
-      <ProFormSelect
-        name="status"
-        label="Status"
-        options={convertValueEntryToOptions(voucherStatuses)}
       />
     </ModalForm>
   );

@@ -16,7 +16,7 @@ export interface IPosPageProps {}
 
 export default function PosPage(props: IPosPageProps) {
   const printRef = useRef<HTMLDivElement>(null);
-  const { pageLoading, printableTrx, printSuccess } = useModel('POS.usePos');
+  const { pageLoading, printableTrx, printSuccess, storeId } = useModel('POS.usePos');
 
   const reactToPrintContent = useCallback(() => {
     return printRef.current;
@@ -52,7 +52,7 @@ export default function PosPage(props: IPosPageProps) {
         <TransactionHistory />
 
         <div style={{ height: 0, overflow: 'hidden' }}>
-          <Receipt ref={printRef} transaction={printableTrx} />
+          <Receipt ref={printRef} transaction={printableTrx} storeID={storeId} />
         </div>
       </Spin>
     </Card>

@@ -24,9 +24,13 @@ export async function storeProduct(store_id: number, data: { [key: string]: any 
   });
 }
 
-export async function updateProduct(productId: number, data: { [key: string]: any }) {
-  data.stocks[0].store_id = 1;
-  data.prices[0].store_id = 1;
+export async function updateProduct(
+  store_id: number,
+  productId: number,
+  data: { [key: string]: any },
+) {
+  data.stocks[0].store_id = store_id;
+  data.prices[0].store_id = store_id;
   return request(`${baseUrl}/${productId}`, {
     method: 'PUT',
     data: data,

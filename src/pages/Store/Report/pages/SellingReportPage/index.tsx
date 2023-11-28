@@ -17,7 +17,8 @@ const SellingReportPage = (props: Props) => {
   const currentMonth = moment();
   const currentMonthRange = [currentMonth.startOf('month'), currentMonth.endOf('month')];
 
-  const { dateRange, storeID } = useModel('Store.Report.useStoreReport');
+  const { dateRange } = useModel('Store.Report.useStoreReport');
+  const { storeID } = useModel('Store.useStore');
 
   useEffect(() => {
     handleGenerateReport();

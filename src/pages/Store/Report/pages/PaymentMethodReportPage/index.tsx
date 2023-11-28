@@ -14,7 +14,8 @@ const MemberReportPage = (props: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [datasource, setDatasource] = useState<PaymentMethodReport[] | undefined>();
 
-  const { dateRange, storeID } = useModel('Store.Report.useStoreReport');
+  const { dateRange } = useModel('Store.Report.useStoreReport');
+  const { storeID } = useModel('Store.useStore');
 
   const columns: ProColumnType<PaymentMethodReport>[] = [
     {

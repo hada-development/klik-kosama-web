@@ -24,14 +24,20 @@ export async function getVoucher(params: any, options?: { [key: string]: any }) 
 export async function addVoucher(data?: { [key: string]: any }) {
   return request('/api/web/store/voucher', {
     method: 'POST',
-    data: data,
+    data: {
+      ...data,
+      status: 'published',
+    },
   });
 }
 
 export async function editVoucher(id?: number, data?: { [key: string]: any }) {
   return request(`/api/web/store/voucher/${id}`, {
     method: 'PUT',
-    data: data,
+    data: {
+      ...data,
+      status: 'published',
+    },
   });
 }
 

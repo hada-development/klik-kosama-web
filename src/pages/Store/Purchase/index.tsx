@@ -3,13 +3,20 @@ import { formatDateTime, formatRupiah } from '@/common/utils/utils';
 import { EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button } from 'antd';
-import React, { useRef } from 'react';
-import { history } from 'umi';
+import React, { useEffect, useRef } from 'react';
+import { history, useModel } from 'umi';
+import StoreSelection from '../components/StoreSelection';
 import { PurchaseTableItem } from './data/data';
 import { getPurchaseDataTable } from './data/services';
 
 const PurchaseTable: React.FC = () => {
   const actionRef = useRef<ActionType>();
+
+  const { storeID } = useModel('Store.useStore');
+
+  useEffect(() => {
+    actionRef.current?.reloadAndRest?.();
+  }, [storeID]);
 
   const columns: ProColumns<PurchaseTableItem>[] = [
     {
@@ -69,7 +76,7 @@ const PurchaseTable: React.FC = () => {
     },
   ];
   return (
-    <PageContainer>
+    <PageContainer extra={<StoreSelection />}>
       <ProTable<PurchaseTableItem, API.PageParams>
         scroll={{
           x: 'max-content',
@@ -91,7 +98,7 @@ const PurchaseTable: React.FC = () => {
             <PlusOutlined /> Buat Dokumen
           </Button>,
         ]}
-        request={getPurchaseDataTable}
+        request={(params, options) => getPurchaseDataTable(storeID, params, options)}
         columns={columns}
       />
     </PageContainer>

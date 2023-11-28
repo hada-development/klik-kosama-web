@@ -87,7 +87,7 @@ const ProductForm: React.FC<{
       onFinish={async (data) => {
         console.log(data);
         if (productId) {
-          await updateProduct(productId, data);
+          await updateProduct(storeID, productId, data);
         } else {
           await storeProduct(storeID, data);
         }

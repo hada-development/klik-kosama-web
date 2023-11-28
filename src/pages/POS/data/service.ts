@@ -38,12 +38,12 @@ export async function getMember(query: string): Promise<ResponseData<POSMember[]
   });
 }
 
-export async function getVouchers(userId: number): Promise<ResponseData<POSVoucher[]>> {
+export async function getVouchers(barcode: string): Promise<ResponseData<POSVoucher[]>> {
   const url = '/api/web/pos/vouchers';
   return request(url, {
     method: 'GET',
     params: {
-      user_id: userId,
+      barcode: barcode,
     },
   });
 }

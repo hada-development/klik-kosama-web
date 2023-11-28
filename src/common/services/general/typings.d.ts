@@ -10,6 +10,7 @@ declare namespace Auth {
       address?: string;
     };
     permissions: any;
+    stores?: array;
   };
 
   type LoginParams = {

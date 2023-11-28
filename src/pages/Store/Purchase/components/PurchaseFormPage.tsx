@@ -1,3 +1,4 @@
+import PrintHeader from '@/common/components/PrintHeader';
 import SearchableSelectInput from '@/common/components/SearchableSelectInput';
 import { formatRupiah } from '@/common/utils/utils';
 import {
@@ -5,6 +6,7 @@ import {
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
+  PrinterOutlined,
   SaveOutlined,
 } from '@ant-design/icons';
 import {
@@ -15,10 +17,13 @@ import {
   ProFormInstance,
   ProFormMoney,
   ProFormText,
+  ProFormUploadDragger,
 } from '@ant-design/pro-components';
+import { useModel } from '@umijs/max';
 import { Button, Card, Modal, Spin, Table, message } from 'antd';
 import { isArray, isNumber } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
+import { useReactToPrint } from 'react-to-print';
 import { history, useParams } from 'umi';
 import { getProductDataTable } from '../../MasterData/Product/data/services';
 import { getSupplier } from '../../MasterData/Supplier/data/services/service';
@@ -26,6 +31,7 @@ import { PurchaseDetail, PurchaseItem } from '../data/data';
 import { getPurchase, publishPurchase, storePurchase, updatePurchase } from '../data/services';
 
 const PurchaseFormPage: React.FC = () => {
+  const { storeID } = useModel('Store.useStore');
   const { confirm } = Modal;
   const formRef = useRef<ProFormInstance>();
   const [dataSource, setDataSource] = useState<PurchaseItem[]>([]);
@@ -35,6 +41,11 @@ const PurchaseFormPage: React.FC = () => {
   const [isEditable, setIsEditable] = useState<boolean>(false);
 
   const { purchaseId } = useParams<{ purchaseId?: string }>();
+
+  const printableRef = useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => printableRef.current!,
+  });
 
   useEffect(() => {
     loadPage(purchaseId);
@@ -103,7 +114,7 @@ const PurchaseFormPage: React.FC = () => {
             width={'xl'}
             rules={[{ required: true, message: 'Mohon Masukkan Produk' }]}
             fetchOptions={async (query) =>
-              (await getProductDataTable({ name: query })).data!.map((e: any) => {
+              (await getProductDataTable(storeID, { name: query })).data!.map((e: any) => {
                 return { value: e.id, label: `${e.sku} - ${e.name}` };
               })
             }
@@ -223,117 +234,136 @@ const PurchaseFormPage: React.FC = () => {
   };
 
   return (
-    <PageContainer title={'Pembelian'}>
-      <Spin spinning={isLoading}>
-        <Card
-          title={'Data Pembelian'}
-          extra={[
-            !isReadonly && (
-              <Button key={'save'} type="primary" onClick={submitForm}>
-                <SaveOutlined /> Simpan
-              </Button>
-            ),
-            isEditable && isReadonly && (
-              <Button
-                key={'edit'}
-                style={{ marginRight: '12px' }}
-                onClick={() => setIsReadonly(false)}
-              >
-                <EditOutlined /> Edit
-              </Button>
-            ),
-            isEditable && isReadonly && (
-              <Button key={'publish'} type="primary" onClick={handlePublish}>
-                <CheckCircleOutlined /> Publish
-              </Button>
-            ),
-          ]}
-        >
-          <ProForm
-            readonly={isReadonly}
-            formRef={formRef}
-            submitter={false}
-            onFieldsChange={(fields, _) => {
-              const field = fields[fields.length - 1];
-              const fieldName = field.name;
-              if (isArray(fieldName)) {
-                if (fieldName[0] == 'items') {
-                  updateItem(fieldName[1], fieldName[2], field.value);
-                }
-              }
-            }}
-            onFinish={async (data) => {
-              var response = purchaseId
-                ? await updatePurchase(purchaseId!, data)
-                : await storePurchase(data);
-              const id = response.data.id;
-              message.success('Berhasil menyimpan data');
-              if (purchaseId) {
-                loadPage(purchaseId);
-              } else {
-                history.push('/store/purchase/edit/' + id);
-              }
-            }}
+    <PageContainer
+      title={'Pembelian'}
+      extra={
+        <Button onClick={handlePrint}>
+          <PrinterOutlined /> Cetak Halaman
+        </Button>
+      }
+    >
+      <div className="printable-area" ref={printableRef}>
+        <PrintHeader title="PEMBELIAN TOKO" />
+        <Spin spinning={isLoading}>
+          <Card
+            title={'Data Pembelian'}
+            extra={[
+              !isReadonly && (
+                <Button key={'save'} type="primary" onClick={submitForm}>
+                  <SaveOutlined /> Simpan
+                </Button>
+              ),
+              isEditable && isReadonly && (
+                <Button
+                  key={'edit'}
+                  style={{ marginRight: '12px' }}
+                  onClick={() => setIsReadonly(false)}
+                >
+                  <EditOutlined /> Edit
+                </Button>
+              ),
+              isEditable && isReadonly && (
+                <Button key={'publish'} type="primary" onClick={handlePublish}>
+                  <CheckCircleOutlined /> Publish
+                </Button>
+              ),
+            ]}
           >
-            <ProForm.Group>
-              <ProFormText
-                width={'lg'}
-                name={'invoice_no'}
-                label={'No Faktur'}
-                readonly={isReadonly}
-                placeholder={'Masukkan No Faktur'}
-                rules={[{ required: true, message: 'Please input invoice no!' }]}
-              />
-
-              <SearchableSelectInput
-                width={'lg'}
-                placeholder="Cari Supplier (Ketik Minimal 3 Huruf)"
-                name={'supplier_id'}
-                readonly={isReadonly}
-                label="Pilih Supplier"
-                rules={[{ required: true, message: 'Please input supplier!' }]}
-                fetchOptions={async (query) =>
-                  (await getSupplier({ name: query })).data!.map((e: any) => {
-                    return { value: e.id, label: `${e.name}` };
-                  })
+            <ProForm
+              readonly={isReadonly}
+              formRef={formRef}
+              submitter={false}
+              onFieldsChange={(fields, _) => {
+                const field = fields[fields.length - 1];
+                const fieldName = field.name;
+                if (isArray(fieldName)) {
+                  if (fieldName[0] == 'items') {
+                    updateItem(fieldName[1], fieldName[2], field.value);
+                  }
                 }
-              />
+              }}
+              onFinish={async (data) => {
+                console.log(data);
+                var response = purchaseId
+                  ? await updatePurchase(purchaseId!, data)
+                  : await storePurchase(storeID, data);
+                const id = response.data.id;
+                message.success('Berhasil menyimpan data');
+                if (purchaseId) {
+                  loadPage(purchaseId);
+                } else {
+                  history.push('/store/purchase/edit/' + id);
+                }
+              }}
+            >
+              <ProForm.Group>
+                <ProFormText
+                  width={'lg'}
+                  name={'invoice_no'}
+                  label={'No Faktur'}
+                  readonly={isReadonly}
+                  placeholder={'Masukkan No Faktur'}
+                  rules={[{ required: true, message: 'Please input invoice no!' }]}
+                />
 
-              <ProFormDatePicker
-                width={'lg'}
-                name={'date'}
-                label={'Tanggal'}
-                readonly={isReadonly}
-                rules={[{ required: true, message: 'Please input date!' }]}
-              />
+                <SearchableSelectInput
+                  width={'lg'}
+                  placeholder="Cari Supplier (Ketik Minimal 3 Huruf)"
+                  name={'supplier_id'}
+                  readonly={isReadonly}
+                  label="Pilih Supplier"
+                  rules={[{ required: true, message: 'Please input supplier!' }]}
+                  fetchOptions={async (query) =>
+                    (await getSupplier({ name: query })).data!.map((e: any) => {
+                      return { value: e.id, label: `${e.name}` };
+                    })
+                  }
+                />
 
-              <ProFormText
-                width={'lg'}
-                name={'note'}
-                readonly={isReadonly}
-                placeholder={'Masukkan catatan'}
-                label={'Catatan'}
+                <ProFormDatePicker
+                  width={'lg'}
+                  name={'date'}
+                  label={'Tanggal'}
+                  readonly={isReadonly}
+                  rules={[{ required: true, message: 'Please input date!' }]}
+                />
+
+                <ProFormText
+                  width={'lg'}
+                  name={'note'}
+                  readonly={isReadonly}
+                  placeholder={'Masukkan catatan'}
+                  label={'Catatan'}
+                />
+              </ProForm.Group>
+              <ProFormUploadDragger
+                name="file"
+                label="Upload Bukti Faktur"
+                max={1}
+                rules={[{ required: true, message: 'Mohon isi' }]}
+                title="Pilih bukti faktur"
+                description="Pilih satu file"
               />
-            </ProForm.Group>
-            <Table<PurchaseItem>
-              rowKey="id"
-              bordered
-              columns={columns}
-              pagination={false}
-              dataSource={dataSource}
-            />
-            {!isReadonly && (
-              <Button
-                type="dashed"
-                style={{ width: '100%', margin: '10px 0 20px 0' }}
-                onClick={handleAddDetail}
-              >
-                Tambah Produk
-              </Button>
-            )}
-          </ProForm>
-        </Card>
-      </Spin>
+              <Table<PurchaseItem>
+                rowKey="id"
+                bordered
+                columns={columns}
+                pagination={false}
+                dataSource={dataSource}
+              />
+              {!isReadonly && (
+                <Button
+                  type="dashed"
+                  style={{ width: '100%', margin: '10px 0 20px 0' }}
+                  onClick={handleAddDetail}
+                >
+                  Tambah Produk
+                </Button>
+              )}
+            </ProForm>
+          </Card>
+        </Spin>
+      </div>
     </PageContainer>
   );
 };

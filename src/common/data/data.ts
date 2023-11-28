@@ -30,6 +30,36 @@ export const employeeStatuses = {
 
 export const webRoles = ['admin', 'management', 'staff'];
 
+export const webPermission = [
+  {
+    label: 'Administrasi',
+    value: 'canAdmin',
+  },
+  {
+    label: 'HRIS',
+    value: 'canHris',
+  },
+  {
+    label: 'SimPin',
+    value: 'canCoop',
+  },
+  {
+    label: 'Kosamart',
+    value: 'canStore',
+  },
+];
+
+export const stores = [
+  {
+    label: 'KOSAMART',
+    value: 1,
+  },
+  {
+    label: 'APOTEK',
+    value: 2,
+  },
+];
+
 export interface PaginationList<TData> {
   current_page: number;
   total: number;

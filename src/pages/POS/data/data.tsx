@@ -27,7 +27,7 @@ export interface POSMember {
 
 export interface POSVoucher {
   id: number;
-  user_id: number;
+  barcode: string;
   name: string;
   amount: number;
   expired_at: string;

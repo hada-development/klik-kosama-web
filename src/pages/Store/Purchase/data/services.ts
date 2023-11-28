@@ -7,25 +7,57 @@ import { PurchaseDetail, PurchaseTableItem } from './data';
 const baseUrl = '/api/web/store/purchase';
 
 export async function getPurchaseDataTable(
+  storeID: number,
   params: any,
   options?: { [key: string]: any },
 ): Promise<PaginationList<PurchaseTableItem>> {
   return requestTableData<PurchaseTableItem>(baseUrl, params, options, {
-    store_id: 1,
+    store_id: storeID,
     'order[date]': 'desc',
   });
 }
 
-export async function storePurchase(data: any) {
-  // TODO: Change store_id
-  const store_id = 1;
+export async function storePurchase(storeID: number, data: any) {
+  const formData = convertDataToFormData(data);
+  formData.append('store_id', storeID.toString());
+
   return request(baseUrl, {
     method: 'POST',
-    data: {
-      store_id: 1,
-      ...data,
-    },
+    data: formData,
   });
+}
+
+function convertDataToFormData(data: any) {
+  const formData = new FormData();
+  // Iterate over the keys of the data object
+  for (const key in data) {
+    if (key == 'file') {
+      if (data[key][0].originFileObj != undefined) {
+        formData.append(key, data[key][0].originFileObj);
+      }
+    } else if (data.hasOwnProperty(key)) {
+      // Check if the current value is an array
+      if (Array.isArray(data[key])) {
+        // If it's an array, iterate over its elements and append each to FormData
+        data[key].forEach((item: any, index: any) => {
+          for (const itemKey in item) {
+            if (item.hasOwnProperty(itemKey)) {
+              // If the item is a file, append it to FormData with a specific name
+              if (itemKey === 'file') {
+                formData.append(`${key}[${index}][${itemKey}]`, item[itemKey], item[itemKey].name);
+              } else {
+                formData.append(`${key}[${index}][${itemKey}]`, item[itemKey]);
+              }
+            }
+          }
+        });
+      } else {
+        // If it's not an array, append it to FormData
+        formData.append(key, data[key]);
+      }
+    }
+  }
+  return formData;
 }
 
 // reformat select data
@@ -40,20 +72,20 @@ const reformatSelectData = (data: any): PurchaseDetail => ({
 });
 
 export async function updatePurchase(id: string, data: any) {
+  const formData = convertDataToFormData(reformatSelectData(data));
+  formData.append('_method', 'PUT');
   return request(`${baseUrl}/${id}`, {
-    method: 'PUT',
-    data: reformatSelectData(data),
+    method: 'POST',
+    data: formData,
   });
 }
 
-export async function getProduct(query: string) {
-  // TODO: Change store_id
-  const store_id = 1;
+export async function getProduct(storeID: number, query: string) {
   const url = '/api/web/pos/products';
   return request(url, {
     method: 'GET',
     params: {
-      store_id: store_id,
+      store_id: storeID,
       query: query,
     },
   });
@@ -70,6 +102,16 @@ const resetData = (data: PurchaseDetail): any => ({
     },
     id: index, // Set 'id' to the new index
   })),
+  file: data.file
+    ? [
+        {
+          uuid: '1',
+          name: data.file?.name,
+          status: 'done',
+          url: data.file?.address,
+        },
+      ]
+    : null,
 });
 
 export async function getPurchase(id: number): Promise<PurchaseDetail> {

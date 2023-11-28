@@ -5,6 +5,7 @@ declare namespace UserFeature {
     email?: string;
     verification_status?: string;
     roles?: array;
+    permissions?: array;
   };
 
   type UserList = {

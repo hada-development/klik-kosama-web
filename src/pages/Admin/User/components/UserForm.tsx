@@ -7,7 +7,7 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 
-import { submissionStatuses, webRoles } from '@/common/data/data';
+import { stores, submissionStatuses, webPermission, webRoles } from '@/common/data/data';
 import { Divider, message } from 'antd';
 import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 import { addUser, editUser } from '../data/services/service';
@@ -26,6 +26,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
   useEffect(() => {
     // Set initial values when the modal is opened
     if (props.open && props.values) {
+      console.log(props.values);
       formRef.current?.setFieldsValue(props.values);
     } else {
       formRef.current?.resetFields();
@@ -113,6 +114,20 @@ const UserForm: React.FC<UserFormProps> = (props) => {
             value: e,
           };
         })}
+      />
+
+      <ProFormCheckbox.Group
+        name="permissions"
+        layout="horizontal"
+        label="Hak Akses"
+        options={webPermission}
+      />
+
+      <ProFormCheckbox.Group
+        name="store_ids"
+        layout="horizontal"
+        label="Toko (Optional untuk kasir)"
+        options={stores}
       />
 
       <Divider />

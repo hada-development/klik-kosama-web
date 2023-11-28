@@ -1,3 +1,4 @@
+import { File } from '@/common/data/data';
 import { ProductTableItem } from '../../MasterData/Product/data/data';
 
 export interface PurchaseTableItem {
@@ -24,6 +25,7 @@ export interface PurchaseDetail {
   supplier: SupplierFeature.SupplierListItem;
   note: string;
   items: PurchaseItem[];
+  file?: File;
 }
 
 export interface PurchaseItem {

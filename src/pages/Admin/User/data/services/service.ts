@@ -24,6 +24,8 @@ export async function getUser(
       return {
         ...e,
         roles: e.roles.map((r: any) => r.name),
+        permissions: e.permissions.map((r: any) => r.name),
+        store_ids: e.stores.map((r: any) => r.id),
       };
     });
 
