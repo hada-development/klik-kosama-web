@@ -135,6 +135,12 @@ export default [
             component: './HRIS/Leave/LeaveQuota',
           },
           {
+            name: 'Jenis Cuti',
+            icon: 'sound',
+            path: 'type',
+            component: './HRIS/Leave/LeaveType',
+          },
+          {
             name: 'Pengajuan Cuti',
             icon: 'sound',
             path: 'submission',

@@ -1,6 +1,9 @@
-import { submissionStatuses } from '@/common/data/data';
-import { formatDateTime } from '@/common/utils/utils';
-import { ExclamationCircleFilled, OrderedListOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleFilled,
+  PlusOutlined,
+} from '@ant-design/icons';
 import {
   ActionType,
   FooterToolbar,
@@ -10,8 +13,8 @@ import {
 } from '@ant-design/pro-components';
 import { Button, Modal, message } from 'antd';
 import React, { useRef, useState } from 'react';
-import LeaveSubmissionForm from './components/LeaveSubmissionForm';
-import { deleteLeaveSubmission, getLeaveSubmission } from './data/services/service';
+import LeaveTypeForm from './components/LeaveTypeForm';
+import { deleteLeaveType, getLeaveType } from './data/services/service';
 
 /**
  *  Delete node
@@ -19,13 +22,11 @@ import { deleteLeaveSubmission, getLeaveSubmission } from './data/services/servi
  *
  * @param selectedRows
  */
-const handleRemove = async (
-  selectedRow: LeaveSubmissionFeature.LeaveSubmissionListItem | undefined,
-) => {
+const handleRemove = async (selectedRow: LeaveTypeFeature.LeaveTypeListItem | undefined) => {
   const hide = message.loading('Mohon Tunggu');
   if (!selectedRow) return true;
   try {
-    await deleteLeaveSubmission(selectedRow.id);
+    await deleteLeaveType(selectedRow.id);
     hide();
     message.success('Deleted successfully and will refresh soon');
     return true;
@@ -41,20 +42,16 @@ const handleRemove = async (
   }
 };
 
-const LeaveSubmissionPage: React.FC = () => {
-  const [currentRow, setCurrentRow] = useState<
-    LeaveSubmissionFeature.LeaveSubmissionListItem | undefined
-  >();
+const LeaveTypePage: React.FC = () => {
+  const [currentRow, setCurrentRow] = useState<LeaveTypeFeature.LeaveTypeListItem | undefined>();
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [deleteModalOpen, handleDeleteModalOpen] = useState<boolean>(false);
-  const [selectedRowsState, setSelectedRows] = useState<
-    LeaveSubmissionFeature.LeaveSubmissionListItem[]
-  >([]);
+  const [selectedRowsState, setSelectedRows] = useState<LeaveTypeFeature.LeaveTypeListItem[]>([]);
   const [{ confirm }, contextHolder] = Modal.useModal();
 
   const actionRef = useRef<ActionType>();
 
-  const onDelete = (record: LeaveSubmissionFeature.LeaveSubmissionListItem) => {
+  const onDelete = (record: LeaveTypeFeature.LeaveTypeListItem) => {
     confirm({
       title: 'Anda yakin ingin menghapus data ini?',
       icon: <ExclamationCircleFilled />,
@@ -73,56 +70,15 @@ const LeaveSubmissionPage: React.FC = () => {
     });
   };
 
-  const columns: ProColumns<LeaveSubmissionFeature.LeaveSubmissionListItem>[] = [
+  const columns: ProColumns<LeaveTypeFeature.LeaveTypeListItem>[] = [
     {
-      title: 'Pegawai',
-      dataIndex: ['parent_submission', 'employee', 'user', 'name'],
-      width: 150,
-      ellipsis: true,
-    },
-    {
-      title: 'Jenis Juti',
-      dataIndex: ['leave_type', 'name'],
-      width: 150,
-    },
-    {
-      title: 'Dari Tanggal',
-      dataIndex: 'start_date',
-      width: 80,
-
-      render: (_, record) => formatDateTime(record.start_date, 'DD/MM/YYYY'),
-    },
-    {
-      title: 'Sampai Tanggal',
-      dataIndex: 'end_date',
-      width: 80,
-      render: (_, record) => formatDateTime(record.end_date, 'DD/MM/YYYY'),
-    },
-    {
-      title: 'Jumlah Hari',
-      width: 80,
-      dataIndex: 'total_days',
-    },
-    {
-      title: 'Alasan',
-      width: 150,
-      dataIndex: 'note',
-    },
-    {
-      title: 'Approval',
-      width: 150,
-      dataIndex: ['parent_submission', 'current_step', 'title'],
-    },
-    {
-      title: 'Status',
-      width: 120,
-      dataIndex: ['parent_submission', 'status'],
-      valueEnum: submissionStatuses,
+      title: 'Nama Jenis Cuit',
+      dataIndex: 'name',
     },
     {
       title: 'Aksi',
       dataIndex: 'option',
-      width: '8%',
+      width: '15%',
       valueType: 'option',
       render: (_, record) => [
         <a
@@ -132,7 +88,15 @@ const LeaveSubmissionPage: React.FC = () => {
             setCurrentRow(record);
           }}
         >
-          <OrderedListOutlined /> Detail
+          <EditOutlined /> Edit
+        </a>,
+        <a
+          key="delete"
+          onClick={() => {
+            onDelete(record);
+          }}
+        >
+          <DeleteOutlined /> Hapus
         </a>,
       ],
     },
@@ -141,17 +105,14 @@ const LeaveSubmissionPage: React.FC = () => {
   return (
     <PageContainer>
       {contextHolder}
-      <ProTable<LeaveSubmissionFeature.LeaveSubmissionListItem, API.PageParams>
-        headerTitle="Pengajuan Cuti"
+      <ProTable<LeaveTypeFeature.LeaveTypeListItem, API.PageParams>
+        headerTitle="Daftar LeaveType"
         rowKey="id"
         actionRef={actionRef}
         search={{
           labelWidth: 120,
         }}
-        scroll={{
-          x: 'max-content',
-        }}
-        request={getLeaveSubmission}
+        request={getLeaveType}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -191,7 +152,7 @@ const LeaveSubmissionPage: React.FC = () => {
           </Button>
         </FooterToolbar>
       )}
-      <LeaveSubmissionForm
+      <LeaveTypeForm
         onCancel={() => {}}
         onSubmit={async (value) => {
           if (actionRef.current) {
@@ -207,4 +168,4 @@ const LeaveSubmissionPage: React.FC = () => {
   );
 };
 
-export default LeaveSubmissionPage;
+export default LeaveTypePage;

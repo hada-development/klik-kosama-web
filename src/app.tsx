@@ -5,7 +5,6 @@ import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import KosamaLogo from './../assets/logo.png';
-import DarkModeToggle from './common/components/DarkModeToggle';
 import { currentUser as queryCurrentUser } from './common/services/general/auth';
 import { getImageUrl } from './common/utils/utils';
 import './global.less';
@@ -92,11 +91,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
-    rightContentRender: () => {
-      <>
-        <DarkModeToggle />
-      </>;
-    },
     childrenRender: (children) => {
       if (initialState?.loading) return <PageLoading />;
       return (

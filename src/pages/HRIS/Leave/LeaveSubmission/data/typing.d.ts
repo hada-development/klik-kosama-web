@@ -13,6 +13,9 @@ declare namespace LeaveSubmissionFeature {
       };
     };
     parent_submission: any;
+    leave_type: {
+      name: string;
+    };
   };
 
   type LeaveSubmissionList = {
