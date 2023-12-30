@@ -180,6 +180,70 @@ const ProductForm: React.FC<{
                 label: 'PCS',
                 value: 'pcs',
               },
+              {
+                label: 'BOTOL',
+                value: 'botol',
+              },
+              {
+                label: 'BATANG',
+                value: 'batang',
+              },
+              {
+                label: 'POUCH',
+                value: 'pouch',
+              },
+              {
+                label: 'KALENG',
+                value: 'kaleng',
+              },
+              {
+                label: 'BOX',
+                value: 'box',
+              },
+              {
+                label: 'TUBE',
+                value: 'tube',
+              },
+              {
+                label: 'RENCENG',
+                value: 'renceng',
+              },
+              {
+                label: 'BUNGKUS',
+                value: 'bungkus',
+              },
+              {
+                label: 'CUP',
+                value: 'cup',
+              },
+              {
+                label: 'ROLL',
+                value: 'roll',
+              },
+              {
+                label: 'PACK',
+                value: 'pack',
+              },
+              {
+                label: 'BUAH',
+                value: 'buah',
+              },
+              {
+                label: 'STRIP',
+                value: 'strip',
+              },
+              {
+                label: 'SACHET',
+                value: 'sachet',
+              },
+              {
+                label: 'DUS',
+                value: 'dus',
+              },
+              {
+                label: 'EKOR',
+                value: 'ekor',
+              },
             ]}
             label="Unit Of Measurement"
           />

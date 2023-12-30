@@ -23,6 +23,12 @@ export default [
     ],
   },
   {
+    path: '/privacy-policy',
+    name: 'privacy-policy',
+    layout: false,
+    component: './PrivacyPolicy',
+  },
+  {
     path: '/welcome',
     name: 'Home',
     icon: 'home',

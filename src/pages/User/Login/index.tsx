@@ -69,7 +69,7 @@ const Login: React.FC = () => {
         setAuthToken(msg.token);
         await fetchUserInfo();
         const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
+        history.push(urlParams.get('redirect') || '/welcome');
         return;
       }
       // Jika gagal, atur pesan kesalahan pengguna

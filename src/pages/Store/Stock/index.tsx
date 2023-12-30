@@ -1,6 +1,6 @@
-import { formatRupiah } from '@/common/utils/utils';
+import { downloadUrl, formatRupiah } from '@/common/utils/utils';
 import ExcelImportModal from '@/pages/Coop/Shared/Components/ExcelImportModal';
-import { EyeOutlined, UploadOutlined } from '@ant-design/icons';
+import { EyeOutlined, FileExcelOutlined, UploadOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
 import { Button, Tag, message } from 'antd';
@@ -140,6 +140,15 @@ const InformationPage: React.FC = () => {
           collapsed: false,
         }}
         toolBarRender={() => [
+          <Button
+            type="primary"
+            key="1"
+            onClick={() => {
+              downloadUrl('/api/web/store/stock/export?store_id=' + storeID, 'laporan_stock.xlsx');
+            }}
+          >
+            <FileExcelOutlined /> Export Laporan
+          </Button>,
           <Button
             type="primary"
             key="primary"

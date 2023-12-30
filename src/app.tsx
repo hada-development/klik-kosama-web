@@ -12,6 +12,7 @@ import { errorConfig } from './requestErrorConfig';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
+const privacyPolicyPath = '/privacy-policy';
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
@@ -27,13 +28,12 @@ export async function getInitialState(): Promise<{
     });
     const userData = msg.data;
 
-    console.log(userData);
     return userData;
   };
 
   // Jika ini bukan halaman login, jalankan
   const { location } = history;
-  if (location.pathname !== loginPath) {
+  if (location.pathname !== loginPath && location.pathname !== privacyPolicyPath) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
@@ -62,7 +62,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
+      if (
+        !initialState?.currentUser &&
+        location.pathname !== loginPath &&
+        location.pathname !== privacyPolicyPath
+      ) {
         history.push(loginPath);
       }
     },
