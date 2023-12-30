@@ -340,7 +340,6 @@ const PurchaseFormPage: React.FC = () => {
                 name="file"
                 label="Upload Bukti Faktur"
                 max={1}
-                rules={[{ required: true, message: 'Mohon isi' }]}
                 title="Pilih bukti faktur"
                 description="Pilih satu file"
               />
