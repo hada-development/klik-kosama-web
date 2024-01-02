@@ -20,7 +20,6 @@ const AppOrderButton: React.FC = () => {
     getNewAppOrder().then((data) => {
       if (data.success) {
         setCountNewOrder(data.data);
-        console.log(data);
       }
     });
   };

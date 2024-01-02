@@ -10,11 +10,11 @@ interface ReceiptProps {
 
 const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(({ transaction, storeID }, ref) => {
   const padLeft = (span: string, total: number = 10) => {
-    return span.padStart(total, '\u00A0');
+    return span.slice(0, total).padStart(total, '\u00A0');
   };
 
   const padRight = (span: string, total: number = 10) => {
-    return span.padEnd(total, '\u00A0');
+    return span.slice(0, total).padEnd(total, '\u00A0');
   };
 
   const createDashes = (count: number = 38) => {
@@ -56,27 +56,38 @@ const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(({ transaction, s
             <span style={{ display: 'block' }}>{createDashes()}</span>
           </div>
 
-          <div style={{ marginTop: '10px' }}>
+          <div>
             <span style={{ display: 'block' }}>
               {padRight('ORDER NO', 14)}: {transaction.order_no}
             </span>
             <span style={{ display: 'block' }}>
-              {padRight('KASIR', 14)}: {transaction.cashier.name.toUpperCase()}
+              {padRight('KASIR', 14)}: {transaction.cashier.name.toUpperCase().slice(0, 20)}
             </span>
             <span style={{ display: 'block' }}>
               {padRight('TANGGAL', 14)}:{' '}
               {formatDateTime(transaction.created_at, 'DD/MM/YY HH:mm:ss', isoDateFormat)}
+            </span>
+            <span style={{ display: 'block' }}>
+              {padRight('ANGGOTA', 14)}:{' '}
+              {transaction.member ?? false
+                ? transaction.member!.member_no + '-' + transaction.member!.name.slice(0, 10)
+                : 'NON ANGGOTA'}
             </span>
             <span style={{ display: 'block' }}>{createDashes()}</span>
           </div>
 
           <div style={{ fontFamily: 'monospace' }}>
             {transaction.details.map((item, index) => (
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span>{padRight(item.product_name, 20)}</span>
-                <span>{padLeft(item.quantity.toString(), 3)}</span>
-                <span>{formatPrice(item.unit_price, 6, false)}</span>
-                <span>{formatPrice(item.total_price, 8)}</span>
+              <div key={'receipt_item_' + index}>
+                <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '12px' }}>
+                  <span>{padRight(item.product_sku, 13)}</span>
+                  <span>{padRight(item.product_name, 20)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>{padLeft(item.quantity.toString(), 3)}</span>
+                  <span>{formatPrice(item.unit_price, 6)}</span>
+                  <span>{formatPrice(item.total_price, 8)}</span>
+                </div>
               </div>
             ))}
 
@@ -102,6 +113,11 @@ const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(({ transaction, s
               <span>KEMBALI :</span>
               <span>{formatPrice(transaction.cash_received - transaction.total_amount, 10)}</span>
             </div>
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: '10px' }}>
+            <span style={{ display: 'block' }}>TERIMAKASIH ATAS KUNJUNGAN ANDA</span>
+            <span style={{ display: 'block' }}>SELAMAT BELANJA KEMBALI</span>
           </div>
         </div>
       )}

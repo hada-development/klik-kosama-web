@@ -66,7 +66,9 @@ export default function MemberPicker({}: Props) {
           }}
         >
           <span>Pilih Anggota [F3]</span>
-          <strong>{hasMember ? `${member?.member_no} - ${member?.name}` : 'NON ANGGOTA'}</strong>
+          <strong>
+            {hasMember ? `${member?.member_no} - ${member?.name} - ${member?.type}` : 'NON ANGGOTA'}
+          </strong>
         </div>
         <Button
           onClick={handleButton}
@@ -96,7 +98,11 @@ export default function MemberPicker({}: Props) {
           style={{ width: '100%' }}
           fetchOptions={async (query) =>
             (await getMember(query)).data!.map((member: any) => {
-              return { value: member.id, label: `${member.member_no} - ${member.name}`, member };
+              return {
+                value: member.id,
+                label: `${member.member_no} - ${member.name} - ${member.type}`,
+                member,
+              };
             })
           }
         />

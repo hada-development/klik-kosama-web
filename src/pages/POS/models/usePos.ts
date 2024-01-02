@@ -56,16 +56,27 @@ export default () => {
         updateTotals(updatedItems, voucher);
         return updatedItems;
       });
+      message.success('Berhasil menambahkan produk', 1);
     } else {
+      const selectedItem = items[productIndex];
+      if (selectedItem.quantity + 1 > product.stock) {
+        message.error('Stok barang di sistem tidak mencukupi', 3);
+        return;
+      }
+
       setItems((prevItems) => {
         const updatedItems = prevItems.map((item) => {
           if (item.product_id === product.id) {
+            const dbStock = item.product.stock;
             const updatedQuantity = item.quantity + 1;
+            if (updatedQuantity > dbStock) {
+              return item;
+            }
             const updatedSubTotal = updatedQuantity * item.product.sell_price;
             return {
               ...item,
               quantity: updatedQuantity,
-              sub_total: updatedSubTotal,
+              subTotal: updatedSubTotal,
             };
           }
           return item;
@@ -74,9 +85,9 @@ export default () => {
         updateTotals(updatedItems, voucher);
         return updatedItems;
       });
-    }
 
-    message.success('Berhasil menambahkan produk', 1);
+      message.success('Berhasil menambahkan jumlah', 1);
+    }
   };
 
   const changeQuantity = (index: number, newQuantity: number) => {
@@ -109,7 +120,6 @@ export default () => {
   const updateTotals = (updatedItems: POSItem[], voucher?: POSVoucher) => {
     let itemsCount = 0;
     let total = 0;
-
     updatedItems.forEach((item) => {
       itemsCount += item.quantity;
       total += item.subTotal;

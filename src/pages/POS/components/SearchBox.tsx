@@ -77,12 +77,9 @@ export default function SearchBox({}: Props) {
   };
 
   const onKeyDown = async (e: React.KeyboardEvent<HTMLDivElement>) => {
-    console.log(searchText);
     const isEnter = e.key == 'Enter';
-    console.log(isEnter);
     if (isEnter) {
       const response = await fetchProductsFromDatabase(searchText);
-      console.log(searchText);
       autoSelectOnBarcode(response);
     }
   };
@@ -116,7 +113,9 @@ export default function SearchBox({}: Props) {
         />
         <AutoComplete
           options={results.map((product: any) => ({
-            value: `${product.sku} - ${product.name} - ${formatRupiah(product.sell_price)}`,
+            value: `${product.sku} - ${product.name} - ${formatRupiah(
+              product.sell_price,
+            )} (STOCK: ${product.stock})`,
             product,
           }))}
           value={searchText}
