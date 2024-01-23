@@ -5,6 +5,7 @@ import {
   CheckCircleOutlined,
   DeleteOutlined,
   EditOutlined,
+  ExclamationCircleFilled,
   ExclamationCircleOutlined,
   PrinterOutlined,
   SaveOutlined,
@@ -19,16 +20,22 @@ import {
   ProFormText,
   ProFormUploadDragger,
 } from '@ant-design/pro-components';
-import { useModel } from '@umijs/max';
+import { useAccess, useModel } from '@umijs/max';
 import { Button, Card, Modal, Spin, Table, message } from 'antd';
 import { isArray, isNumber } from 'lodash';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { history, useParams } from 'umi';
 import { getProductDataTable } from '../../MasterData/Product/data/services';
 import { getSupplier } from '../../MasterData/Supplier/data/services/service';
 import { PurchaseDetail, PurchaseItem } from '../data/data';
-import { getPurchase, publishPurchase, storePurchase, updatePurchase } from '../data/services';
+import {
+  deletePurchase,
+  getPurchase,
+  publishPurchase,
+  storePurchase,
+  updatePurchase,
+} from '../data/services';
 
 const PurchaseFormPage: React.FC = () => {
   const { storeID } = useModel('Store.useStore');
@@ -41,11 +48,33 @@ const PurchaseFormPage: React.FC = () => {
   const [isEditable, setIsEditable] = useState<boolean>(false);
 
   const { purchaseId } = useParams<{ purchaseId?: string }>();
+  const access = useAccess();
 
   const printableRef = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => printableRef.current!,
   });
+
+  const handleDelete = async function () {
+    if (purchaseId) {
+      confirm({
+        title: 'Anda yakin ingin menghapus data ini?',
+        icon: <ExclamationCircleFilled />,
+        content: 'Data yang dihapus tidak dapat dikembalikan',
+        okText: 'Hapus',
+        okType: 'danger',
+        cancelText: 'Batalkan',
+        closable: true,
+        onOk: async () => {
+          let hide = message.loading('Mohon tunggu');
+          await deletePurchase(parseInt(purchaseId));
+          history.replace('/store/purchase');
+          message.success('Berhasil menghapus pembelian');
+          hide();
+        },
+      });
+    }
+  };
 
   useEffect(() => {
     loadPage(purchaseId);
@@ -236,11 +265,18 @@ const PurchaseFormPage: React.FC = () => {
   return (
     <PageContainer
       title={'Pembelian'}
-      extra={
-        <Button onClick={handlePrint}>
+      extra={[
+        <Button key={'print-btn'} onClick={handlePrint}>
           <PrinterOutlined /> Cetak Halaman
-        </Button>
-      }
+        </Button>,
+        access.canAdmin ? (
+          <Button key={'delete-btn'} danger={true} onClick={handleDelete}>
+            <DeleteOutlined /> Hapus Pembelian
+          </Button>
+        ) : (
+          <></>
+        ),
+      ]}
     >
       <div className="printable-area" ref={printableRef}>
         <PrintHeader title="PEMBELIAN TOKO" />

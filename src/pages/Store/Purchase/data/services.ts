@@ -27,6 +27,12 @@ export async function storePurchase(storeID: number, data: any) {
   });
 }
 
+export async function deletePurchase(purchaseID: number) {
+  return request(`${baseUrl}/${purchaseID}`, {
+    method: 'DELETE',
+  });
+}
+
 function convertDataToFormData(data: any) {
   const formData = new FormData();
   // Iterate over the keys of the data object

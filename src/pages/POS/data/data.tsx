@@ -173,6 +173,7 @@ export const mapPMCode = {
   qris: 'QRIS',
   cash: 'Tunai',
   credit: 'Kredit',
+  voucher: 'Voucher',
 };
 
 export const mapPMIcon = {
@@ -183,6 +184,7 @@ export const mapPMIcon = {
     </h4>
   ),
   credit: <FieldTimeOutlined style={{ fontSize: '24px' }} />,
+  voucher: <FieldTimeOutlined style={{ fontSize: '24px' }} />,
 };
 
 export const mapPaymentMethodName = (code: keyof typeof mapPMCode) => {
@@ -194,5 +196,5 @@ export const mapPaymentMethodIcon = (code: keyof typeof mapPMCode) => {
 };
 
 export const disabledIfCreditNoMember = (code: keyof typeof mapPMCode, hasMember: boolean) => {
-  return code == 'credit' && !hasMember;
+  return code === 'credit' && !hasMember;
 };

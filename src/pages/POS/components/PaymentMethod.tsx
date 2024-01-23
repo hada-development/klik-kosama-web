@@ -28,7 +28,7 @@ const PaymentMethod = (props: Props) => {
       {paymentMethods.map((_pm) => (
         <POSButton
           key={_pm.code}
-          type={_pm.code == pmCode ? 'primary' : 'dashed'}
+          type={_pm.code === pmCode ? 'primary' : 'dashed'}
           onClick={() => changePaymentMethod(_pm)}
           title={mapPaymentMethodName(_pm.code)}
           icon={mapPaymentMethodIcon(_pm.code)}

@@ -21,6 +21,7 @@ const MarginChart: React.FC = (props: Props) => {
     }
   };
 
+  const year = new Date().getFullYear();
   const columnChartConfig: ColumnConfig = {
     data,
     isGroup: true,
@@ -53,7 +54,11 @@ const MarginChart: React.FC = (props: Props) => {
     },
   };
   return (
-    <Card title="Grafik Harga Jual, Beli & Margin Kredit (Dalam Jutaan Rupiah) Tahun 2023">
+    <Card
+      title={
+        'Grafik Harga Jual, Beli & Margin Kredit (Dalam Jutaan Rupiah) Tahun ' + year.toString()
+      }
+    >
       <Column {...columnChartConfig} />
     </Card>
   );

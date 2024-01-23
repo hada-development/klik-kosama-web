@@ -2,6 +2,7 @@ import {
   editBankAccount,
   editEmployee,
   editPersonalData,
+  editUserData,
   getEmployeeAccount,
 } from '@/pages/HRIS/Employee/data/services/service';
 import { useState } from 'react';
@@ -37,6 +38,10 @@ export default function useUserEmployeeAccount(id: number) {
     setLoading(true);
     if (data.personalData) {
       await editPersonalData(userId, data.personalData);
+    }
+
+    if (data.user) {
+      await editUserData(userId!, data.user);
     }
     if (data.bankAccount) {
       await editBankAccount(userId, data.bankAccount);

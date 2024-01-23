@@ -13,16 +13,20 @@ const AccountSubPage: React.FC = () => {
   const formRef = useRef<ProFormInstance>();
 
   useEffect(() => {
-    if ((!account || account?.data.id != employeeId) && employeeId) {
+    if ((!account || account?.data.id !== employeeId) && employeeId) {
       fetch(parseInt(employeeId));
     }
   }, [employeeId]);
 
   const handleSave = (employeeId: number | string, value: any) => {
     const hide = message.loading('Sedang menyimpan');
-    saveData(employeeId!, {
-      user: value,
-    })
+    saveData(
+      employeeId!,
+      {
+        user: value,
+      },
+      account?.data.user_id,
+    )
       .then(() => {
         hide();
         message.success('Berhasil menyimpan data');

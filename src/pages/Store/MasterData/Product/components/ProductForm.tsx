@@ -9,13 +9,21 @@ import {
   ProFormSwitch,
   ProFormText,
 } from '@ant-design/pro-components';
-import { useModel } from '@umijs/max';
-import { Menu, MenuProps, Spin } from 'antd';
+import { useAccess, useModel } from '@umijs/max';
+import { Menu, MenuProps, Spin, message } from 'antd';
+import confirm from 'antd/es/modal/confirm';
+import { Button } from 'antd/lib';
 import { MenuInfo } from 'rc-menu/lib/interface';
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { getProductCategory } from '../../ProductCategory/data/services/service';
 import { Barcode } from '../data/data';
-import { getProductDetail, storeProduct, updateProduct } from '../data/services';
+import {
+  deleteProduct,
+  getProductDetail,
+  getProductUOM,
+  storeProduct,
+  updateProduct,
+} from '../data/services';
 import './ProductForm.less';
 
 const items: MenuProps['items'] = [
@@ -47,7 +55,34 @@ const ProductForm: React.FC<{
   const [barcodes, setBarcodes] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const [uomList, setUomList] = useState<any[]>([]);
+
   const formRef = useRef<ProFormInstance>();
+
+  const access = useAccess();
+
+  const handleDelete = function () {
+    confirm({
+      title: 'Hapus Produk?',
+      content: 'Anda yakin ingin menghapus produk ini?',
+      onOk: async () => {
+        if (productId) {
+          const hide = message.loading('Mohon tunggu');
+          deleteProduct(productId);
+          hide();
+          await onSubmit(true);
+          message.success('Berhasil menghapus');
+          onClose(false);
+        }
+      },
+    });
+  };
+
+  useEffect(() => {
+    getProductUOM().then(function (result) {
+      setUomList(result);
+    });
+  }, []);
 
   useEffect(() => {
     if (productId) {
@@ -83,6 +118,26 @@ const ProductForm: React.FC<{
       open={visible}
       style={{
         padding: '0px',
+      }}
+      submitter={{
+        render: (props, doms) => {
+          console.log(props);
+          return [
+            <Button key={'close'} onClick={() => onClose(false)}>
+              Tutup
+            </Button>,
+            <Button type="primary" key={'submit'} onClick={props.form?.submit}>
+              Simpan
+            </Button>,
+            access.canAdmin ? (
+              <Button danger key={'delete'} onClick={handleDelete}>
+                Delete
+              </Button>
+            ) : (
+              <></>
+            ),
+          ];
+        },
       }}
       onFinish={async (data) => {
         console.log(data);
@@ -175,76 +230,7 @@ const ProductForm: React.FC<{
             placeholder="Pilih UOM"
             width="lg"
             name="uom"
-            options={[
-              {
-                label: 'PCS',
-                value: 'pcs',
-              },
-              {
-                label: 'BOTOL',
-                value: 'botol',
-              },
-              {
-                label: 'BATANG',
-                value: 'batang',
-              },
-              {
-                label: 'POUCH',
-                value: 'pouch',
-              },
-              {
-                label: 'KALENG',
-                value: 'kaleng',
-              },
-              {
-                label: 'BOX',
-                value: 'box',
-              },
-              {
-                label: 'TUBE',
-                value: 'tube',
-              },
-              {
-                label: 'RENCENG',
-                value: 'renceng',
-              },
-              {
-                label: 'BUNGKUS',
-                value: 'bungkus',
-              },
-              {
-                label: 'CUP',
-                value: 'cup',
-              },
-              {
-                label: 'ROLL',
-                value: 'roll',
-              },
-              {
-                label: 'PACK',
-                value: 'pack',
-              },
-              {
-                label: 'BUAH',
-                value: 'buah',
-              },
-              {
-                label: 'STRIP',
-                value: 'strip',
-              },
-              {
-                label: 'SACHET',
-                value: 'sachet',
-              },
-              {
-                label: 'DUS',
-                value: 'dus',
-              },
-              {
-                label: 'EKOR',
-                value: 'ekor',
-              },
-            ]}
+            options={uomList}
             label="Unit Of Measurement"
           />
 

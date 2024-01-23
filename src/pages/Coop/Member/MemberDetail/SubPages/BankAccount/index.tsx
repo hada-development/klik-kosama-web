@@ -14,7 +14,7 @@ const BankAccountSubPage: React.FC = () => {
   const formRef = useRef<ProFormInstance>();
 
   useEffect(() => {
-    if ((!account || account?.data.id != memberId) && memberId) {
+    if ((!account || account?.data.id !== memberId) && memberId) {
       fetch(parseInt(memberId!));
     }
   }, [memberId]);
@@ -43,7 +43,7 @@ const BankAccountSubPage: React.FC = () => {
   useEffect(() => {
     if (account) {
       if (account.data.user?.bank_account) {
-        formRef.current?.setFieldsValue({
+        const fieldsValue = {
           ...account.data.user?.bank_account,
           bank_id: account.data.user?.bank_account!.bank?.id
             ? {
@@ -51,7 +51,9 @@ const BankAccountSubPage: React.FC = () => {
                 label: account.data.user?.bank_account!.bank?.name,
               }
             : null,
-        });
+        };
+        // console.log(fieldsValue);
+        formRef.current?.setFieldsValue(fieldsValue);
       }
     }
   }, [account]);

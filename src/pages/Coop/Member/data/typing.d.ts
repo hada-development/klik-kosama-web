@@ -21,6 +21,7 @@ declare namespace MemberFeature {
     profile_photo?: ProfilePhoto;
     personal_data?: PersonalData;
     bank_account?: BankAccount;
+    company_data?: any;
   };
 
   type ProfilePhoto = {

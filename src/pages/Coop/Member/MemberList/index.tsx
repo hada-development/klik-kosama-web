@@ -23,12 +23,16 @@ const MemberPage: React.FC = () => {
 
   const columns: ProColumns<MemberFeature.MemberListItem>[] = [
     {
+      title: 'No Anggota',
+      dataIndex: 'member_no',
+    },
+    {
       title: 'Nama Anggota',
       dataIndex: 'name',
     },
     {
-      title: 'No Anggota',
-      dataIndex: 'member_no',
+      title: 'Email',
+      dataIndex: ['user', 'email'],
     },
     {
       title: 'Jenis Anggota',
@@ -66,6 +70,9 @@ const MemberPage: React.FC = () => {
         actionRef={actionRef}
         search={{
           labelWidth: 120,
+        }}
+        scroll={{
+          x: 'max-content',
         }}
         request={getMember}
         columns={columns}

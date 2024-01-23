@@ -64,6 +64,14 @@ export async function uploadPhoto(value: any) {
   });
 }
 
+/** ========= User Data ========= */
+export async function editUserData(userId: number | string, data?: { [key: string]: any }) {
+  return request(`/api/web/user/${userId}`, {
+    method: 'PUT',
+    data: { ...data, user_id: userId },
+  });
+}
+
 /** ========= Personal Data ========= */
 export async function editPersonalData(userId?: number | string, data?: { [key: string]: any }) {
   return request(`/api/web/personal-data`, {

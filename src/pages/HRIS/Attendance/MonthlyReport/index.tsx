@@ -133,9 +133,9 @@ const MonthlyAttendanceReport: React.FC = () => {
       dataIndex: 'late_minutes',
       render: (_, record: any) => {
         const text = record.late_minutes;
-        if (isNull(text) || text == undefined) return '-';
+        if (isNull(text) || text === undefined) return '-';
         const number = Math.abs(text);
-        return `${Math.floor(number / 60)}h ${number % 60}m`;
+        return `${number} m`;
       },
       onCell: sharedOnCell,
     },
@@ -257,9 +257,7 @@ const MonthlyAttendanceReport: React.FC = () => {
             <Descriptions.Item label="Cuti">{metaData.counter.leave}</Descriptions.Item>
             <Descriptions.Item label="Alpa">{metaData.counter.absent}</Descriptions.Item>
             <Descriptions.Item label="Terlambat">{metaData.counter.late}</Descriptions.Item>
-            <Descriptions.Item label="Total Keterlambatan">{`${Math.floor(
-              metaData.counter.late_total / 60,
-            )}J ${metaData.counter.late_total % 60}m`}</Descriptions.Item>
+            <Descriptions.Item label="Total Keterlambatan">{`${metaData.counter.late_total}m`}</Descriptions.Item>
           </Descriptions>
         </Card>
       )}

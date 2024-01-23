@@ -1,7 +1,6 @@
-import { ExclamationCircleFilled } from '@ant-design/icons';
+import { DeleteOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import { MenuDataItem, PageContainer, ProLayoutProps, Settings } from '@ant-design/pro-components';
-import type { MenuProps } from 'antd';
-import { Layout, Menu, Modal, message, theme } from 'antd';
+import { Button, Layout, Menu, MenuProps, Modal, message, theme } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import { Content } from 'antd/es/layout/layout';
 import React from 'react';
@@ -52,6 +51,7 @@ const items: MenuProps['items'] = [
   getItem('Informasi Personal', 'personal-data'),
   getItem('Akun Bank', 'bank-account'),
 ];
+
 export function getLastPart() {
   const parts = window.location.href.split('/');
   let lastPart = parts[parts.length - 1];
@@ -85,10 +85,15 @@ const MemberDetailLayout: React.FC<MemberDetailLayoutProps> = (props) => {
       cancelText: 'Batalkan',
       onOk: async () => {
         const hide = message.loading('Mohon Tunggu');
-        await deleteMember(memberId!);
-        hide();
-        history.replace('/coop/member');
-        message.success('Berhasil Menghapus Anggota');
+        try {
+          await deleteMember(memberId!);
+          hide();
+          history.replace('/coop/member');
+          message.success('Berhasil Menghapus Anggota');
+        } catch (e) {
+          hide();
+          message.error('Tidak bisa menghapus pegawai, karena memiliki simpanan dan pinjaman');
+        }
       },
       onCancel: () => {
         console.log('NO');
@@ -100,9 +105,11 @@ const MemberDetailLayout: React.FC<MemberDetailLayoutProps> = (props) => {
     <PageContainer
       header={{
         title: 'Data Anggota' + (account ? ' - ' + account.data.user?.name : ''),
-        // extra: [
-        //     <Button type="primary" onClick={handleDelete} danger={true}><DeleteOutlined /> Hapus Data Anggota</Button>
-        // ],
+        extra: [
+          <Button key={'member-delete-btn'} type="primary" onClick={handleDelete} danger={true}>
+            <DeleteOutlined /> Hapus Data Anggota
+          </Button>,
+        ],
       }}
     >
       {contextHolder}

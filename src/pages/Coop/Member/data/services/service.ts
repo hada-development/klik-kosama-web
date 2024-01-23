@@ -64,6 +64,14 @@ export async function uploadPhoto(value: any) {
   });
 }
 
+/** ========= User Data ========= */
+export async function editUserData(userId?: number | string, data?: { [key: string]: any }) {
+  return request(`/api/web/user/${userId}`, {
+    method: 'PUT',
+    data: { ...data, user_id: userId },
+  });
+}
+
 /** ========= Personal Data ========= */
 export async function editPersonalData(userId?: number | string, data?: { [key: string]: any }) {
   return request(`/api/web/personal-data`, {
@@ -74,6 +82,14 @@ export async function editPersonalData(userId?: number | string, data?: { [key: 
 
 /** ========= Bank Account ========= */
 export async function editBankAccount(userId?: number | string, data?: { [key: string]: any }) {
+  /** Refactoring Bank Id */
+  console.log(data);
+  if (data === null) {
+    return;
+  }
+  if (!(typeof data!.bank_id === 'number')) {
+    data!.bank_id = data!.bank_id.value;
+  }
   return request(`/api/web/bank-account`, {
     method: 'POST',
     data: { ...data, user_id: userId },

@@ -8,7 +8,7 @@ import {
   ProSkeleton,
 } from '@ant-design/pro-components';
 import { useModel, useParams } from '@umijs/max';
-import { message } from 'antd';
+import { Divider, message } from 'antd';
 import Title from 'antd/es/typography/Title';
 import React, { useEffect, useRef } from 'react';
 import { genders, maritalStatuses, religions } from '../../../data/data';
@@ -51,6 +51,7 @@ const PersonalDataSubPage: React.FC = () => {
     if (account) {
       if (account) {
         formRef.current?.setFieldsValue({ ...account.data.user?.personal_data });
+        formRef.current?.setFieldsValue({ ...account.data.user?.company_data });
       }
     }
   }, [account]);
@@ -130,6 +131,20 @@ const PersonalDataSubPage: React.FC = () => {
         </ProForm.Group>
 
         <ProFormTextArea name="address" label="Alamat" placeholder="Masukkan Alamat" />
+
+        <Divider />
+        <ProForm.Group>
+          <ProFormText width="md" name="nip" label="NIP" placeholder="Masukkan Nip" />
+
+          <ProFormText width="md" name="division" label="Divisi" placeholder="Masukkan Divisi" />
+
+          <ProFormText
+            width="md"
+            name="work_unit"
+            label="Unit Kerja"
+            placeholder="Masukkan Unit Kerja"
+          />
+        </ProForm.Group>
       </ProForm>
     </>
   );

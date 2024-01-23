@@ -2,6 +2,7 @@ import {
   editBankAccount,
   editMember,
   editPersonalData,
+  editUserData,
   getMemberAccount,
 } from '@/pages/Coop/Member/data/services/service';
 import { useState } from 'react';
@@ -36,6 +37,13 @@ export default function useUserMemberAccount(id: number) {
     setLoading(true);
     if (data.personalData) {
       await editPersonalData(userId, data.personalData);
+    }
+    if (data.user) {
+      try {
+        await editUserData(userId, data.user);
+      } catch (e: any) {
+        console.log(e);
+      }
     }
     if (data.bankAccount) {
       await editBankAccount(userId, data.bankAccount);

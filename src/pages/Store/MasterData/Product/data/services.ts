@@ -15,6 +15,13 @@ export async function getProductDataTable(
   });
 }
 
+export async function getProductUOM(): Promise<any[]> {
+  const response = await request(`${baseUrl}/uom`, {
+    method: 'GET',
+  });
+  return response.data;
+}
+
 export async function storeProduct(store_id: number, data: { [key: string]: any }) {
   data.stocks[0].store_id = store_id;
   data.prices[0].store_id = store_id;
@@ -34,6 +41,12 @@ export async function updateProduct(
   return request(`${baseUrl}/${productId}`, {
     method: 'PUT',
     data: data,
+  });
+}
+
+export async function deleteProduct(productId: number) {
+  return request(`${baseUrl}/${productId}`, {
+    method: 'DELETE',
   });
 }
 

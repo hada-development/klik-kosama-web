@@ -194,7 +194,7 @@ const AttendanceTable = () => {
         const text = record.late_minutes;
         if (isNull(text)) return '-';
         const number = Math.abs(text);
-        return `${Math.floor(number / 60)}h ${number % 60}m`;
+        return `${number} m`;
       },
     },
     {
