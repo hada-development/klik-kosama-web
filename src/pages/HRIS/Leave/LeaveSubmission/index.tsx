@@ -1,6 +1,11 @@
 import { submissionStatuses } from '@/common/data/data';
 import { formatDateTime } from '@/common/utils/utils';
-import { ExclamationCircleFilled, OrderedListOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  ExclamationCircleFilled,
+  OrderedListOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
 import {
   ActionType,
   FooterToolbar,
@@ -122,7 +127,7 @@ const LeaveSubmissionPage: React.FC = () => {
     {
       title: 'Aksi',
       dataIndex: 'option',
-      width: '8%',
+      width: '12%',
       valueType: 'option',
       render: (_, record) => [
         <a
@@ -133,6 +138,17 @@ const LeaveSubmissionPage: React.FC = () => {
           }}
         >
           <OrderedListOutlined /> Detail
+        </a>,
+        <a
+          key="delete"
+          style={{
+            color: 'red',
+          }}
+          onClick={() => {
+            onDelete(record);
+          }}
+        >
+          <DeleteOutlined /> Hapus
         </a>,
       ],
     },

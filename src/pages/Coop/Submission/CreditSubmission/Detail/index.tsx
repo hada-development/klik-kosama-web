@@ -1,12 +1,11 @@
 import PreviewImageLink from '@/common/components/PreviewImageLink';
 import PrintHeader from '@/common/components/PrintHeader';
 import { submissionStatuses } from '@/common/data/data';
-import { formatDateTime, formatRupiah, isoDateFormat } from '@/common/utils/utils';
+import { downloadUrl, formatDateTime, formatRupiah, isoDateFormat } from '@/common/utils/utils';
 import { EditOutlined, PaperClipOutlined, PrinterOutlined } from '@ant-design/icons';
 import { PageContainer, ProDescriptions } from '@ant-design/pro-components';
 import { Button, Card, Divider, Typography, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import { useReactToPrint } from 'react-to-print';
 import { history, useParams } from 'umi';
 import SubmissionValidationHistory from '../../component/SubmissionValidationHistory';
 import { CreditSubmissionSubmissionDetail } from '../data/data';
@@ -22,9 +21,9 @@ const CreditSubmissionSubmissionDetailPage: React.FC = (prop) => {
   const [isModalEditOpen, setModalEdit] = useState(false);
 
   const printableRef = useRef(null);
-  const handlePrint = useReactToPrint({
-    content: () => printableRef.current!,
-  });
+  const handlePrint = (id: number) => {
+    downloadUrl(`/api/web/coop/submission/credit/pdf/${id}`);
+  };
 
   useEffect(() => {
     if (parameter != null) {
@@ -52,7 +51,13 @@ const CreditSubmissionSubmissionDetailPage: React.FC = (prop) => {
       header={{
         title: `Pengajuan Kredit Barang - ${detail?.parent_submission.number ?? ''} `,
         extra: (
-          <Button onClick={handlePrint}>
+          <Button
+            onClick={() => {
+              if (detail) {
+                handlePrint(detail!.id);
+              }
+            }}
+          >
             <PrinterOutlined /> Cetak Halaman
           </Button>
         ),
