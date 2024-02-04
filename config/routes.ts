@@ -131,7 +131,7 @@ export default [
       },
       {
         path: 'leave',
-        name: 'Cuti',
+        name: 'Ketidakhadiran',
         icon: 'logout',
         routes: [
           {
@@ -141,13 +141,13 @@ export default [
             component: './HRIS/Leave/LeaveQuota',
           },
           {
-            name: 'Jenis Cuti',
+            name: 'Jenis Ketidakhadiran',
             icon: 'sound',
             path: 'type',
             component: './HRIS/Leave/LeaveType',
           },
           {
-            name: 'Pengajuan Cuti',
+            name: 'Pengajuan Ketidakhadiran',
             icon: 'sound',
             path: 'submission',
             component: './HRIS/Leave/LeaveSubmission',
@@ -358,6 +358,19 @@ export default [
             icon: 'dollar',
             path: 'transaction',
             component: './Coop/Saving/SavingTransaction',
+          },
+        ],
+      },
+      {
+        path: 'shu',
+        name: 'SHU',
+        icon: 'dollar',
+        routes: [
+          {
+            name: 'SHU Anggota',
+            icon: 'dollar',
+            path: 'summary',
+            component: './Coop/Shu/MemberShu',
           },
         ],
       },
