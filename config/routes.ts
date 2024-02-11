@@ -338,6 +338,12 @@ export default [
                 component: './Coop/Member/MemberDetail/SubPages/BankAccount',
                 wrappers: ['./Coop/Member/MemberDetail/index'],
               },
+              {
+                path: 'saving',
+                name: 'Detail Anggota - Simpanan',
+                component: './Coop/Member/MemberDetail/SubPages/Saving',
+                wrappers: ['./Coop/Member/MemberDetail/index'],
+              },
             ],
           },
         ],
@@ -471,6 +477,19 @@ export default [
                 component: './Coop/Credit/PharmacyCredit',
               },
             ],
+          },
+        ],
+      },
+      {
+        name: 'Keaktifan Anggota',
+        path: 'member-activity',
+        icon: 'UsergroupAddOutlined',
+        routes: [
+          {
+            path: 'shopping',
+            name: 'Belanja Anggota',
+            icon: 'pieChart',
+            component: './Store/Report/pages/MemberReportPage',
           },
         ],
       },

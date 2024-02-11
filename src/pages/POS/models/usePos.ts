@@ -39,6 +39,24 @@ export default () => {
 
   const [openTrxDrawer, setOpenTrxDrawer] = useState<boolean>(false);
 
+  // Calculate total items and total amount
+  const updateTotals = (updatedItems: POSItem[], voucher?: POSVoucher) => {
+    let itemsCount = 0;
+    let total = 0;
+    updatedItems.forEach((item) => {
+      itemsCount += item.quantity;
+      total += item.subTotal;
+    });
+
+    if (voucher) {
+      let subtractedTotal = total - voucher.amount;
+      total = Math.max(0, subtractedTotal);
+    }
+
+    setTotalItems(itemsCount);
+    setTotalAmount(total);
+  };
+
   const addItem = (product: POSProduct) => {
     const productIndex = items.findIndex((item) => item.product_id === product.id);
     if (productIndex === -1) {
@@ -51,7 +69,7 @@ export default () => {
         subTotal: quantity * product.sell_price,
       };
       setItems((prevItems) => {
-        const updatedItems = [...prevItems, newItem];
+        const updatedItems = [newItem, ...prevItems];
         // Call updateTotals after adding an item
         updateTotals(updatedItems, voucher);
         return updatedItems;
@@ -92,10 +110,10 @@ export default () => {
 
   const changeQuantity = (index: number, newQuantity: number) => {
     setItems((prevItems) => {
-      var updatedItems: POSItem[] = [];
-      if (newQuantity == 0) {
+      let updatedItems: POSItem[];
+      if (newQuantity === 0) {
         // Remove
-        updatedItems = prevItems.filter((item, _index) => _index != index);
+        updatedItems = prevItems.filter((item, _index) => _index !== index);
       } else {
         updatedItems = prevItems.map((item, _index) => {
           if (index === _index) {
@@ -116,26 +134,8 @@ export default () => {
     });
   };
 
-  // Calculate total items and total amount
-  const updateTotals = (updatedItems: POSItem[], voucher?: POSVoucher) => {
-    let itemsCount = 0;
-    let total = 0;
-    updatedItems.forEach((item) => {
-      itemsCount += item.quantity;
-      total += item.subTotal;
-    });
-
-    if (voucher) {
-      let subtractedTotal = total - voucher.amount;
-      total = Math.max(0, subtractedTotal);
-    }
-
-    setTotalItems(itemsCount);
-    setTotalAmount(total);
-  };
-
   const changeVoucher = (voucher: POSVoucher | undefined) => {
-    setVoucher((_) => {
+    setVoucher(() => {
       updateTotals(items, voucher);
       return voucher;
     });
@@ -157,7 +157,7 @@ export default () => {
   };
 
   const handlePreCheckout = () => {
-    if (totalItems == 0) {
+    if (totalItems === 0) {
       message.error('Mohon pilih produk');
       return;
     }
@@ -196,8 +196,8 @@ export default () => {
   const prepareAppOrder = async (id: number) => {
     setPageLoading(true);
     const newAppOrder = (await getAppOrderDetail(id)).data;
-    setItems((prevItem) => {
-      var newItems: POSItem[] = newAppOrder.items.map((item, index) => {
+    setItems(() => {
+      let newItems: POSItem[] = newAppOrder.items.map((item) => {
         const newItem: POSItem = {
           product: {
             id: item.product_id,

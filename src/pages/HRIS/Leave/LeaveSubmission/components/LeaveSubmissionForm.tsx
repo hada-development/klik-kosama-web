@@ -63,7 +63,11 @@ const LeaveSubmissionForm: React.FC<LeaveSubmissionFormProps> = (props) => {
   return (
     <Spin spinning={loading}>
       <ModalForm
-        title={props.values != undefined ? 'Edit Pengajuan Cuti' : 'Tambah Pengajuan Cuti'}
+        title={
+          props.values != undefined
+            ? 'Edit Pengajuan Ketidakhadiran'
+            : 'Tambah Pengajuan Ketidakhadiran'
+        }
         width="400px"
         formRef={formRef}
         open={props.open}

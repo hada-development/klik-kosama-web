@@ -161,12 +161,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = (props) => {
             },
           ]}
         />
-        <ProFormDatePicker
-          width="md"
-          name="end_date"
-          label="Tanggal Selesai Masa Kerja"
-          placeholder="(Opsional)"
-        />
       </ProForm.Group>
       <ProForm.Group>
         <ProFormSelect

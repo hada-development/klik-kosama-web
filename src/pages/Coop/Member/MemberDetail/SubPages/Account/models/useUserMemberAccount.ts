@@ -1,5 +1,6 @@
 import {
   editBankAccount,
+  editCompanyData,
   editMember,
   editPersonalData,
   editUserData,
@@ -11,7 +12,7 @@ export type MemberAccount = {
   message: string;
   data: MemberFeature.MemberListItem;
 };
-export default function useUserMemberAccount(id: number) {
+export default function useUserMemberAccount() {
   const [account, setAccount] = useState<MemberAccount>();
   const [loading, setLoading] = useState(false);
 
@@ -24,8 +25,8 @@ export default function useUserMemberAccount(id: number) {
   };
 
   const refresh = async () => {
-    if (account != undefined) {
-      fetch(account.data.id!);
+    if (account !== undefined) {
+      await fetch(account.data.id!);
     }
   };
 
@@ -38,6 +39,11 @@ export default function useUserMemberAccount(id: number) {
     if (data.personalData) {
       await editPersonalData(userId, data.personalData);
     }
+
+    if (data.companyData) {
+      await editCompanyData(userId, data.personalData);
+    }
+
     if (data.user) {
       try {
         await editUserData(userId, data.user);

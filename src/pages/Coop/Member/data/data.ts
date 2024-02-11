@@ -29,3 +29,15 @@ export const memberType = {
   ALB: { text: 'ALB', status: 'Warning' },
   'NON AKTIF': { text: 'NON AKTIF', status: 'Error' },
 };
+
+export type MemberSaving = {
+  member_no: string;
+  member_id: number;
+  saving_type: string;
+  transaction_type: string;
+  month: number;
+  year: number;
+  amount: number;
+  note: string;
+  created_at: string;
+};

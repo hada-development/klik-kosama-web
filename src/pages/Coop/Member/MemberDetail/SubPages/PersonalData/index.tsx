@@ -21,7 +21,7 @@ const PersonalDataSubPage: React.FC = () => {
   const formRef = useRef<ProFormInstance>();
 
   useEffect(() => {
-    if ((!account || account?.data.id != memberId) && memberId) {
+    if ((!account || account?.data.id !== memberId) && memberId) {
       fetch(parseInt(memberId!));
     }
   }, [memberId]);
@@ -32,6 +32,11 @@ const PersonalDataSubPage: React.FC = () => {
       memberId,
       {
         personalData: value,
+        companyData: {
+          nip: value.nip,
+          division: value.division,
+          work_unit: value.work_unit,
+        },
       },
       account!.data.user!.id!,
     )

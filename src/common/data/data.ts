@@ -24,8 +24,8 @@ export const submissionStatuses = {
 
 export const employeeStatuses = {
   active: { text: 'Aktif', status: 'Success' },
-  resign: { text: 'Resign', status: 'Default' },
-  retire: { text: 'Pensium', status: 'Default' },
+  resign: { text: 'Resign', status: 'Error' },
+  retire: { text: 'Pensiun', status: 'Warning' },
 };
 
 export const webRoles = ['admin', 'management', 'staff'];

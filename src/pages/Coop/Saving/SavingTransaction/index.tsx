@@ -1,12 +1,6 @@
 import { formatDateTime, formatRupiah } from '@/common/utils/utils';
 import { DeleteOutlined, EditOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
-import {
-  ActionType,
-  FooterToolbar,
-  PageContainer,
-  ProColumns,
-  ProTable,
-} from '@ant-design/pro-components';
+import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button, Modal, message } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
 import React, { useRef, useState } from 'react';
@@ -170,26 +164,6 @@ const SavingTransactionPage: React.FC = () => {
           </Button>,
         ]}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              Dipilih <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> Item
-              &nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              // await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            Batch Deletion
-          </Button>
-        </FooterToolbar>
-      )}
 
       <ExcelImportModal
         isModalOpen={importModalOpen}

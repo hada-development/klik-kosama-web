@@ -40,7 +40,16 @@ const TransactionReportPage = (props: Props) => {
     },
     {
       title: 'Tunai',
-      dataIndex: 'total_cash',
+      dataIndex: 'total_p_cash',
+      align: 'right',
+      search: false,
+      render: (text: any) => {
+        return formatRupiah(text);
+      },
+    },
+    {
+      title: 'QRIS',
+      dataIndex: 'total_p_qris',
       align: 'right',
       search: false,
       render: (text: any) => {
@@ -49,7 +58,16 @@ const TransactionReportPage = (props: Props) => {
     },
     {
       title: 'Kredit',
-      dataIndex: 'total_credit',
+      dataIndex: 'total_p_credit',
+      align: 'right',
+      search: false,
+      render: (text: any) => {
+        return formatRupiah(text);
+      },
+    },
+    {
+      title: 'Voucher',
+      dataIndex: 'total_p_voucher',
       align: 'right',
       search: false,
       render: (text: any) => {
@@ -58,7 +76,7 @@ const TransactionReportPage = (props: Props) => {
     },
     {
       title: 'Total Belanja',
-      dataIndex: 'total_amount',
+      dataIndex: 'total_price',
       align: 'right',
       search: false,
       render: (text: any) => {

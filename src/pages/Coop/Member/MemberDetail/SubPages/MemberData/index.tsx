@@ -20,7 +20,7 @@ const MemberDataSubPage: React.FC = () => {
   const formRef = useRef<ProFormInstance>();
 
   useEffect(() => {
-    if ((!account || account?.data.id != memberId) && memberId) {
+    if ((!account || account?.data.id !== memberId) && memberId) {
       fetch(parseInt(memberId!));
     }
   }, [memberId]);

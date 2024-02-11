@@ -46,7 +46,7 @@ const handleRemove = async (selectedRow: LeaveQuotaFeature.LeaveQuotaListItem | 
 const LeaveQuotaPage: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<LeaveQuotaFeature.LeaveQuotaListItem | undefined>();
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-  const [deleteModalOpen, handleDeleteModalOpen] = useState<boolean>(false);
+
   const [selectedRowsState, setSelectedRows] = useState<LeaveQuotaFeature.LeaveQuotaListItem[]>([]);
   const [{ confirm }, contextHolder] = Modal.useModal();
 
@@ -75,6 +75,11 @@ const LeaveQuotaPage: React.FC = () => {
     {
       title: 'Pegawai',
       dataIndex: ['employee', 'user', 'name'],
+      search: {
+        transform: (value) => ({
+          'users.name': value,
+        }), // Set the custom search parameter name
+      },
     },
     {
       title: 'Awal Periode',
@@ -169,7 +174,7 @@ const LeaveQuotaPage: React.FC = () => {
       )}
       <LeaveQuotaForm
         onCancel={() => {}}
-        onSubmit={async (value) => {
+        onSubmit={async () => {
           if (actionRef.current) {
             actionRef.current.reload();
           }

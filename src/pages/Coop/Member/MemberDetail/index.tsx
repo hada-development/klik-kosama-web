@@ -50,6 +50,7 @@ const items: MenuProps['items'] = [
   getItem('Data Anggota', 'member-data'),
   getItem('Informasi Personal', 'personal-data'),
   getItem('Akun Bank', 'bank-account'),
+  getItem('Simpanan', 'saving'),
 ];
 
 export function getLastPart() {

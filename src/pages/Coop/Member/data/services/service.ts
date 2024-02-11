@@ -80,6 +80,14 @@ export async function editPersonalData(userId?: number | string, data?: { [key: 
   });
 }
 
+/** ========= User Company Data ========= */
+export async function editCompanyData(userId?: number | string, data?: { [key: string]: any }) {
+  return request(`/api/web/user-company`, {
+    method: 'POST',
+    data: { ...data, user_id: userId },
+  });
+}
+
 /** ========= Bank Account ========= */
 export async function editBankAccount(userId?: number | string, data?: { [key: string]: any }) {
   /** Refactoring Bank Id */
@@ -110,4 +118,26 @@ export async function getBankList(
   return request(`/api/web/bank?search[name]=${query}`, {
     method: 'GET',
   });
+}
+
+/** ========= Saving Data ========= */
+export async function getMemberSavings(
+  memberId: number | string,
+  params: any,
+  options?: { [key: string]: any },
+) {
+  const formattedParams = formatTableParams(params);
+  let response = await request(`/api/web/coop/saving/transaction/member/${memberId}`, {
+    method: 'GET',
+    params: {
+      ...formattedParams,
+    },
+    ...(options || {}),
+  });
+
+  return {
+    current_page: response.current_page,
+    data: response.data,
+    total: response.total,
+  };
 }

@@ -106,7 +106,7 @@ const LeaveTypePage: React.FC = () => {
     <PageContainer>
       {contextHolder}
       <ProTable<LeaveTypeFeature.LeaveTypeListItem, API.PageParams>
-        headerTitle="Daftar LeaveType"
+        headerTitle="Daftar Jenis Ketidakhadiran"
         rowKey="id"
         actionRef={actionRef}
         search={{

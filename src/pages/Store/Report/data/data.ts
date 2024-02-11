@@ -57,6 +57,12 @@ export interface MemberSale {
   total_amount: number;
   total_cash: number;
   total_credit: number;
+
+  total_p_transfer: number;
+  total_p_qris: number;
+  total_p_cash: number;
+  total_p_credit: number;
+  total_p_voucher: number;
 }
 
 export interface ProductSale {

@@ -1,3 +1,5 @@
+import { employeeStatuses } from '@/common/data/data';
+import { convertValueEntryToOptions } from '@/common/utils/utils';
 import { getCompany } from '@/pages/HRIS/MasterData/Company/data/services/service';
 import { getEducationLevel } from '@/pages/HRIS/MasterData/EducationLevel/data/services/service';
 import { getEmployeeType } from '@/pages/HRIS/MasterData/EmployeeType/data/services/service';
@@ -77,6 +79,15 @@ const EmployeeDataSubPage: React.FC = () => {
       >
         <Title level={5}>Informasi Kepegawaian</Title>
 
+        <ProFormSelect
+          width="md"
+          name="status"
+          label="Status Pegawai"
+          placeholder="Pilih Status Pegawai"
+          options={convertValueEntryToOptions(employeeStatuses)}
+          rules={[{ required: true, message: 'Status pegawai wajib diisi' }]}
+        />
+
         <ProForm.Group>
           <ProFormText
             width="md"
@@ -90,6 +101,21 @@ const EmployeeDataSubPage: React.FC = () => {
               },
             ]}
           />
+
+          <ProFormSelect
+            width="md"
+            name="hr_company_id"
+            label="Instansi"
+            placeholder="Pilih Instansi Pegawai"
+            request={async () =>
+              (await getCompany({})).data.map((e: any) => {
+                return { value: e.id, label: e.name };
+              })
+            }
+            rules={[{ required: true, message: 'Instansi Pegawai wajib diisi' }]}
+          />
+        </ProForm.Group>
+        <ProForm.Group>
           <ProFormDatePicker
             width="md"
             name="join_date"
@@ -102,20 +128,14 @@ const EmployeeDataSubPage: React.FC = () => {
               },
             ]}
           />
-        </ProForm.Group>
 
-        <ProFormSelect
-          width="md"
-          name="hr_company_id"
-          label="Instansi"
-          placeholder="Pilih Instansi Pegawai"
-          request={async () =>
-            (await getCompany({})).data.map((e: any) => {
-              return { value: e.id, label: e.name };
-            })
-          }
-          rules={[{ required: true, message: 'Instansi Pegawai wajib diisi' }]}
-        />
+          <ProFormDatePicker
+            width="md"
+            name="resign_date"
+            label="Tanggal Keluar"
+            placeholder="Masukkan Tanggal Keluar (Opsinal)"
+          />
+        </ProForm.Group>
 
         <ProForm.Group>
           <ProFormSelect

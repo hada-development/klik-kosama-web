@@ -1,21 +1,20 @@
 // src/pages/MonthlyAttendanceReport.tsx
 
-import { PageContainer } from '@ant-design/pro-layout';
-import { Badge, Button, Card, DatePicker, Descriptions, Typography } from 'antd';
-import moment from 'moment';
-import React, { useState } from 'react';
-// Adjust the path based on your project structure
-
-const { Text, Link } = Typography;
-
 import SearchableSelectInputStandard from '@/common/components/SearchableSelectInput/index-standard';
 import { formatDateTime } from '@/common/utils/utils';
 import { ProColumns, ProTable } from '@ant-design/pro-components';
+import { PageContainer } from '@ant-design/pro-layout';
+import { Badge, Button, Card, DatePicker, Descriptions, Typography } from 'antd';
 import { isNull } from 'lodash';
+import moment from 'moment';
+import React, { useState } from 'react';
 import { request } from 'umi';
 import { getEmployee } from '../../Employee/data/services/service';
 import { getFilteredAndPaginatedData } from './data/services/service';
 import { MonthlyAttendanceReportData, MonthlyAttendanceReportMetaData } from './data/typing';
+// Adjust the path based on your project structure
+
+const { Text, Link } = Typography;
 
 const sharedOnCell = (data: any, _: any) => {
   if (data.attendance == 'absent') {
@@ -78,7 +77,9 @@ const MonthlyAttendanceReport: React.FC = () => {
       const blobUrl = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = blobUrl;
-      link.download = 'attendance_report.pdf';
+      link.download = `KEHADIRAN_${metaData?.employee_name}_${selectedMonth
+        .toString()
+        .padStart(2, '0')}_${year}.pdf`;
       link.click();
     } catch (error) {
       console.error('Error while exporting to PDF', error);

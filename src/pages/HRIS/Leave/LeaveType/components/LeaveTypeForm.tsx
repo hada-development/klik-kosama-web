@@ -40,7 +40,7 @@ const LeaveTypeForm: React.FC<LeaveTypeFormProps> = (props) => {
 
   return (
     <ModalForm
-      title={props.values != undefined ? 'Edit LeaveType' : 'Tambah LeaveType'}
+      title={props.values != undefined ? 'Edit Ketidakhadiran' : 'Tambah Ketidakhadiran'}
       width="400px"
       formRef={formRef}
       open={props.open}
@@ -54,13 +54,13 @@ const LeaveTypeForm: React.FC<LeaveTypeFormProps> = (props) => {
         rules={[
           {
             required: true,
-            message: 'Jenis Cuti Name Is Required',
+            message: 'Jenis ketidakhadiran Is Required',
           },
         ]}
-        placeholder="Masukkan Nama LeaveType"
+        placeholder="Masukkan Jenis Ketidakhadiran"
         width="md"
         name="name"
-        label="Nama Jenis Cuti"
+        label="Nama Jenis Ketidakhadiran"
       />
     </ModalForm>
   );
