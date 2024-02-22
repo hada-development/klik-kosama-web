@@ -126,7 +126,7 @@ const LeaveQuotaPage: React.FC = () => {
     <PageContainer>
       {contextHolder}
       <ProTable<LeaveQuotaFeature.LeaveQuotaListItem, API.PageParams>
-        headerTitle="Daftar Posisi"
+        headerTitle="Daftar Kuota Cuti"
         rowKey="id"
         actionRef={actionRef}
         search={{

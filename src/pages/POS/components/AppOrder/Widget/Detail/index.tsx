@@ -149,7 +149,7 @@ const AppOrderDetailModal: React.FC<Props> = ({ id, open, onClose, onUpdated }) 
               </thead>
               <tbody>
                 {order.items.map((e) => (
-                  <tr>
+                  <tr key={'order_' + e.order_id}>
                     <td style={{ padding: '10px 0px' }}>{e.product_name}</td>
                     <td style={{ textAlign: 'center', padding: '10px 0px' }}>{e.quantity}</td>
                     <td style={{ textAlign: 'right', padding: '10px 0px' }}>
@@ -176,7 +176,7 @@ const AppOrderDetailModal: React.FC<Props> = ({ id, open, onClose, onUpdated }) 
                 </tr>
                 <tr>
                   <td style={{ textAlign: 'right', padding: '2px 4px' }} colSpan={3}>
-                    Diskon{' '}
+                    Voucher{' '}
                   </td>
                   <td style={{ textAlign: 'right', padding: '2px 0px' }}>
                     {formatRupiah(order.discount ?? 0)}

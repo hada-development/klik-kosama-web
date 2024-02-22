@@ -181,6 +181,7 @@ export default () => {
 
     // console.log(data);
     const response = await storeTransaction(data);
+    console.log(JSON.stringify(data));
     const trx = response.data;
     setprintableTrx(trx);
   };

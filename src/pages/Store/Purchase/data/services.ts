@@ -37,7 +37,7 @@ function convertDataToFormData(data: any) {
   const formData = new FormData();
   // Iterate over the keys of the data object
   for (const key in data) {
-    if (key == 'file') {
+    if (key === 'file') {
       if (data[key][0].originFileObj != undefined) {
         formData.append(key, data[key][0].originFileObj);
       }

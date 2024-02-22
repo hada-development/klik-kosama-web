@@ -61,10 +61,23 @@ const TransactionReportTable: React.FC<TransactionReportTableProps> = ({ data })
 
     {
       title: 'Nominal',
-      dataIndex: 'total_amount',
+      dataIndex: 'total_price',
       key: 'totalAmount',
       align: 'right' as 'right',
       render: (text: any) => {
+        return formatRupiah(text);
+      },
+    },
+
+    {
+      title: 'Voucher',
+      dataIndex: 'discount',
+      key: 'totalVoucher',
+      align: 'right' as 'right',
+      render: (text: any) => {
+        if (text === undefined || text === null || text === '') {
+          return '';
+        }
         return formatRupiah(text);
       },
     },
@@ -98,7 +111,7 @@ const TransactionReportTable: React.FC<TransactionReportTableProps> = ({ data })
 
       <TransactionDetail
         transaction={selectedTrx}
-        readonly={true}
+        readonly={false}
         open={openDetail}
         onClose={() => setOpenDetail(false)}
       />

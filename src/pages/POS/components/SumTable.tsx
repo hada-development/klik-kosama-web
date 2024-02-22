@@ -30,7 +30,7 @@ export default function SumTable({}: Props) {
         },
         {
           key: 'totalDiscount',
-          description: 'Total Diskon',
+          description: 'Total Voucher',
           value: formatRupiah((voucher?.amount ?? 0) * -1),
         },
         {

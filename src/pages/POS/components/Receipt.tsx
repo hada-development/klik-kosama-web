@@ -92,14 +92,16 @@ const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(({ transaction, s
             ))}
 
             <span style={{ display: 'block' }}>{createDashes()}</span>
+
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <span>HARGA JUAL :</span>
-              <span>{formatPrice(transaction.total_amount, 10)}</span>
+              <span>TOTAL BELANJA :</span>
+              <span>{formatPrice(transaction.total_price, 10)}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <span>DISKON :</span>
+              <span>VOUCHER :</span>
               <span>{formatPrice(transaction.discount ?? 0, 10)}</span>
             </div>
+
             <span style={{ display: 'block' }}>{createDashes()}</span>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <span>TOTAL :</span>
@@ -109,11 +111,28 @@ const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(({ transaction, s
               <span>{mapPaymentMethodName(transaction.payment_method.code).toUpperCase()} :</span>
               <span>{formatPrice(transaction.cash_received, 10)}</span>
             </div>
+
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <span>KEMBALI :</span>
               <span>{formatPrice(transaction.cash_received - transaction.total_amount, 10)}</span>
             </div>
           </div>
+
+          {transaction.voucher !== undefined && transaction.voucher !== null ? (
+            <>
+              <span style={{ display: 'block' }}>{createDashes()}</span>
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <span>NM. VOUCHER :</span>
+                <span>{padLeft(transaction.voucher.name, 10)}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <span>KD. VOUCHER :</span>
+                <span>{padLeft(transaction.voucher.barcode, 10)}</span>
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
 
           <div style={{ textAlign: 'center', marginTop: '10px' }}>
             <span style={{ display: 'block' }}>TERIMAKASIH ATAS KUNJUNGAN ANDA</span>

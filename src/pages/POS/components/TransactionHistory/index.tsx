@@ -46,12 +46,6 @@ const TransactionHistory: React.FC<Props> = () => {
     setSelectedTrx(undefined);
   };
 
-  useEffect(() => {
-    if (openTrxDrawer) {
-      fetchTrx();
-    }
-  }, [openTrxDrawer]);
-
   const fetchTrx = async () => {
     setLoading(true);
     const response = await getTodayTransaction(storeId);
@@ -60,6 +54,12 @@ const TransactionHistory: React.FC<Props> = () => {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (openTrxDrawer) {
+      fetchTrx();
+    }
+  }, [openTrxDrawer]);
 
   return (
     <Drawer

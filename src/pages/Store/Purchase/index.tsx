@@ -3,6 +3,7 @@ import { formatDateTime, formatRupiah } from '@/common/utils/utils';
 import { EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button } from 'antd';
+import moment from 'moment';
 import React, { useEffect, useRef } from 'react';
 import { history, useModel } from 'umi';
 import StoreSelection from '../components/StoreSelection';
@@ -22,8 +23,15 @@ const PurchaseTable: React.FC = () => {
     {
       title: 'Tanggal',
       dataIndex: 'date',
-      render: (data: any) => {
-        return formatDateTime(data, 'DD-MM-YYYY');
+      valueType: 'date',
+
+      fieldProps: {
+        placeholder: 'YYYY-MM-DD',
+        allowClear: true,
+      },
+      width: 120,
+      renderText: (data: any) => {
+        return moment(formatDateTime(data, 'YYYY-MM-DD')).toDate();
       },
     },
 
@@ -35,6 +43,7 @@ const PurchaseTable: React.FC = () => {
     {
       title: 'Status',
       dataIndex: 'status',
+      width: 120,
       valueEnum: publishStatuses,
     },
 
@@ -53,7 +62,6 @@ const PurchaseTable: React.FC = () => {
 
     {
       title: 'Catatan',
-      search: false,
       dataIndex: 'note',
     },
 

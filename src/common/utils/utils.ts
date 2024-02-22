@@ -49,7 +49,7 @@ export function formatDateTime(
   format: string = 'YYYY-MM-DD HH:mm:ss',
   baseFormat: string = 'YYYY-MM-DD',
 ): string {
-  if (dateTime == undefined) {
+  if (dateTime === undefined) {
     return '';
   }
   if (dateTime instanceof Date) {

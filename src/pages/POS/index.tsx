@@ -22,16 +22,16 @@ export default function PosPage(props: IPosPageProps) {
     return printRef.current;
   }, [printRef.current]);
 
+  const handlePrint = useReactToPrint({
+    content: reactToPrintContent,
+  });
+
   useEffect(() => {
     if (printableTrx) {
       handlePrint();
       printSuccess();
     }
   }, [printableTrx]);
-
-  const handlePrint = useReactToPrint({
-    content: reactToPrintContent,
-  });
 
   return (
     <Card>

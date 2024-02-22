@@ -3,6 +3,7 @@ import { CloseOutlined, PrinterOutlined } from '@ant-design/icons';
 import { useModel } from '@umijs/max';
 import { Button, Drawer, Space } from 'antd';
 import confirm from 'antd/lib/modal/confirm';
+import moment from 'moment';
 import { useState } from 'react';
 import { POSTransaction, mapPaymentMethodName } from '../../data/data';
 import { voidTransaction } from '../../data/service';
@@ -45,12 +46,18 @@ const TransactionDetail = ({ transaction, open, onClose, onVoid, readonly = fals
 
   const buildExtraButton = () => {
     if (transaction && !readonly) {
-      if (transaction.deleted_at == undefined) {
+      if (transaction.deleted_at === undefined || transaction.deleted_at === null) {
+        const createdDate = moment(transaction.created_at, isoDateFormat);
+        let isVoidable = createdDate.diff(moment(), 'hours') > 24;
         return (
           <Space>
-            <Button onClick={handleVoid} loading={loading} danger size="small">
-              <CloseOutlined /> VOID
-            </Button>
+            {isVoidable ? (
+              <Button onClick={handleVoid} loading={loading} danger size="small">
+                <CloseOutlined /> VOID
+              </Button>
+            ) : (
+              <></>
+            )}
             <Button onClick={handlePrint} size="small">
               <PrinterOutlined /> CETAK
             </Button>
@@ -109,7 +116,7 @@ const TransactionDetail = ({ transaction, open, onClose, onVoid, readonly = fals
             </thead>
             <tbody>
               {transaction.details.map((e) => (
-                <tr>
+                <tr key={'trx_' + e.id.toString()}>
                   <td style={{ padding: '10px 0px' }}>{e.product_name}</td>
                   <td style={{ textAlign: 'center', padding: '10px 0px' }}>{e.quantity}</td>
                   <td style={{ textAlign: 'right', padding: '10px 0px' }}>
@@ -138,12 +145,13 @@ const TransactionDetail = ({ transaction, open, onClose, onVoid, readonly = fals
               </tr>
               <tr>
                 <td style={{ textAlign: 'right', padding: '10px 4px' }} colSpan={3}>
-                  Diskon{' '}
+                  Voucher{' '}
                 </td>
                 <td style={{ textAlign: 'right', padding: '10px 0px' }}>
                   {formatRupiah(transaction.discount ?? 0)}
                 </td>
               </tr>
+
               <tr>
                 <td style={{ textAlign: 'right', padding: '10px 4px' }} colSpan={3}>
                   Total{' '}
@@ -159,6 +167,29 @@ const TransactionDetail = ({ transaction, open, onClose, onVoid, readonly = fals
                   {formatRupiah(transaction.total_amount)}
                 </td>
               </tr>
+
+              {transaction.voucher !== undefined && transaction.voucher !== null ? (
+                <>
+                  <tr style={{ borderTop: '0.5px dashed grey' }}>
+                    <td style={{ textAlign: 'right', padding: '10px 4px' }} colSpan={3}>
+                      Nama Voucher{' '}
+                    </td>
+                    <td style={{ textAlign: 'right', padding: '10px 0px' }}>
+                      {transaction.voucher.name}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ textAlign: 'right', padding: '10px 4px' }} colSpan={3}>
+                      Kode Voucher{' '}
+                    </td>
+                    <td style={{ textAlign: 'right', padding: '10px 0px' }}>
+                      {transaction.voucher.barcode}
+                    </td>
+                  </tr>
+                </>
+              ) : (
+                <></>
+              )}
             </tbody>
           </table>
         </>

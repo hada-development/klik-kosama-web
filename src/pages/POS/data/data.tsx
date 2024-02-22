@@ -58,6 +58,7 @@ export interface POSTransaction {
   details: POSTrxDetail[];
   payment_method: POSPaymentMethod;
   member?: Member;
+  voucher?: POSVoucher;
 }
 
 export interface POSCashier {
