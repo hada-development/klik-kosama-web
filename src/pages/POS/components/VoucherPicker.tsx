@@ -1,5 +1,5 @@
 import { formatDateTime, formatRupiah } from '@/common/utils/utils';
-import { CloseOutlined, GiftOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, GiftOutlined, PlusOutlined } from '@ant-design/icons';
 import { useModel } from '@umijs/max';
 import { Button, Card, Flex, List, Modal, theme as antdTheme } from 'antd';
 import Input, { InputRef } from 'antd/es/input/Input';
@@ -7,26 +7,24 @@ import { useEffect, useRef, useState } from 'react';
 import { POSVoucher } from '../data/data';
 import { getVouchers } from '../data/service';
 
-type Props = {};
-
-export default function VoucherPicker({}: Props) {
+export default function VoucherPicker() {
   const { useToken } = antdTheme;
   const { token: theme } = useToken();
-  const { member, voucher, changeVoucher } = useModel('POS.usePos');
-  const [vouchers, setVouchers] = useState<POSVoucher[]>([]);
+  const { vouchers, addVoucher, removeVoucher, getTotalVoucher } = useModel('POS.usePos');
+  const [voucherList, setVoucherList] = useState<POSVoucher[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
 
   const [searchBarcode, setSearchBarcode] = useState('');
   const barcodeInputRef = useRef<InputRef>(null);
 
-  var hasVoucher = voucher != undefined;
+  let hasVoucher = vouchers.length > 0;
 
   const handleButton = () => {
-    if (hasVoucher) {
-      changeVoucher(undefined);
-    } else {
-      setModalOpen(true);
-    }
+    setModalOpen(true);
+  };
+
+  const handleRemoveVoucher = (id: number) => {
+    removeVoucher(id);
   };
 
   useEffect(() => {
@@ -36,11 +34,11 @@ export default function VoucherPicker({}: Props) {
   }, [modalOpen]);
 
   useEffect(() => {
-    setVouchers([]);
+    setVoucherList([]);
     if (searchBarcode.length > 0) {
       console.log(searchBarcode);
       getVouchers(searchBarcode).then((response) => {
-        setVouchers(response.data);
+        setVoucherList(response.data);
       });
     }
   }, [searchBarcode]);
@@ -71,14 +69,14 @@ export default function VoucherPicker({}: Props) {
           <span>
             <GiftOutlined /> Voucher
           </span>
-          <strong>{hasVoucher ? formatRupiah(voucher?.amount) : 'Pakai Voucher'}</strong>
+          <strong>{hasVoucher ? formatRupiah(getTotalVoucher()) : 'Pakai Voucher'}</strong>
         </div>
         <Button
           onClick={handleButton}
           type="text"
           style={{ color: hasVoucher ? 'white' : undefined }}
         >
-          {hasVoucher ? <CloseOutlined /> : <PlusOutlined />}
+          {hasVoucher ? <EditOutlined /> : <PlusOutlined />}
         </Button>
       </div>
       <Modal
@@ -87,7 +85,6 @@ export default function VoucherPicker({}: Props) {
         onCancel={() => setModalOpen(false)}
         footer={null}
       >
-        {/* Please add input that when user input barcode it search barcode then show below */}
         <Input
           ref={barcodeInputRef}
           placeholder="Enter barcode..."
@@ -95,15 +92,15 @@ export default function VoucherPicker({}: Props) {
           onChange={(e) => setSearchBarcode(e.target.value)}
         />
         <List
-          dataSource={vouchers}
-          renderItem={(item, index) => (
+          dataSource={voucherList}
+          renderItem={(item) => (
             <List.Item>
               <Card
                 onClick={() => {
-                  changeVoucher(item);
+                  addVoucher(item);
                   setModalOpen(false);
                   setSearchBarcode('');
-                  setVouchers([]);
+                  setVoucherList([]);
                 }}
                 className="voucher-card"
               >
@@ -115,6 +112,39 @@ export default function VoucherPicker({}: Props) {
                 <span style={{ fontSize: '8pt' }}>
                   EXP: {formatDateTime(item.expired_at, 'DD/MM/YYYY')}
                 </span>
+              </Card>
+            </List.Item>
+          )}
+        ></List>
+
+        <h5>Voucher Digunakan</h5>
+        <List
+          dataSource={vouchers}
+          renderItem={(item) => (
+            <List.Item>
+              <Card className="voucher-card">
+                <Flex justify="space-between">
+                  <span>{item.name}</span>
+                  <span>{item.barcode}</span>
+                </Flex>
+                <h3 style={{ marginBottom: '2px' }}>{formatRupiah(item.amount)}</h3>
+                <Flex justify="space-between">
+                  <span style={{ fontSize: '8pt' }}>
+                    EXP: {formatDateTime(item.expired_at, 'DD/MM/YYYY')}
+                  </span>
+                  <Button
+                    onClick={() => {
+                      handleRemoveVoucher(item.id);
+                      setModalOpen(false);
+                      setSearchBarcode('');
+                      setVoucherList([]);
+                    }}
+                    type="dashed"
+                    danger={true}
+                  >
+                    <DeleteOutlined />
+                  </Button>
+                </Flex>
               </Card>
             </List.Item>
           )}

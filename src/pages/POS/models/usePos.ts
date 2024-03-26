@@ -24,13 +24,14 @@ export default () => {
 
   const [items, setItems] = useState<POSItem[]>([]);
   const [member, setMember] = useState<POSMember | undefined>();
-  const [voucher, setVoucher] = useState<POSVoucher | undefined>();
+  const [vouchers, setVouchers] = useState<POSVoucher[]>([]);
 
   const [pmCode, setPmCode] = useState<keyof typeof mapPMCode>('cash');
   const [paymentMethod, setPaymentMethod] = useState<POSPaymentMethod>(defaultPm);
 
   const [appOrder, setAppOrder] = useState<AppOrder | undefined>();
   const [totalItems, setTotalItems] = useState<number>(0);
+  const [totalShopping, setTotalShopping] = useState<number>(0);
   const [totalAmount, setTotalAmount] = useState<number>(0);
 
   const [openCheckoutModal, setOpenCheckoutModal] = useState<boolean>(false);
@@ -40,7 +41,7 @@ export default () => {
   const [openTrxDrawer, setOpenTrxDrawer] = useState<boolean>(false);
 
   // Calculate total items and total amount
-  const updateTotals = (updatedItems: POSItem[], voucher?: POSVoucher) => {
+  const updateTotals = (updatedItems: POSItem[], vouchers: POSVoucher[]) => {
     let itemsCount = 0;
     let total = 0;
     updatedItems.forEach((item) => {
@@ -48,8 +49,13 @@ export default () => {
       total += item.subTotal;
     });
 
-    if (voucher) {
-      let subtractedTotal = total - voucher.amount;
+    setTotalShopping(total);
+
+    if (vouchers.length > 0) {
+      let subtractedTotal = total;
+      vouchers.forEach(function (voucher) {
+        subtractedTotal = subtractedTotal - voucher.amount;
+      });
       total = Math.max(0, subtractedTotal);
     }
 
@@ -71,7 +77,7 @@ export default () => {
       setItems((prevItems) => {
         const updatedItems = [newItem, ...prevItems];
         // Call updateTotals after adding an item
-        updateTotals(updatedItems, voucher);
+        updateTotals(updatedItems, vouchers);
         return updatedItems;
       });
       message.success('Berhasil menambahkan produk', 1);
@@ -100,7 +106,7 @@ export default () => {
           return item;
         });
         // Call updateTotals after updating the item
-        updateTotals(updatedItems, voucher);
+        updateTotals(updatedItems, vouchers);
         return updatedItems;
       });
 
@@ -129,15 +135,44 @@ export default () => {
       }
 
       // Call updateTotals after changing the quantity
-      updateTotals(updatedItems, voucher);
+      updateTotals(updatedItems, vouchers);
       return updatedItems;
     });
   };
 
-  const changeVoucher = (voucher: POSVoucher | undefined) => {
-    setVoucher(() => {
-      updateTotals(items, voucher);
-      return voucher;
+  const addVoucher = (voucher: POSVoucher) => {
+    if (vouchers.filter((v) => v.id === voucher.id).length > 0) {
+      message.error('Voucher telah digunakan');
+      return;
+    }
+    setVouchers(() => {
+      let newVoucherList = [...vouchers, voucher];
+      updateTotals(items, newVoucherList);
+      return newVoucherList;
+    });
+  };
+
+  const removeVoucher = (id: number) => {
+    setVouchers(() => {
+      let newVoucherList = vouchers.filter((v) => v.id !== id);
+      updateTotals(items, newVoucherList);
+      return newVoucherList;
+    });
+  };
+
+  const getTotalVoucher = (): number => {
+    let totalDiscount = 0;
+    vouchers.forEach(function (v) {
+      totalDiscount = totalDiscount + v.amount;
+    });
+    return totalDiscount;
+  };
+
+  const clearVoucher = () => {
+    setVouchers(() => {
+      let newVoucherList: POSVoucher[] = [];
+      updateTotals(items, newVoucherList);
+      return newVoucherList;
     });
   };
 
@@ -149,9 +184,10 @@ export default () => {
   const clearPos = () => {
     setItems([]);
     setTotalAmount(0);
+    setTotalShopping(0);
     setTotalItems(0);
     setMember(undefined);
-    setVoucher(undefined);
+    setVouchers([]);
     changePaymentMethod(defaultPm);
     setAppOrder(undefined);
   };
@@ -161,7 +197,6 @@ export default () => {
       message.error('Mohon pilih produk');
       return;
     }
-
     setOpenCheckoutModal(true);
   };
 
@@ -172,7 +207,7 @@ export default () => {
       payment_method_id: paymentMethod.id,
       cash_received: cash_received,
       member_id: member?.id ?? null,
-      voucher_id: voucher?.id ?? null,
+      vouchers: vouchers.map((v) => v.id),
       items: items.map((e) => ({
         product_id: e.product_id,
         quantity: e.quantity,
@@ -213,7 +248,7 @@ export default () => {
         };
         return newItem;
       });
-      updateTotals(newItems);
+      updateTotals(newItems, vouchers);
       return newItems;
     });
 
@@ -229,13 +264,19 @@ export default () => {
     pageLoading,
     items,
     totalAmount,
+    totalShopping,
     totalItems,
     addItem,
     changeQuantity,
     member,
     setMember,
-    voucher,
-    changeVoucher,
+
+    vouchers,
+    addVoucher,
+    removeVoucher,
+    clearVoucher,
+    getTotalVoucher,
+
     paymentMethod,
     pmCode,
     changePaymentMethod,

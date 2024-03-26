@@ -48,7 +48,7 @@ const TransactionDetail = ({ transaction, open, onClose, onVoid, readonly = fals
     if (transaction && !readonly) {
       if (transaction.deleted_at === undefined || transaction.deleted_at === null) {
         const createdDate = moment(transaction.created_at, isoDateFormat);
-        let isVoidable = createdDate.diff(moment(), 'hours') > 24;
+        let isVoidable = createdDate.diff(moment(), 'hours') <= 24;
         return (
           <Space>
             {isVoidable ? (

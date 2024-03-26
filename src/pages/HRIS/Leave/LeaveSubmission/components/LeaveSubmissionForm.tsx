@@ -1,8 +1,14 @@
-import { ModalForm, ProFormInstance } from '@ant-design/pro-components';
+import {
+  ModalForm,
+  ProFormDatePicker,
+  ProFormInstance,
+  ProFormSelect,
+} from '@ant-design/pro-components';
 
 import { formatDateTime } from '@/common/utils/utils';
 import { green, red } from '@ant-design/colors';
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { ProFormGroup } from '@ant-design/pro-form/lib';
 import { useModel } from '@umijs/max';
 import { Button, Descriptions, Flex, Spin } from 'antd';
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
@@ -60,15 +66,115 @@ const LeaveSubmissionForm: React.FC<LeaveSubmissionFormProps> = (props) => {
     props.onSubmit();
   };
 
+  const viewData = (
+    <Descriptions
+      layout="vertical"
+      items={[
+        {
+          key: 'name',
+          label: 'Nama Pegawai',
+          span: 10,
+          children: props.values?.parent_submission?.employee?.user.name,
+        },
+        {
+          key: 'reason',
+          label: 'Alasan',
+          span: 10,
+          children: props.values?.note,
+        },
+        {
+          key: 'type',
+          label: 'Jenis',
+          span: 10,
+          children: props.values?.leave_type?.name,
+        },
+        {
+          key: 'start_period',
+          label: 'Dari',
+          children: formatDateTime(props.values?.start_date, 'DD/MM/YYYY'),
+        },
+        {
+          key: 'end_period',
+          label: 'Sampai',
+          children: formatDateTime(props.values?.start_date, 'DD/MM/YYYY'),
+        },
+
+        {
+          key: 'total_day',
+          label: 'Jumlah ',
+          children: `${props.values?.total_days} Hari`,
+        },
+
+        {
+          key: 'status',
+          label: 'Status',
+          children: `${props.values?.parent_submission?.current_step.title}`,
+        },
+      ]}
+    />
+  );
+
+  const editData = (
+    <>
+      <Descriptions
+        layout="vertical"
+        items={[
+          {
+            key: 'name',
+            label: 'Nama Pegawai',
+            span: 10,
+            children: props.values?.parent_submission?.employee?.user.name,
+          },
+          {
+            key: 'reason',
+            label: 'Alasan',
+            span: 10,
+            children: props.values?.note,
+          },
+          {
+            key: 'status',
+            label: 'Status',
+            children: `${props.values?.parent_submission?.current_step.title}`,
+          },
+        ]}
+      />
+      <ProFormGroup>
+        <ProFormSelect width={'xl'} name={'hr'} label={'Dari Tanggal'} />
+
+        <ProFormDatePicker
+          width={'sm'}
+          name={'start_date'}
+          label={'Dari Tanggal'}
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        />
+
+        <ProFormDatePicker
+          width={'sm'}
+          name={'end_date'}
+          label={'Sampai Tanggal'}
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        />
+      </ProFormGroup>
+    </>
+  );
+
   return (
     <Spin spinning={loading}>
       <ModalForm
         title={
-          props.values != undefined
+          props.values !== undefined
             ? 'Edit Pengajuan Ketidakhadiran'
             : 'Tambah Pengajuan Ketidakhadiran'
         }
-        width="400px"
+        width="600px"
         formRef={formRef}
         open={props.open}
         onOpenChange={props.setOpen}
@@ -80,7 +186,7 @@ const LeaveSubmissionForm: React.FC<LeaveSubmissionFormProps> = (props) => {
           render: () =>
             props.values?.parent_submission?.current_step?.user_ids.includes(
               initialState?.currentUser?.id,
-            ) ? (
+            ) && props.values?.parent_submission?.status === 'review' ? (
               <Flex>
                 <Button
                   onClick={() => handleReview('rejected')}
@@ -104,45 +210,7 @@ const LeaveSubmissionForm: React.FC<LeaveSubmissionFormProps> = (props) => {
             ),
         }}
       >
-        <Descriptions
-          layout="vertical"
-          items={[
-            {
-              key: 'name',
-              label: 'Nama Pegawai',
-              span: 10,
-              children: props.values?.parent_submission?.employee?.user.name,
-            },
-            {
-              key: 'reason',
-              label: 'Alasan',
-              span: 10,
-              children: props.values?.note,
-            },
-            {
-              key: 'start_period',
-              label: 'Dari',
-              children: formatDateTime(props.values?.start_date, 'DD/MM/YYYY'),
-            },
-            {
-              key: 'end_period',
-              label: 'Sampai',
-              children: formatDateTime(props.values?.start_date, 'DD/MM/YYYY'),
-            },
-
-            {
-              key: 'total_day',
-              label: 'Jumlah ',
-              children: `${props.values?.total_days} Hari`,
-            },
-
-            {
-              key: 'status',
-              label: 'Status',
-              children: `${props.values?.parent_submission?.current_step.title}`,
-            },
-          ]}
-        />
+        {editData}
       </ModalForm>
     </Spin>
   );

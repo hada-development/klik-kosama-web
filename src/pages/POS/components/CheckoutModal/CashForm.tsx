@@ -32,6 +32,7 @@ const CashForm = ({ payment, setPayment }: Props) => {
             setPayment(parseInt(value));
           }
         }}
+        step={500}
         formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
         parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
         placeholder={'(Rp) Pembayaran'}
@@ -39,7 +40,7 @@ const CashForm = ({ payment, setPayment }: Props) => {
 
       <Flex gap={'small'} wrap={'wrap'} style={{ marginTop: '12px' }}>
         {rupiahDenom.map((e) => (
-          <Button onClick={() => setPayment(e)} disabled={e < totalAmount}>
+          <Button key={'amount_' + e} onClick={() => setPayment(e)} disabled={e < totalAmount}>
             {formatRupiah(e)}
           </Button>
         ))}

@@ -1,7 +1,8 @@
 import { File } from '@/common/data/data';
 import { isImageFile } from '@/common/utils/utils';
 
-import { Modal, Typography } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
+import { Button, Modal, Typography } from 'antd';
 import React, { useState } from 'react';
 
 const { Text, Link } = Typography;
@@ -17,20 +18,25 @@ const PreviewImageLink: React.FC<{ file: File; children: any; elipsis?: boolean;
   const [previewTitle, setPreviewTitle] = useState('');
 
   const handleDownload = () => {
+    const anchor = document.createElement('a');
+    anchor.href = file.address;
+    anchor.download = file.name; // Specify the desired file name
+    anchor.click();
+  };
+
+  const handleOpenOrDownload = () => {
     if (isImageFile(file.address)) {
       setPreviewImage(file.address || (file.address as string));
       setPreviewOpen(true);
       setPreviewTitle(file.name);
     } else {
-      const anchor = document.createElement('a');
-      anchor.href = file.address;
-      anchor.download = file.name; // Specify the desired file name
-      anchor.click();
+      handleDownload();
     }
   };
+
   return (
     <>
-      <Link ellipsis={elipsis} style={{ width: width }} onClick={handleDownload}>
+      <Link ellipsis={elipsis} style={{ width: width }} onClick={handleOpenOrDownload}>
         {children}
       </Link>
 
@@ -40,7 +46,10 @@ const PreviewImageLink: React.FC<{ file: File; children: any; elipsis?: boolean;
         footer={null}
         onCancel={() => setPreviewOpen(false)}
       >
-        <img alt="example" style={{ width: '100%' }} src={previewImage} />
+        <img alt="example" style={{ width: '100%', display: 'block' }} src={previewImage} />
+        <Button onClick={handleDownload}>
+          <DownloadOutlined /> Download Gambar
+        </Button>
       </Modal>
     </>
   );

@@ -44,8 +44,8 @@ export async function editVoluntaryWithdraw(id?: number, data?: { [key: string]:
   });
 }
 
-export async function deleteSavingTransaction(id?: number) {
-  return request(`/api/web/coop/saving/transaction/${id}`, {
+export async function deleteVoluntaryWithdraw(id?: number) {
+  return request(`${baseUrl}/${id}`, {
     method: 'DELETE',
   });
 }

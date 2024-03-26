@@ -46,3 +46,12 @@ export async function deleteVoucher(id?: number) {
     method: 'DELETE',
   });
 }
+
+export async function deleteBatchVoucher(ids: number[]) {
+  return request(`/api/web/store/voucher`, {
+    method: 'DELETE',
+    data: {
+      ids: ids,
+    },
+  });
+}

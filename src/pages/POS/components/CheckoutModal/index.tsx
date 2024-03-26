@@ -7,17 +7,13 @@ import { mapPaymentMethodName } from '../../data/data';
 import POSButton from '../POSButton';
 import CashForm from './CashForm';
 
-type Props = {};
-
-const CheckoutModal = (props: Props) => {
+const CheckoutModal = () => {
   const [payment, setPayment] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
 
   const {
     paymentMethod,
     totalAmount,
-    totalItems,
-
     openCheckoutModal,
     setOpenCheckoutModal,
     handleCheckout,
@@ -56,13 +52,13 @@ const CheckoutModal = (props: Props) => {
       footer={false}
     >
       <Flex vertical>
-        <span>Total Belanja</span>
+        <span>Total Bayar</span>
         <h2>{formatRupiah(totalAmount)}</h2>
       </Flex>
 
       <span>Pembayaran {mapPaymentMethodName(paymentMethod.code)}</span>
 
-      {paymentMethod.code == 'cash' && <CashForm payment={payment} setPayment={setPayment} />}
+      {paymentMethod.code === 'cash' && <CashForm payment={payment} setPayment={setPayment} />}
 
       <POSButton
         icon={<PrinterOutlined style={{ fontSize: '24px' }} />}

@@ -1,14 +1,15 @@
 import PrintHeader from '@/common/components/PrintHeader';
 import { submissionStatuses } from '@/common/data/data';
 import { downloadUrl, formatDateTime, formatRupiah, isoDateFormat } from '@/common/utils/utils';
-import { EditOutlined, PrinterOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PrinterOutlined } from '@ant-design/icons';
 import { PageContainer, ProDescriptions } from '@ant-design/pro-components';
 import { Button, Card, Divider, Typography, message } from 'antd';
+import confirm from 'antd/lib/modal/confirm';
 import React, { useEffect, useRef, useState } from 'react';
 import { history, useParams } from 'umi';
 import SubmissionValidationHistory from '../../component/SubmissionValidationHistory';
 import { VoluntaryWithdrawSubmissionDetail } from '../data/data';
-import { getVoluntaryWithdrawSubmissionDetail } from '../data/service';
+import { deleteVoluntaryWithdraw, getVoluntaryWithdrawSubmissionDetail } from '../data/service';
 import VoluntaryWithdrawEditModal from './component/EditModal';
 
 const { Text, Link } = Typography;
@@ -23,6 +24,23 @@ const VoluntaryWithdrawSubmissionDetailPage: React.FC = (prop) => {
   };
 
   const [isModalEditOpen, setModalEdit] = useState(false);
+
+  const handleDelete = (id: number): void => {
+    confirm({
+      title: 'Hapus data?',
+      content: 'Anda yakin ingin menghapus data ini?',
+      cancelText: 'Batalkan',
+      closable: true,
+      okCancel: true,
+      okText: 'Simpan',
+      onOk: async () => {
+        await deleteVoluntaryWithdraw(id);
+        history.push('/coop/submission/voluntary-withdraw');
+        message.success('Berhasil menghapus pengajuan');
+      },
+      onCancel: () => {},
+    });
+  };
 
   useEffect(() => {
     if (parameter != null) {
@@ -50,15 +68,29 @@ const VoluntaryWithdrawSubmissionDetailPage: React.FC = (prop) => {
       header={{
         title: `Pengajuan Simpanan Sukarela - ${detail?.parent_submission.number ?? ''} `,
         extra: (
-          <Button
-            onClick={() => {
-              if (detail) {
-                handlePrint(detail!.id);
-              }
-            }}
-          >
-            <PrinterOutlined /> Cetak Halaman
-          </Button>
+          <>
+            <Button
+              key={'print-button'}
+              onClick={() => {
+                if (detail) {
+                  handlePrint(detail!.id);
+                }
+              }}
+            >
+              <PrinterOutlined /> Cetak Halaman
+            </Button>
+            <Button
+              key={'delete-button'}
+              danger={true}
+              onClick={() => {
+                if (detail) {
+                  handleDelete(detail!.id);
+                }
+              }}
+            >
+              <DeleteOutlined /> Hapus Pengajuan
+            </Button>
+          </>
         ),
       }}
     >

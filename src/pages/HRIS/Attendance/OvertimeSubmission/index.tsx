@@ -1,8 +1,9 @@
 import { submissionStatuses } from '@/common/data/data';
 import { convertToHourMinute } from '@/common/utils/utils';
-import { ExclamationCircleFilled, OrderedListOutlined } from '@ant-design/icons';
+import { DeleteOutlined, ExclamationCircleFilled, OrderedListOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Modal, message } from 'antd';
+import moment from 'moment';
 import React, { useRef, useState } from 'react';
 import OvertimeSubmissionForm from './components/OvertimeSubmissionForm';
 import { deleteOvertimeSubmission, getOvertimeSubmission } from './data/services/service';
@@ -35,15 +36,16 @@ const handleRemove = async (
   }
 };
 
+const convetDateToDayName = function (date: string): string {
+  let dateObj = moment(date);
+  return dateObj.format('dddd');
+};
+
 const OvertimeSubmissionPage: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<
     OvertimeSubmissionFeature.OvertimeSubmissionListItem | undefined
   >();
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-  const [deleteModalOpen, handleDeleteModalOpen] = useState<boolean>(false);
-  const [selectedRowsState, setSelectedRows] = useState<
-    OvertimeSubmissionFeature.OvertimeSubmissionListItem[]
-  >([]);
   const [{ confirm }, contextHolder] = Modal.useModal();
 
   const actionRef = useRef<ActionType>();
@@ -69,46 +71,86 @@ const OvertimeSubmissionPage: React.FC = () => {
 
   const columns: ProColumns<OvertimeSubmissionFeature.OvertimeSubmissionListItem>[] = [
     {
-      title: 'Pegawai',
+      title: 'NIP',
+      dataIndex: ['parent_submission', 'employee', 'nip'],
+      search: {
+        transform: (value) => ({
+          'hr_employees.nip': value,
+        }),
+      },
+      width: 100,
+    },
+    {
+      title: 'Nama Pegawai',
       dataIndex: ['parent_submission', 'employee', 'user', 'name'],
+      search: {
+        transform: (value) => ({
+          'users.name': value,
+        }),
+      },
+      width: 200,
+    },
+    {
+      title: 'Hari',
+      dataIndex: 'day',
+      search: false,
+
+      render: (data, record) => convetDateToDayName(record.date),
+      width: 100,
     },
     {
       title: 'Tanggal',
       dataIndex: 'date',
+      valueType: 'date',
+      width: 100,
     },
     {
       title: 'Dari',
       dataIndex: 'start_time',
+      search: false,
+      width: 100,
     },
     {
       title: 'Sampai',
       dataIndex: 'end_time',
+      search: false,
+      width: 100,
     },
     {
       title: 'Waktu',
       dataIndex: 'minutes',
-      render: (data, _) => {
+      search: false,
+      width: 120,
+      render: (data) => {
         return convertToHourMinute(data as number);
       },
     },
     {
       title: 'Catatan',
       dataIndex: 'note',
+      search: false,
+      width: 200,
     },
     {
       title: 'Approval',
       dataIndex: ['parent_submission', 'current_step', 'title'],
+      search: false,
     },
     {
       title: 'Status',
       dataIndex: ['parent_submission', 'status'],
       valueEnum: submissionStatuses,
+      search: {
+        transform: (value) => ({
+          'hr_submissions.status': value,
+        }),
+      },
     },
 
     {
       title: 'Aksi',
       dataIndex: 'option',
-      width: '8%',
+      search: false,
       valueType: 'option',
       render: (_, record) => [
         <a
@@ -119,6 +161,15 @@ const OvertimeSubmissionPage: React.FC = () => {
           }}
         >
           <OrderedListOutlined /> Detail
+        </a>,
+        <a
+          key="delete"
+          style={{ color: 'red' }}
+          onClick={() => {
+            onDelete(record);
+          }}
+        >
+          <DeleteOutlined /> Hapus
         </a>,
       ],
     },
@@ -134,20 +185,17 @@ const OvertimeSubmissionPage: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
+        scroll={{ x: 'max-content' }}
         request={getOvertimeSubmission}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
       />
       <OvertimeSubmissionForm
         onCancel={() => {}}
-        onSubmit={async (value) => {
+        onSubmit={async () => {
           if (actionRef.current) {
             actionRef.current.reload();
           }
+          message.success('Berhasil mengupdate data');
           return true;
         }}
         values={currentRow}

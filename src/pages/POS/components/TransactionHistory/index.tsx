@@ -92,7 +92,7 @@ const TransactionHistory: React.FC<Props> = () => {
                   </Flex>
                   <Flex style={{ width: '100%', alignItems: 'flex-end' }} gap={'4px'} vertical>
                     <div style={slashedTextStyle}>
-                      <h3 style={{ marginBottom: '0px' }}>{formatRupiah(item.total_amount)}</h3>
+                      <h3 style={{ marginBottom: '0px' }}>{formatRupiah(item.total_price)}</h3>
                       <span style={isVoid ? slashLineStyle : undefined}></span>
                     </div>
                     <span style={{ fontSize: '10pt' }}>

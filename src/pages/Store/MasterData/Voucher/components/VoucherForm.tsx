@@ -1,6 +1,7 @@
 import {
   ModalForm,
   ProFormDatePicker,
+  ProFormDigit,
   ProFormInstance,
   ProFormMoney,
   ProFormText,
@@ -95,6 +96,20 @@ const VoucherForm: React.FC<VoucherFormProps> = (props) => {
         ]}
         name="expired_at"
         label="Tanggal Expired"
+      />
+
+      <ProFormDigit
+        placeholder={'Masukkan Jumlah Voucher'}
+        width={'md'}
+        rules={[
+          {
+            required: true,
+            message: 'Wajib',
+          },
+        ]}
+        name={'count'}
+        min={1}
+        label={'Jumlah Voucher'}
       />
     </ModalForm>
   );

@@ -17,6 +17,7 @@ export async function getOvertimeSubmission(params: any, options?: { [key: strin
       total: response.total,
     };
   } catch (e) {
+    console.log(e);
     throw e;
   }
 }

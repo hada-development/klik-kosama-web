@@ -2,19 +2,23 @@ import PreviewImageLink from '@/common/components/PreviewImageLink';
 import PrintHeader from '@/common/components/PrintHeader';
 import { submissionStatuses } from '@/common/data/data';
 import { downloadUrl, formatDateTime, formatRupiah, isoDateFormat } from '@/common/utils/utils';
-import { EditOutlined, PaperClipOutlined, PrinterOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PaperClipOutlined,
+  PrinterOutlined,
+} from '@ant-design/icons';
 import { PageContainer, ProDescriptions } from '@ant-design/pro-components';
-import { Button, Card, Divider, Typography, message } from 'antd';
+import { Button, Card, Divider, message } from 'antd';
+import confirm from 'antd/lib/modal/confirm';
 import React, { useEffect, useRef, useState } from 'react';
 import { history, useParams } from 'umi';
 import SubmissionValidationHistory from '../../component/SubmissionValidationHistory';
 import { CreditSubmissionSubmissionDetail } from '../data/data';
-import { getCreditSubmissionSubmissionDetail } from '../data/service';
+import { deleteCreditSubmission, getCreditSubmissionSubmissionDetail } from '../data/service';
 import CreditSubmissionEditModal from './component/EditModal';
 
-const { Text, Link } = Typography;
-
-const CreditSubmissionSubmissionDetailPage: React.FC = (prop) => {
+const CreditSubmissionSubmissionDetailPage: React.FC = () => {
   const { parameter } = useParams<{ parameter: string }>();
   const [detail, setDetail] = useState<CreditSubmissionSubmissionDetail | undefined>();
 
@@ -25,11 +29,22 @@ const CreditSubmissionSubmissionDetailPage: React.FC = (prop) => {
     downloadUrl(`/api/web/coop/submission/credit/pdf/${id}`);
   };
 
-  useEffect(() => {
-    if (parameter != null) {
-      getData(parseInt(parameter));
-    }
-  }, [parameter]);
+  const handleDelete = (id: number): void => {
+    confirm({
+      title: 'Hapus data?',
+      content: 'Anda yakin ingin menghapus data ini?',
+      cancelText: 'Batalkan',
+      closable: true,
+      okCancel: true,
+      okText: 'Simpan',
+      onOk: async () => {
+        await deleteCreditSubmission(id);
+        history.push('/coop/submission/credit');
+        message.success('Berhasil menghapus pengajuan');
+      },
+      onCancel: () => {},
+    });
+  };
 
   const getData = (id: number) => {
     setDetail(undefined);
@@ -40,26 +55,44 @@ const CreditSubmissionSubmissionDetailPage: React.FC = (prop) => {
       })
       .catch((e) => {
         console.log(e);
-        if (e.response?.status == 404) {
+        if (e.response?.status === 404) {
           history.push('/not-found');
         }
       });
   };
+
+  useEffect(() => {
+    if (parameter !== null) {
+      getData(parseInt(parameter));
+    }
+  }, [parameter]);
 
   return (
     <PageContainer
       header={{
         title: `Pengajuan Kredit Barang - ${detail?.parent_submission.number ?? ''} `,
         extra: (
-          <Button
-            onClick={() => {
-              if (detail) {
-                handlePrint(detail!.id);
-              }
-            }}
-          >
-            <PrinterOutlined /> Cetak Halaman
-          </Button>
+          <>
+            <Button
+              onClick={() => {
+                if (detail) {
+                  handlePrint(detail!.id);
+                }
+              }}
+            >
+              <PrinterOutlined /> Cetak Halaman
+            </Button>
+            <Button
+              danger={true}
+              onClick={() => {
+                if (detail) {
+                  handleDelete(detail!.id);
+                }
+              }}
+            >
+              <DeleteOutlined /> Hapus Pengajuan
+            </Button>
+          </>
         ),
       }}
     >

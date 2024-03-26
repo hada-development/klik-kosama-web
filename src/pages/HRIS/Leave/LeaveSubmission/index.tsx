@@ -86,7 +86,7 @@ const LeaveSubmissionPage: React.FC = () => {
       ellipsis: true,
     },
     {
-      title: 'Jenis Juti',
+      title: 'Jenis Cuti',
       dataIndex: ['leave_type', 'name'],
       width: 150,
     },

@@ -98,8 +98,18 @@ const MemberShuPage: React.FC = () => {
     },
 
     {
-      title: 'Uang Kehadiran',
+      title: 'Kompensasi Kehadiran',
       dataIndex: 'attendance_fee',
+
+      search: false,
+      render: (data) => {
+        return formatRupiah(data);
+      },
+    },
+
+    {
+      title: 'Kompensasi Pemilihan',
+      dataIndex: 'vote_fee',
 
       search: false,
       render: (data) => {

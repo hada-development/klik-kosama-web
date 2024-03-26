@@ -1,6 +1,6 @@
 import { PaginationList } from '@/common/data/data';
 import { requestTableData } from '@/common/utils/utils';
-import { PurchaseTableItem } from '@/pages/Store/Purchase/data/data';
+import { ReportModel } from '@/pages/Coop/Report/data/data';
 import { request } from '@@/exports';
 
 const baseUrl = '/api/web/coop/report';
@@ -41,10 +41,8 @@ function convertDataToFormData(data: any) {
 export async function getReportDataTable(
   params: any,
   options?: { [key: string]: any },
-): Promise<PaginationList<PurchaseTableItem>> {
-  return requestTableData<PurchaseTableItem>(baseUrl, params, options, {
-    'order[date]': 'desc',
-  });
+): Promise<PaginationList<ReportModel>> {
+  return requestTableData<ReportModel>(baseUrl, params, options);
 }
 
 export async function storeReport(data: any) {
@@ -64,7 +62,7 @@ export async function updateReport(id: string, data: any) {
   });
 }
 
-export async function deletePurchase(reportId: number) {
+export async function deleteReport(reportId: number) {
   return request(`${baseUrl}/${reportId}`, {
     method: 'DELETE',
   });

@@ -45,8 +45,8 @@ const handleRemove = async (selectedRow: UserFeature.UserListItem | undefined) =
 const InformationPage: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<UserFeature.UserListItem | undefined>();
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-  const [deleteModalOpen, handleDeleteModalOpen] = useState<boolean>(false);
   const [selectedRowsState, setSelectedRows] = useState<UserFeature.UserListItem[]>([]);
+  const [deleteModalOpen, handleDeleteModalOpen] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
 

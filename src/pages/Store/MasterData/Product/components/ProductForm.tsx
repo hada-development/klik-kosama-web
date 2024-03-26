@@ -1,3 +1,4 @@
+import { ImageUploadPreview } from '@/common/components';
 import TagInput from '@/common/components/TagInput';
 import {
   DrawerForm,
@@ -42,6 +43,11 @@ const items: MenuProps['items'] = [
     key: 'stock',
     className: 'item',
   },
+  {
+    label: 'Gambar',
+    key: 'image',
+    className: 'item',
+  },
 ];
 
 const ProductForm: React.FC<{
@@ -54,6 +60,8 @@ const ProductForm: React.FC<{
   const [activeTab, setActiveTab] = useState<string>('detail');
   const [barcodes, setBarcodes] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const [imageAddress, setImageAddress] = useState<string | undefined>();
 
   const [uomList, setUomList] = useState<any[]>([]);
 
@@ -85,13 +93,19 @@ const ProductForm: React.FC<{
   }, []);
 
   useEffect(() => {
+    setActiveTab('detail');
+    setImageAddress(undefined);
+    setBarcodes([]);
+
     if (productId) {
       setIsLoading(true);
       getProductDetail(storeID, productId).then((data: any) => {
-        var product = data.data;
+        let product = data.data;
         console.log(product);
-        var barcodes = product.barcodes.map((br: Barcode) => br.value);
+        let barcodes = product.barcodes.map((br: Barcode) => br.value);
         setBarcodes(barcodes);
+        setImageAddress(product.image?.address);
+
         formRef.current?.setFieldsValue({
           ...product,
           barcodes: barcodes,
@@ -120,7 +134,7 @@ const ProductForm: React.FC<{
         padding: '0px',
       }}
       submitter={{
-        render: (props, doms) => {
+        render: (props) => {
           console.log(props);
           return [
             <Button key={'close'} onClick={() => onClose(false)}>
@@ -162,7 +176,7 @@ const ProductForm: React.FC<{
         <div
           className="menu-pane"
           style={{
-            display: activeTab == 'detail' ? 'block' : 'none',
+            display: activeTab === 'detail' ? 'block' : 'none',
           }}
         >
           <ProFormSelect<number>
@@ -262,7 +276,7 @@ const ProductForm: React.FC<{
         <div
           className="menu-pane"
           style={{
-            display: activeTab == 'price' ? 'block' : 'none',
+            display: activeTab === 'price' ? 'block' : 'none',
           }}
         >
           <ProFormMoney
@@ -289,7 +303,7 @@ const ProductForm: React.FC<{
         <div
           className="menu-pane"
           style={{
-            display: activeTab == 'stock' ? 'block' : 'none',
+            display: activeTab === 'stock' ? 'block' : 'none',
           }}
         >
           <ProFormDigit
@@ -306,6 +320,17 @@ const ProductForm: React.FC<{
             name={['stocks', 0, 'restock_level']}
             label="Restok Level"
           />
+        </div>
+
+        <div
+          className="menu-pane"
+          style={{
+            display: activeTab === 'image' ? 'block' : 'none',
+          }}
+        >
+          <ProForm.Item name="image" label="Gambar" style={{ width: '200px', height: '200px' }}>
+            <ImageUploadPreview width={'200px'} height={'200px'} valueUrl={imageAddress} />
+          </ProForm.Item>
         </div>
       </Spin>
     </DrawerForm>

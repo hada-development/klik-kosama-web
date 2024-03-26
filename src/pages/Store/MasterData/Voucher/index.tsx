@@ -1,9 +1,10 @@
 import { voucherStatuses } from '@/common/data/data';
-import { formatDateTime, formatRupiah } from '@/common/utils/utils';
+import { downloadUrl, formatDateTime, formatRupiah, formatTableParams } from '@/common/utils/utils';
 import {
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleFilled,
+  FileExcelOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
 import {
@@ -18,7 +19,7 @@ import React, { useRef, useState } from 'react';
 import BarcodeModal from './components/BarcodeModal';
 import VoucherForm from './components/VoucherForm';
 import { VoucherFeature } from './data/data';
-import { deleteVoucher, getVoucher } from './data/services/service';
+import { deleteBatchVoucher, deleteVoucher, getVoucher } from './data/services/service';
 
 /**
  *  Delete node
@@ -46,14 +47,35 @@ const handleRemove = async (selectedRow: VoucherFeature.VoucherListItem | undefi
   }
 };
 
+const handleBatchRemove = async (selectedRow: VoucherFeature.VoucherListItem[]) => {
+  const hide = message.loading('Mohon Tunggu');
+  if (!selectedRow) return true;
+  try {
+    await deleteBatchVoucher(selectedRow.map((v) => v.id));
+    hide();
+    message.success('Deleted successfully and will refresh soon');
+    return true;
+  } catch (error: any) {
+    hide();
+    let errorMessage: string | undefined = error.response?.data?.message;
+    if (errorMessage) {
+      message.error(errorMessage);
+      return false;
+    }
+    message.error('Delete failed, please try again');
+    return false;
+  }
+};
+
 const VoucherPage: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<VoucherFeature.VoucherListItem | undefined>();
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-  const [deleteModalOpen, handleDeleteModalOpen] = useState<boolean>(false);
   const [selectedRowsState, setSelectedRows] = useState<VoucherFeature.VoucherListItem[]>([]);
   const [{ confirm }, contextHolder] = Modal.useModal();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedBarcode, setSelectedBarcode] = useState('');
+
+  const [tableParam, setCurrentParam] = useState<any>();
 
   const actionRef = useRef<ActionType>();
 
@@ -68,6 +90,26 @@ const VoucherPage: React.FC = () => {
       closable: true,
       onOk: async () => {
         await handleRemove(record);
+        actionRef.current?.reloadAndRest?.();
+      },
+      onCancel: () => {
+        console.log('NO');
+      },
+    });
+  };
+
+  const onBatchDelete = (records: VoucherFeature.VoucherListItem[]) => {
+    confirm({
+      title: 'Anda yakin ingin menghapus data yang dipilih?',
+      icon: <ExclamationCircleFilled />,
+      content: 'Data yang dihapus tidak dapat dikembalikan',
+      okText: 'Hapus',
+      okType: 'danger',
+      cancelText: 'Batalkan',
+      closable: true,
+      onOk: async () => {
+        await handleBatchRemove(records);
+        setSelectedRows([]);
         actionRef.current?.reloadAndRest?.();
       },
       onCancel: () => {
@@ -102,14 +144,14 @@ const VoucherPage: React.FC = () => {
       title: 'Nominal Voucher',
       dataIndex: 'amount',
       search: false,
-      render: (text: any, _) => {
+      render: (text: any) => {
         return formatRupiah(text);
       },
     },
     {
       title: 'Expired',
       dataIndex: 'expired_at',
-      render: (text: any, _) => {
+      render: (text: any) => {
         return formatDateTime(text, 'DD/MM/YYYY');
       },
     },
@@ -155,7 +197,10 @@ const VoucherPage: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        request={getVoucher}
+        request={(params: any, options: any) => {
+          setCurrentParam(formatTableParams(params));
+          return getVoucher(params, options);
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -164,8 +209,19 @@ const VoucherPage: React.FC = () => {
         }}
         toolBarRender={() => [
           <Button
+            type="default"
+            key="download"
+            onClick={() => {
+              downloadUrl('/api/web/store/voucher/export', 'voucher.xlsx', {
+                ...tableParam,
+              });
+            }}
+          >
+            <FileExcelOutlined /> Export Excel
+          </Button>,
+          <Button
             type="primary"
-            key="primary"
+            key="create"
             onClick={() => {
               setCurrentRow(undefined);
               handleModalOpen(true);
@@ -185,19 +241,18 @@ const VoucherPage: React.FC = () => {
           }
         >
           <Button
+            danger={true}
             onClick={async () => {
-              // await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
+              onBatchDelete(selectedRowsState);
             }}
           >
-            Batch Deletion
+            <DeleteOutlined /> Hapus Dipilih
           </Button>
         </FooterToolbar>
       )}
       <VoucherForm
         onCancel={() => {}}
-        onSubmit={async (value) => {
+        onSubmit={async () => {
           if (actionRef.current) {
             actionRef.current.reload();
           }

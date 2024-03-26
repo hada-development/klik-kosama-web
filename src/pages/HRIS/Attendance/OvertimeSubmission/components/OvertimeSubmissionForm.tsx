@@ -1,10 +1,15 @@
-import { ModalForm, ProFormInstance } from '@ant-design/pro-components';
+import {
+  ModalForm,
+  ProFormDatePicker,
+  ProFormInstance,
+  ProFormTimePicker,
+} from '@ant-design/pro-components';
 
-import { convertToHourMinute } from '@/common/utils/utils';
 import { green, red } from '@ant-design/colors';
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { ProFormGroup } from '@ant-design/pro-form/lib';
 import { useModel } from '@umijs/max';
-import { Button, Descriptions, Flex, Image, Spin } from 'antd';
+import { Button, Descriptions, Divider, Flex, Image, Spin } from 'antd';
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import {
   addOvertimeSubmission,
@@ -36,6 +41,7 @@ const OvertimeSubmissionForm: React.FC<OvertimeSubmissionFormProps> = (props) =>
         ...props.values,
         status: props.values.parent_submission.status,
       });
+      console.log({ ...props.values });
     } else {
       formRef.current?.resetFields();
     }
@@ -67,7 +73,7 @@ const OvertimeSubmissionForm: React.FC<OvertimeSubmissionFormProps> = (props) =>
   return (
     <Spin spinning={loading}>
       <ModalForm
-        title={props.values != undefined ? 'Edit Pengajuan Lembur' : 'Tambah Pengajuan Lembur'}
+        title={props.values !== undefined ? 'Edit Pengajuan Lembur' : 'Tambah Pengajuan Lembur'}
         width="600px"
         formRef={formRef}
         open={props.open}
@@ -77,7 +83,7 @@ const OvertimeSubmissionForm: React.FC<OvertimeSubmissionFormProps> = (props) =>
           props.setOpen!(false);
         }}
         submitter={{
-          render: () =>
+          render: (subProps) =>
             props.values?.parent_submission?.current_step?.user_ids.includes(
               initialState?.currentUser?.id,
             ) ? (
@@ -100,7 +106,15 @@ const OvertimeSubmissionForm: React.FC<OvertimeSubmissionFormProps> = (props) =>
                 </Button>
               </Flex>
             ) : (
-              <></>
+              <Flex>
+                <Button
+                  onClick={() => subProps.form?.submit()}
+                  type="primary"
+                  icon={<CheckCircleOutlined />}
+                >
+                  Simpan
+                </Button>
+              </Flex>
             ),
         }}
       >
@@ -141,23 +155,6 @@ const OvertimeSubmissionForm: React.FC<OvertimeSubmissionFormProps> = (props) =>
               ),
             },
             {
-              key: 'start_period',
-              label: 'Dari',
-              children: props.values?.start_time,
-            },
-            {
-              key: 'end_period',
-              label: 'Sampai',
-              children: props.values?.end_time,
-            },
-
-            {
-              key: 'total_day',
-              label: 'Jumlah ',
-              children: convertToHourMinute(props.values?.minutes as number),
-            },
-
-            {
               key: 'status',
               label: 'Status',
               span: 10,
@@ -165,6 +162,15 @@ const OvertimeSubmissionForm: React.FC<OvertimeSubmissionFormProps> = (props) =>
             },
           ]}
         />
+
+        <Divider></Divider>
+        <ProFormGroup>
+          <ProFormDatePicker name={'date'} label={'Tanggal'} width={'xl'} />
+
+          <ProFormTimePicker name={'start_time'} label={'Dari'} width={'sm'} />
+
+          <ProFormTimePicker name={'end_time'} label={'Sampai'} width={'sm'} />
+        </ProFormGroup>
       </ModalForm>
     </Spin>
   );

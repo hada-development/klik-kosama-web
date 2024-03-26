@@ -50,6 +50,12 @@ export async function editCreditSubmission(id?: number, data?: { [key: string]: 
   });
 }
 
+export async function deleteCreditSubmission(id?: number) {
+  return request(`${baseUrl}/${id}`, {
+    method: 'DELETE',
+  });
+}
+
 export async function getAvailableInstalmentTerms(
   id: number,
   amount: number,

@@ -1,14 +1,7 @@
 import { formatDateTime, formatRupiah } from '@/common/utils/utils';
 import { EyeOutlined } from '@ant-design/icons';
-import {
-  ActionType,
-  FooterToolbar,
-  PageContainer,
-  ProColumns,
-  ProTable,
-} from '@ant-design/pro-components';
+import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { history } from '@umijs/max';
-import { Button } from 'antd';
 import React, { useRef, useState } from 'react';
 import { CreditSubmissionSubmissionItem } from './data/data';
 import { getCreditSubmissionSubmission } from './data/service';
@@ -119,26 +112,6 @@ const CreditSubmissionSubmissionPage: React.FC = () => {
           x: 'max-content',
         }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              Dipilih <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> Item
-              &nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              // await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            Batch Deletion
-          </Button>
-        </FooterToolbar>
-      )}
     </PageContainer>
   );
 };

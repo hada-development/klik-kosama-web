@@ -493,6 +493,12 @@ export default [
           },
         ],
       },
+      {
+        path: 'report',
+        name: 'Laporan Keuangan',
+        icon: 'book',
+        component: './Coop/Report',
+      },
     ],
   },
 

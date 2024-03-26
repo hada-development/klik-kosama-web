@@ -25,7 +25,7 @@ const PaymentFormModal: React.FC<PaymentFormModalProp> = (prop) => {
     formRef.current?.resetFields();
     if (prop.defaultAmount) {
       formRef.current?.setFieldsValue({
-        amount: prop.defaultAmount.toPrecision(0),
+        amount: prop.defaultAmount,
       });
     }
     if (prop.payment) {

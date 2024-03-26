@@ -5,6 +5,16 @@ import { InformationTableItem } from '../data';
 
 const baseUrl = '/api/web/information';
 
+function generateFormData(values: any): FormData {
+  const formData = new FormData();
+  formData.append('title', values.title);
+  formData.append('content', values.content);
+  formData.append('status', values.status);
+  if (values.image?.file) {
+    formData.append('image', values.image.file.originFileObj);
+  }
+  return formData;
+}
 export async function getInformationDataTable(
   params: any,
   options?: { [key: string]: any },
@@ -39,15 +49,4 @@ export async function deleteInformation(id?: number) {
   return request(`${baseUrl}/${id}`, {
     method: 'DELETE',
   });
-}
-
-function generateFormData(values: any): FormData {
-  const formData = new FormData();
-  formData.append('title', values.title);
-  formData.append('content', values.content);
-  formData.append('status', values.status);
-  if (values.image?.file) {
-    formData.append('image', values.image.file.originFileObj);
-  }
-  return formData;
 }

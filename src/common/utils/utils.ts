@@ -166,6 +166,7 @@ export async function requestTableData<TData>(
 ): Promise<PaginationList<TData>> {
   try {
     const formattedParams = formatTableParams(params);
+    console.log(formattedParams);
     let response = await request(url, {
       method: 'GET',
       params: {

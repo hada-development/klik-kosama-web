@@ -2,6 +2,7 @@ declare namespace OvertimeSubmissionFeature {
   type OvertimeSubmissionListItem = {
     id: number;
     quota: number;
+    date: string;
     start_time: string;
     end_time: string;
     minutes?: number;

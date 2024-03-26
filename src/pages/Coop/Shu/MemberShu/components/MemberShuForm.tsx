@@ -124,14 +124,28 @@ const MemberShuForm: React.FC<MemberShuFormProps> = (props) => {
         rules={[
           {
             required: true,
-            message: 'Uang Kehadiran Required',
+            message: 'Kompensasi Kehadiran Required',
           },
         ]}
         customSymbol="Rp"
-        placeholder="Masukkan Uang Kehadiran"
+        placeholder="Masukkan Kompensasi Kehadiran"
         width="md"
         name="attendance_fee"
-        label="Uang Kehadiran"
+        label="Kompensasi Kehadiran"
+      />
+
+      <ProFormMoney
+        rules={[
+          {
+            required: true,
+            message: 'Kompensasi Pemilihan Required',
+          },
+        ]}
+        customSymbol="Rp"
+        placeholder="Masukkan Kompensasi Pemilihan"
+        width="md"
+        name="vote_fee"
+        label="Kompensasi Pemilihan"
       />
 
       <ProFormMoney

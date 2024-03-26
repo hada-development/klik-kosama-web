@@ -8,10 +8,8 @@ import DateRangePicker from '../../components/DateRangePicker';
 import { MemberSale } from '../../data/data';
 import { ReportRequestProp, getMemberReportDataTable } from '../../data/services';
 
-type Props = {};
-
-const TransactionReportPage = (props: Props) => {
-  const [loading, setLoading] = useState<boolean>(false);
+const TransactionReportPage = () => {
+  const [loading] = useState<boolean>(false);
   const [tableParam, setCurrentParam] = useState<any>();
   // const [datasource, setDatasource] = useState<MemberSale[] | undefined>();
   const { dateRange } = useModel('Store.Report.useStoreReport');
@@ -85,11 +83,7 @@ const TransactionReportPage = (props: Props) => {
     },
   ];
 
-  useEffect(() => {
-    handleGenerateReport();
-  }, [dateRange, storeID]);
-
-  const handleGenerateReport = async () => {
+  const changeQueryParam = () => {
     if (dateRange && dateRange.length === 2) {
       const param = {
         store_id: storeID,
@@ -97,14 +91,12 @@ const TransactionReportPage = (props: Props) => {
       };
       setQueryParam(param);
       actionRef.current?.reloadAndRest?.();
-      // setLoading(true);
-      // // const response = await getMemberReport(queryParams);
-      // if (response.success) {
-      //     setDatasource(response.data.members);
-      // }
-      // setLoading(false);
     }
   };
+
+  useEffect(() => {
+    changeQueryParam();
+  }, [dateRange, storeID]);
 
   return (
     <PageContainer

@@ -72,7 +72,7 @@ const LeaveTypePage: React.FC = () => {
 
   const columns: ProColumns<LeaveTypeFeature.LeaveTypeListItem>[] = [
     {
-      title: 'Nama Jenis Cuit',
+      title: 'Nama Jenis Cuti',
       dataIndex: 'name',
     },
     {

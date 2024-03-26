@@ -5,7 +5,7 @@ import { Table } from 'antd';
 type Props = {};
 
 export default function SumTable({}: Props) {
-  const { totalAmount, totalItems, voucher } = useModel('POS.usePos');
+  const { totalShopping, totalAmount, totalItems, getTotalVoucher } = useModel('POS.usePos');
   return (
     <Table
       columns={[
@@ -29,13 +29,18 @@ export default function SumTable({}: Props) {
           value: totalItems,
         },
         {
+          key: 'totalShopping',
+          description: 'Total Belanja',
+          value: formatRupiah(totalShopping),
+        },
+        {
           key: 'totalDiscount',
           description: 'Total Voucher',
-          value: formatRupiah((voucher?.amount ?? 0) * -1),
+          value: formatRupiah(getTotalVoucher() * -1),
         },
         {
           key: 'totalAmount',
-          description: 'Total Belanja',
+          description: 'Total Bayar',
           value: <h2>{formatRupiah(totalAmount)}</h2>,
         },
       ]}
