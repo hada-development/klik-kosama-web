@@ -1,7 +1,8 @@
 import { employeeStatuses } from '@/common/data/data';
+import { downloadUrl, formatDateTime } from '@/common/utils/utils';
 import { getEmployeeType } from '@/pages/HRIS/MasterData/EmployeeType/data/services/service';
 import { getPosition } from '@/pages/HRIS/MasterData/Position/data/services/service';
-import { EyeOutlined, PlusOutlined } from '@ant-design/icons';
+import { EyeOutlined, FileExcelOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   ActionType,
   FooterToolbar,
@@ -99,6 +100,14 @@ const EmployeePage: React.FC = () => {
         }, {}) || {},
     },
     {
+      title: 'Tanggal Masuk',
+      dataIndex: 'join_date',
+      search: false,
+      render: (data: any) => {
+        return formatDateTime(data, 'DD/MM/YYYY');
+      },
+    },
+    {
       title: 'Aksi',
       dataIndex: 'option',
       width: '10%',
@@ -133,6 +142,15 @@ const EmployeePage: React.FC = () => {
           },
         }}
         toolBarRender={() => [
+          <Button
+            type="default"
+            key="1"
+            onClick={() => {
+              downloadUrl('/api/web/hr/employee/export', 'data_pegawai.xlsx');
+            }}
+          >
+            <FileExcelOutlined /> Export Excel
+          </Button>,
           <Button
             type="primary"
             key="primary"

@@ -1,6 +1,6 @@
 import { formatDateTime, formatRupiah, isoDateFormat } from '@/common/utils/utils';
 import { CloseOutlined, PrinterOutlined } from '@ant-design/icons';
-import { useModel } from '@umijs/max';
+import { useAccess, useModel } from '@umijs/max';
 import { Button, Drawer, Space } from 'antd';
 import confirm from 'antd/lib/modal/confirm';
 import moment from 'moment';
@@ -19,6 +19,8 @@ type Props = {
 const TransactionDetail = ({ transaction, open, onClose, onVoid, readonly = false }: Props) => {
   const { printTrx } = useModel('POS.usePos');
 
+  const access = useAccess();
+
   const [loading, setLoading] = useState<boolean>(false);
 
   const handlePrint = () => {
@@ -31,6 +33,10 @@ const TransactionDetail = ({ transaction, open, onClose, onVoid, readonly = fals
     if (transaction) {
       confirm({
         title: 'Anda yakin ingin void transaksi ini?',
+        onCancel: () => {
+          return;
+        },
+        okCancel: true,
         onOk: async () => {
           setLoading(true);
           await voidTransaction(transaction.id);
