@@ -178,7 +178,7 @@ const MonthlyAttendanceReport: React.FC = () => {
           return <Badge color="red" text={'Libur: ' + record.holiday} />;
         }
         if (record.type == 'leave') {
-          return <Badge color="grey" text={'Cuti: ' + record.leave_note} />;
+          return <Badge color="grey" text={record.leave_note} />;
         }
         return dom;
       },

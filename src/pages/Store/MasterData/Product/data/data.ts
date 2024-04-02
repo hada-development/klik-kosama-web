@@ -11,6 +11,12 @@ export interface ProductTableItem {
   buy_price: number;
   barcodes: Barcode[];
   category: Category;
+  image: Image | null;
+}
+
+export interface Image {
+  id: number;
+  address: string;
 }
 
 export interface Category {

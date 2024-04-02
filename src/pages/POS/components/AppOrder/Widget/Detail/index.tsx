@@ -58,6 +58,7 @@ const AppOrderDetailModal: React.FC<Props> = ({ id, open, onClose, onUpdated }) 
   useEffect(() => {
     if (id) {
       setLoading(true);
+      setOrder(undefined);
       getAppOrderDetail(id)
         .then((response) => {
           if (response.success) {

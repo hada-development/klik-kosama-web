@@ -9,6 +9,7 @@ import AppOrderDetailModal from './Widget/Detail';
 
 import { useModel } from '@umijs/max';
 import 'antd-button-color/dist/css/style.less';
+import Search from 'antd/es/input/Search';
 
 const { Title, Paragraph, Text, Link } = Typography;
 
@@ -20,17 +21,12 @@ type Props = {
 function AppOrderDrawer({ open, onClose }: Props) {
   const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState<AppOrderListItem[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<AppOrderListItem[]>([]);
 
   const [openDetail, setOpenDetail] = useState(false);
   const [detailId, setDetailId] = useState<number | undefined>();
 
   const { prepareAppOrder } = useModel('POS.usePos');
-
-  useEffect(() => {
-    if (open) {
-      getData();
-    }
-  }, [open]);
 
   const getData = () => {
     setLoading(true);
@@ -38,12 +34,19 @@ function AppOrderDrawer({ open, onClose }: Props) {
       .then((response) => {
         if (response.success) {
           setOrders(response.data);
+          setFilteredOrders(response.data);
         }
       })
       .finally(() => {
         setLoading(false);
       });
   };
+
+  useEffect(() => {
+    if (open) {
+      getData();
+    }
+  }, [open]);
 
   const showDetail = (id: number) => {
     setDetailId(id);
@@ -60,12 +63,33 @@ function AppOrderDrawer({ open, onClose }: Props) {
     onClose();
   };
 
+  const onSearch = (value: string) => {
+    if (value.length === 0) {
+      setFilteredOrders(orders);
+    } else {
+      console.log(value);
+      setFilteredOrders(
+        orders.filter(
+          (value1) =>
+            value1.order_no.toLowerCase().includes(value.toString()) ||
+            value1.member_name.toLowerCase().includes(value.toString()),
+        ),
+      );
+    }
+  };
+
   return (
     <>
       <Drawer title="Pesanan Dari Aplikasi" open={open} width={500} onClose={onClose}>
+        <Search
+          placeholder="Cari no transaksi / nama anggota"
+          onSearch={onSearch}
+          allowClear
+          style={{ width: '100%', marginBottom: '12px' }}
+        />
         <List
           loading={loading}
-          dataSource={orders}
+          dataSource={filteredOrders}
           itemLayout="vertical"
           renderItem={(item, index) => {
             return (
