@@ -130,7 +130,7 @@ function getFilenameFromUrl(url: string) {
   }
 }
 
-export async function downloadUrl(url: string, filename?: string | null, params?: null) {
+export async function downloadUrl(url: string, filename?: string | null, params?: any | null) {
   console.log('APP PARAMS');
   console.log(params);
   // Make a request to fetch the file.

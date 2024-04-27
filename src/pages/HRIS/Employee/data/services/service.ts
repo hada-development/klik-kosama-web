@@ -82,6 +82,10 @@ export async function editPersonalData(userId?: number | string, data?: { [key: 
 
 /** ========= Bank Account ========= */
 export async function editBankAccount(userId?: number | string, data?: { [key: string]: any }) {
+  // Check is bank_id data is object
+  if (data?.bank_id?.value) {
+    data.bank_id = data.bank_id.value;
+  }
   return request(`/api/web/bank-account`, {
     method: 'POST',
     data: { ...data, user_id: userId },

@@ -97,7 +97,7 @@ const InformationPage: React.FC = () => {
       title: 'APP',
       dataIndex: ['availability', 'in_app'],
       render: (data, _) => {
-        if (data == true) {
+        if (data === true) {
           return <CheckCircleFilled />;
         }
         return '-';

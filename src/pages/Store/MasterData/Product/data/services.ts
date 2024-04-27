@@ -22,7 +22,7 @@ function convertDataToFormData(data: any) {
   // Iterate over the keys of the data object
   for (const key in data) {
     if (key === 'image') {
-      if (data[key].file.originFileObj !== undefined) {
+      if (data[key]?.file?.originFileObj !== undefined) {
         formData.append(key, data[key].file.originFileObj);
       }
     } else if (data.hasOwnProperty(key)) {

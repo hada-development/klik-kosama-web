@@ -140,6 +140,7 @@ export default [
             path: 'quota',
             component: './HRIS/Leave/LeaveQuota',
           },
+
           {
             name: 'Jenis Ketidakhadiran',
             icon: 'sound',
@@ -151,6 +152,12 @@ export default [
             icon: 'sound',
             path: 'submission',
             component: './HRIS/Leave/LeaveSubmission',
+          },
+          {
+            name: 'Rekap Ketidakhadiran',
+            icon: 'sound',
+            path: 'report',
+            component: './HRIS/Leave/LeaveReport',
           },
         ],
       },
